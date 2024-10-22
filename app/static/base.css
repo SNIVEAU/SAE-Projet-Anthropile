@@ -2,12 +2,13 @@ html,
 body {
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
 }
 
+/* Style pour l'en-tête et le positionnement des éléments */
 header {
     display: flex;
     align-items: center;
-    /* justify-content: space-between; */
 }
 
 header img {
@@ -25,11 +26,32 @@ header nav ul li {
     margin: 0 15px;
 }
 
+/* Style de base pour les liens de navigation */
 header nav ul li a {
     text-decoration: none;
     color: #333;
+    position: relative;
+    padding-bottom: 5px;
 }
 
+/* Effet de survol pour les liens de navigation */
+header nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 0;
+    bottom: 0;
+    background-color: #4CAF50; /* Vert */
+    transition: width 0.3s ease-in-out;
+}
+
+/* Déclenche l'effet de soulignement vert de gauche à droite */
+header nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Autres styles pour le header */
 header a {
     margin-left: 15px;
     text-decoration: none;
@@ -49,11 +71,12 @@ a {
     color: #333;
 }
 
+
 /*************************************/
 
 /* Style pour la section avec l'image de fond */
 .hero {
-    position: relative; /* Nécessaire pour positionner le pseudo-élément */
+    position: relative;
     height: 75vh;
     background-image: url('../static/img/banniere_poubelles.jpeg');
     background-size: cover;
@@ -113,12 +136,6 @@ section {
     margin-left: 5rem;
 }
 
-/* h1 {
-    text-transform: uppercase;
-    font-size: 36px;
-    margin-bottom: 2rem;
-} */
-
 .p1 {
     font-size: 18px;
     margin-bottom: 1rem;
@@ -154,13 +171,11 @@ section {
     padding: 5px 10px;
     color: #3e88b9;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    /* Add transition for smooth effect */
 }
 
 .connexioninscription:hover {
     background-color: #3e88b9;
     color: white;
-    /* border-color: white; */
 }
 
 footer {
@@ -170,7 +185,6 @@ footer {
     background-color: #0c2910;
     color: white;
     width: 100%;
-    /* Ensure footer spans full width */
 }
 
 footer div {

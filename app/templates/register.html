@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register</h1>
+    <!-- Afficher les erreurs s'il y en a -->
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST" action="/register">
+        <label for="nom_Utilisateur">Nom Utilisateur:</label>
+        <input type="text" id="nom_Utilisateur" name="nom_Utilisateur" required> <br><br>
+        
+        <label for="mail">Email:</label>
+        <input type="email" id="mail" name="mail" required> <br><br>
+        
+        <label for="numtel">Numéro de Téléphone:</label>
+        <input type="text" id="numtel" name="numtel" required> <br><br>
+        
+        <label for="motdepasse">Mot de Passe:</label>
+        <input type="password" id="motdepasse" name="motdepasse" required> <br><br>
+        
+        <label for="id_Entreprise">ID de l'Entreprise:</label>
+        <select id="id_Entreprise" name="id_Entreprise" required>
+            <option value="1">Entreprise A</option>
+            <option value="2">Entreprise B</option>
+            <option value="3">Entreprise C</option>
+        </select> <br><br>
+        
+        <button type="submit">Register</button>
+    </form>
+    
+    <p>Vous avez déjà un compte ? <a href="/login">Connectez-vous ici</a></p>
+</body>
+</html>

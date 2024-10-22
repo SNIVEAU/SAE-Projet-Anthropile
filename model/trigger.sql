@@ -1,3 +1,4 @@
+
 --VÉRIFIÉ
 -- Trigger pour vérifier que la quantité d'une collecte ne dépasse pas la quantité entière
 DELIMITER |
@@ -32,6 +33,7 @@ FOR EACH ROW
 BEGIN 
   DECLARE max_qte INT;
   DECLARE quantite_totale_actuelle INT;
+
   DECLARE qte_Ajoutee INT;
 
   DECLARE mes VARCHAR(200)  DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
@@ -72,6 +74,7 @@ BEGIN
 
 END |
 DELIMITER ;
+
 
 DELIMITER |
 CREATE OR REPLACE TRIGGER check_qte_collecte

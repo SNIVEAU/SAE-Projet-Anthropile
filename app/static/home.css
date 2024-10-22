@@ -9,7 +9,7 @@
 .hero {
     position: relative; /* Nécessaire pour positionner le pseudo-élément */
     height: 75vh;
-    background-image: url('../img/banniere_poubelles.jpeg');
+    background-image: url('../static/img/banniere_poubelles.jpeg');
     background-size: cover;
     background-position: center;
     display: flex;

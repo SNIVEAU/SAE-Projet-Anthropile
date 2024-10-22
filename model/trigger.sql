@@ -11,7 +11,7 @@ BEGIN
 
   DECLARE mes VARCHAR(200) DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
 
-  SELECT qte_max, IFFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
+  SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE
   WHERE id_point_collecte = NEW.id_point_collecte;
 
@@ -36,7 +36,7 @@ BEGIN
 
   DECLARE mes VARCHAR(200)  DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
 
-  SELECT qte_max, IFFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
+  SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE
   WHERE id_point_collecte = NEW.id_point_collecte;
 
@@ -62,7 +62,7 @@ BEGIN
   DECLARE mes VARCHAR(200) DEFAULT 'La quantité de déchets de ce type à ce point dépasse la quantité maximale de la collecte !!';
   DECLARE current_qte INT;
   
-  SELECT IFFNULL(SUM(qte),0) INTO current_qte
+  SELECT IFNULL(SUM(qte),0) INTO current_qte
   FROM POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
@@ -82,7 +82,7 @@ BEGIN
   DECLARE mes VARCHAR(200) DEFAULT 'La quantité de déchets de ce type à ce point dépasse la quantité maximale de la collecte !!';
   DECLARE current_qte INT;
   
-  SELECT IFFNULL(SUM(qte),0) INTO current_qte
+  SELECT IFNULL(SUM(qte),0) INTO current_qte
   FROM POINT_DE_COLLECTE natural join DEPOSER natural join DECHET
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
@@ -99,7 +99,7 @@ DELIMITER |
 CREATE OR REPLACE FUNCTION quantite_point_collecte(id_pt_collecte int) RETURNS INT
 BEGIN  
   DECLARE quantite INT;
-  SELECT IFFNULL(SUM(qte),0) into quantite
+  SELECT IFNULL(SUM(qte),0) into quantite
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE
   WHERE id_point_collecte = id_pt_collecte;
   RETURN quantite;

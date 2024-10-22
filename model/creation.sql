@@ -9,71 +9,65 @@ DROP TABLE IF EXISTS UTILISATEUR;
 DROP TABLE IF EXISTS ENTREPRISE;
 DROP TABLE IF EXISTS CATEGORIEDECHET;
 
--- Créer les tables sans clés étrangères en premier
+
 CREATE TABLE CATEGORIEDECHET (
-  Id_Type  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  Nom_Type VARCHAR(42)
+  id_Type INT AUTO_INCREMENT PRIMARY KEY,
+  nom_Type VARCHAR(42)
 );
 
 CREATE TABLE ENTREPRISE (
-  id_Entreprise  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id_Entreprise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Entreprise VARCHAR(42)
 );
 
 CREATE TABLE UTILISATEUR (
   id_Utilisateur  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Utilisateur VARCHAR(42),
-  mail            VARCHAR(42),
-  numtel          INT
+  mail VARCHAR(42),
+  numtel INT,
+  motdepasse VARCHAR(42),
+  id_Entreprise INT,
+  FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
 );
 
 CREATE TABLE POINT_DE_COLLECTE (
-  Idptscollecte INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  Adresse       VARCHAR(42) UNIQUE,
-  pos_x         DECIMAL(10,4),
-  pos_y         DECIMAL(10,4),
-  qte_max       INT
+  id_point_collecte INT AUTO_INCREMENT PRIMARY KEY,
+  Adresse VARCHAR(42) UNIQUE,
+  pos_x DECIMAL(10,4),
+  pos_y DECIMAL(10,4),
+  qte_max INT
 );
 
 CREATE TABLE COLLECTE (
-  id_Collecte   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id_Collecte INT AUTO_INCREMENT PRIMARY KEY,
   Date_Collecte DATE
 );
 
--- Créer les tables avec des clés étrangères
 CREATE TABLE DECHET (
-  id_Dechet  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id_Dechet  INT AUTO_INCREMENT PRIMARY KEY,
   nom_Dechet VARCHAR(42),
-  Id_Type INT NOT NULL,
+  id_Type INT NOT NULL,
   qte INT,
-  FOREIGN KEY (Id_Type) REFERENCES CATEGORIEDECHET (Id_Type)
+  FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 
 CREATE TABLE DEPOSER (
-  id_Dechet      INT NOT NULL,
-  id_Utilisateur INT NOT NULL,
-  Idptscollecte  INT NOT NULL,
-  PRIMARY KEY (id_Dechet, id_Utilisateur, Idptscollecte),
+  id_Dechet INT,
+  id_Utilisateur INT,
+  id_point_collecte INT ,
+  PRIMARY KEY (id_Dechet, id_Utilisateur, id_point_collecte),
   FOREIGN KEY (id_Dechet) REFERENCES DECHET (id_Dechet),
   FOREIGN KEY (id_Utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
-  FOREIGN KEY (Idptscollecte) REFERENCES POINT_DE_COLLECTE (Idptscollecte)
+  FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte)
 );
 
 CREATE TABLE TRAITER (
-  Idptscollecte INT NOT NULL,
+  id_point_collecte INT NOT NULL,
   id_Collecte   INT NOT NULL,
-  Id_Type       INT NOT NULL,
+  id_Type       INT NOT NULL,
   qtecollecte   INT,
-  PRIMARY KEY (Idptscollecte, id_Collecte, Id_Type),
-  FOREIGN KEY (Idptscollecte) REFERENCES POINT_DE_COLLECTE (Idptscollecte),
+  PRIMARY KEY (id_point_collecte, id_Collecte, id_Type),
+  FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Collecte) REFERENCES COLLECTE (id_Collecte),
-  FOREIGN KEY (Id_Type) REFERENCES CATEGORIEDECHET (Id_Type)
-);
-
-CREATE TABLE TRAVAILLER (
-  id_Utilisateur INT NOT NULL,
-  id_Entreprise  INT NOT NULL,
-  PRIMARY KEY (id_Utilisateur, id_Entreprise),
-  FOREIGN KEY (id_Utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
-  FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
+  FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );

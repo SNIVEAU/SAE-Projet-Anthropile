@@ -1,12 +1,14 @@
-ENTREPRISE: idEntreprise, nomEntreprise
-TRAVAILLER, 0N UTILISATEUR, 0N ENTREPRISE
-UTILISATEUR:idUtilisateur, nomUtilisateur, mail, numtel
-DEPOSER, 0N DECHET, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
-
-DECHET : idDechet, nomDechet,
 CORRESPONDRE, 11 DECHET, 0N CATEGORIEDECHET
-CATEGORIEDECHET: IdType,NomType
-POINT_DE_COLLECTE: Idptscollecte,Adresse,pos_x,pos_y,qte_max,qte
+CATEGORIEDECHET: id_Type,nom_ Type
+TRAITER, 0N POINT_DE_COLLECTE, 0N COLLECTE ,0N CATEGORIEDECHET: qtecollecte
 COLLECTE: idCollecte,DateCollecte
 
-TRAITER, 0N POINT_DE_COLLECTE, 0N COLLECTE ,0N CATEGORIEDECHET: qtecollecte
+DECHET : id_Dechet, nom_Dechet, qte
+DEPOSER, 0N DECHET, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
+POINT_DE_COLLECTE: id_point_collecte,Adresse,pos_x,pos_y,qte_max
+:
+
+:
+UTILISATEUR:id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse
+TRAVAILLER, 01 UTILISATEUR, 0N ENTREPRISE
+ENTREPRISE: id_Entreprise, nom_Entreprise

@@ -32,11 +32,7 @@ def insert_dechets():
     if form.validate_on_submit():
         id_dechet = db.session.query(func.max(Dechets.id_Dechet)).scalar() + 1
         id_type = db.session.query(CategoriesDechets.Id_Type).filter(CategoriesDechets.Nom_Type == form.type.data.Nom_Type).scalar()
-        nom_Dechet = form.nom.data
-        type = id_type
-        qte = form.quantite.data
-        print(qte, "**********")
-        dechet = Dechets(id_dechet, nom_Dechet, id_type, form.quantite.data) # ICICICICICICICICICICIC
+        dechet = Dechets(id_dechet, form.nom.data, id_type, form.quantite.data) # ICICICICICICICICICICIC
         db.session.add(dechet)
         db.session.commit()
         return redirect(url_for("home"))

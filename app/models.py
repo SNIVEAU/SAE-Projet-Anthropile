@@ -1,36 +1,30 @@
-from .app import db
+from .app import mysql
 
-class CategoriesDechets(db.Model):
-    __tablename__ = "CATEGORIEDECHET"
-
-    Id_Type = db.Column(db.Integer, primary_key=True)
-    Nom_Type = db.Column(db.String(100), nullable=False)
-
-    def __init__(self, Id_Type, Nom_Type):
-        self.Id_Type = Id_Type
-        self.Nom_Type = Nom_Type
-
-    def __repr__(self):
-        return f"CategoriesDechets('{self.Nom_Type}')"
+# def get_id_max_dechets():
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
+#     id_max,  = cursor.fetchone()
+#     cursor.close()
+#     print(id_max, "*********")
+#     return id_max
 
 def get_categories():
-    return db.session.query(CategoriesDechets).all()
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET")
+    categories = cursor.fetchall()
+    cursor.close()
+    print(categories)
+    return categories
 
-class Dechets(db.Model):
-    __tablename__ = "DECHET"
+def get_id_type_dechet(nom_dechet):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT Id_Type FROM CATEGORIEDECHET WHERE Nom_Type = %s", (nom_dechet,))
+    id_type = cursor.fetchone()
+    cursor.close()
+    return id_type
 
-    id_Dechet = db.Column(db.Integer, primary_key=True)
-    nom_Dechet = db.Column(db.String(100), nullable=False)
-    Id_Type = db.Column(db.Integer, db.ForeignKey("CATEGORIEDECHET.Id_Type"), nullable=False)
-    qte = db.Column(db.Integer, nullable=False)
-
-    identifiant_type = db.relationship("CategoriesDechets", backref="dechets")
-
-    def __init__(self, id_Dechet, nom_Dechet, Id_Type, qte): 
-        self.id_Dechet = id_Dechet
-        self.nom_Dechet = nom_Dechet
-        self.Id_Type = Id_Type 
-        self.qte = qte
-
-    def __repr__(self):
-        return f"Dechet('{self.nom_Dechet}', '{self.qte}')"
+def insert_dechet(nom, id_type, quantite):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (nom, id_type, quantite))
+    mysql.connection.commit()
+    cursor.close()

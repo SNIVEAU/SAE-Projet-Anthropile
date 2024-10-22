@@ -13,4 +13,5 @@ pip install flask-login
 pip install wtforms-sqlalchemy
 pip install mysqlclient  
 pip install PyMySQL
+pip install flask-mysqldb
 

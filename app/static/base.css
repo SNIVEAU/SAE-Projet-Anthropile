@@ -83,7 +83,7 @@ a {
     text-align: left;
 }
 
-.hero-content h1 {
+.hero-content .presentation-title {
     font-size: 3rem;
     color: white;
     margin-bottom: 10px;
@@ -113,11 +113,11 @@ section {
     margin-left: 5rem;
 }
 
-h1 {
+/* h1 {
     text-transform: uppercase;
     font-size: 36px;
     margin-bottom: 2rem;
-}
+} */
 
 .p1 {
     font-size: 18px;
@@ -164,8 +164,6 @@ h1 {
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -215,7 +213,7 @@ body {
     color: #333;
 }
 
-h1 {
+.insert-title {
     text-align: center;
     color: #4CAF50;
     /* Couleur verte pour rappeler le thème des biodéchets */
@@ -279,7 +277,7 @@ form {
 }
 
 /* Gestion des erreurs */
-p {
+.erreur {
     color: #d9534f;
     font-weight: bold;
 }

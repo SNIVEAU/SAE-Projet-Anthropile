@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/base.css">
+    <title>{% block title %}Anthropile{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <img src="static/img/logo.png" alt="Logo de mon site">
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/">Tableau de bord</a></li>
+                <li><a href="/">Point de collecte</a></li>
+                <li><a href="/">Rapport</a></li>    
+            </ul>
+        </nav>
+        <div>
+            <a class="connexioninscription" href='/'>Se connecter</a>
+            <a class="connexioninscription" href='/'>S'inscrire</a>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div>
+            <p  >BioTrack'in</p>
+            <img src="static/img/logo.png" alt="Logo de mon site">
+        </div>
+        <div>
+            <p>Contacts</p>
+            <p>tel : 00 00 00 00</p>
+            <p>Rue d'issoudun 45067 Orléans</p>
+            <p><strong>&copy; 2024 Anthropile - Tous droits réservés</strong></p>
+        </div>
+        <div>
+            <h2> Membres de l'équipe</h2>
+            <ul>
+                <li>Nagarajah Niksan</li>
+                <li>Lima Romain</li>
+                <li>Wiciak Alexy</li>
+                <li>Muhamad Zaiinizee Bin Daivin</li>
+                <li>Niveau Samuel</li>
+    </footer>
+</body>
+</html>

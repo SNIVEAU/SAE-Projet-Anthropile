@@ -1,0 +1,12 @@
+ENTREPRISE: idEntreprise, nomEntreprise
+TRAVAILLER, 0N UTILISATEUR, 0N ENTREPRISE
+UTILISATEUR:idUtilisateur, nomUtilisateur, mail, numtel
+DEPOSER, 0N DECHET, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
+
+DECHET : idDechet, nomDechet,
+CORRESPONDRE, 11 DECHET, 0N CATEGORIEDECHET
+CATEGORIEDECHET: IdType,NomType
+POINT_DE_COLLECTE: Idptscollecte,Adresse,pos_x,pos_y,qte_max,qte
+COLLECTE: idCollecte,DateCollecte
+
+TRAITER, 0N POINT_DE_COLLECTE, 0N COLLECTE ,0N CATEGORIEDECHET: qtecollecte

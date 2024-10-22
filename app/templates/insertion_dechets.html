@@ -3,7 +3,7 @@
 {% block title %}Insertion des déchets{% endblock %}
 
 {% block content %}
-<h1>Insertion des déchets</h1>
+<h1 class="insert-title">Insertion des déchets</h1>
 <form class="form-horizontal" role="form" method="POST" action="{{ url_for ('insert_dechets') }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
@@ -26,7 +26,7 @@
     </div>
     <div class="form-group">
         {% if error %}
-            <p><strong>Erreur : </strong>{{ error }}</p>
+            <p class="erreur"><strong>Erreur : </strong>{{ error }}</p>
         {% endif %}
         <div class="les-btn">
             {{ form.submit(class_="btn-insert") }}

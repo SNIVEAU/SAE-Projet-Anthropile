@@ -1,7 +1,6 @@
 DELETE FROM DEPOSER;
 DELETE FROM TRAITER;
 DELETE FROM DECHET;
-DELETE FROM COLLECTE;
 DELETE FROM POINT_DE_COLLECTE;
 DELETE FROM UTILISATEUR;
 DELETE FROM ENTREPRISE;
@@ -11,7 +10,6 @@ ALTER TABLE CATEGORIEDECHET AUTO_INCREMENT = 1;
 ALTER TABLE ENTREPRISE AUTO_INCREMENT = 1;
 ALTER TABLE UTILISATEUR AUTO_INCREMENT = 1;
 ALTER TABLE POINT_DE_COLLECTE AUTO_INCREMENT = 1;
-ALTER TABLE COLLECTE AUTO_INCREMENT = 1;
 ALTER TABLE DECHET AUTO_INCREMENT = 1;
 ALTER TABLE DEPOSER AUTO_INCREMENT = 1;
 ALTER TABLE TRAITER AUTO_INCREMENT = 1;
@@ -36,11 +34,8 @@ INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 
 INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 2', 23.4567, 89.0123, 200);
 INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 3', 34.5678, 90.1234, 300);
 
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-01-01');
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-02-01');
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-03-01');
 
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-04-01');
+
 
 
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 1', 1, 10);
@@ -67,12 +62,15 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 
 
 
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (1, 1, 1, 5);
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (2, 2, 2, 15);
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 3, 3, 25);
-
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 4, 3, 61);
-
---INSERTION POUR TESTER LE TRIGGER check_qte_collecte
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 4, 3, 50);
-
+-- Insertion des données dans la table TRAITER avec un jour entre chaque insertion
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (1, 1, '2024-10-23 10:00:00', 5);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (2, 2, '2024-10-24 10:00:00', 15);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-25 10:00:00', 25);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-26 10:00:00', 61);
+-- Insertion pour tester le trigger check_qte_collecte
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-27 10:00:00', 50);

@@ -38,10 +38,7 @@ CREATE TABLE POINT_DE_COLLECTE (
   qte_max INT
 );
 
-CREATE TABLE COLLECTE (
-  id_Collecte INT AUTO_INCREMENT PRIMARY KEY,
-  Date_Collecte DATE
-);
+
 
 CREATE TABLE DECHET (
   id_Dechet  INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,12 +60,11 @@ CREATE TABLE DEPOSER (
 
 CREATE TABLE TRAITER (
   id_point_collecte INT NOT NULL,
-  id_Collecte   INT NOT NULL,
   id_Type       INT NOT NULL,
+  dateCollecte DATETIME,
   qtecollecte   INT,
-  PRIMARY KEY (id_point_collecte, id_Collecte, id_Type),
+  PRIMARY KEY (id_point_collecte, id_Type, dateCollecte),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
-  FOREIGN KEY (id_Collecte) REFERENCES COLLECTE (id_Collecte),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 

@@ -5,7 +5,7 @@ from wtforms import StringField, IntegerField, SubmitField, HiddenField, Decimal
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired
 from flask_login import login_required
-from app.models import *
+from models import *
 from sqlalchemy import func
 
 
@@ -101,4 +101,9 @@ def insert_dechets():
         insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
     return render_template("insertion_dechets.html", form=form)
+
+@app.route("/rapport")
+def rapport():
+    rapport = get_rapport()
+    return render_template("rapport.html", rapport=rapport)
 

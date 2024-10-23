@@ -28,3 +28,11 @@ def insert_dechet(nom, id_type, quantite):
     cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (nom, id_type, quantite))
     mysql.connection.commit()
     cursor.close()
+
+def get_points_de_collecte():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
+    points = cursor.fetchall()
+    cursor.close()
+    print(points)
+    return points

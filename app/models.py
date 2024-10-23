@@ -28,3 +28,32 @@ def insert_dechet(nom, id_type, quantite):
     cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (nom, id_type, quantite))
     mysql.connection.commit()
     cursor.close()
+class Traiter:
+    def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte):
+        self.id_point_collecte = id_point_collecte
+        self.id_Type = id_Type
+        self.dateCollecte = dateCollecte
+        self.qtecollecte = qtecollecte
+    
+    def insert_traiter(self):
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO TRAITER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
+        mysql.connection.commit()
+        cursor.close()
+def get_traiter():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM TRAITER")
+    traiter = cursor.fetchall()
+    cursor.close()
+    return traiter
+
+def get_traiter_by_date():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM TRAITER group by dateCollecte desc")
+    traiter = cursor.fetchall()
+    listetraiter = []
+    for i in traiter:
+        listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
+
+    cursor.close()
+    return listetraiter

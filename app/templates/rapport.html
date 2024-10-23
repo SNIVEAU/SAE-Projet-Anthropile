@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Rapport
+{% endblock %}
+{% block content %}
+    <h1>Rapport Journalier</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rapport Journalier</th>
+                <th>Date de Collecte</th>
+                <th>Télécharger PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for traitement in traiter %}
+            <tr>
+                                
+                <td>Rapport Journalier</td>
+                <td>{{ traitement.dateCollecte }}</td>
+
+                
+                <td>
+                    <a href="/download_pdf/{{traitement.dateCollecte}}">Télécharger PDF</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

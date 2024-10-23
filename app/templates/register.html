@@ -1,9 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Insertion des déchets{% endblock %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="static/register.css">
 </head>
 <body>
     <h1>Register</h1>
@@ -35,6 +42,7 @@
         <button type="submit">Register</button>
     </form>
     
-    <p>Vous avez déjà un compte ? <a href="/login">Connectez-vous ici</a></p>
+    <p id="Creer_compte">Vous avez déjà un compte ? <a href="/login">Connectez-vous ici</a></p>
 </body>
 </html>
+{% endblock %}

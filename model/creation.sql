@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS TRAITER;
 DROP TABLE IF EXISTS TRAVAILLER;
 DROP TABLE IF EXISTS DECHET;
 DROP TABLE IF EXISTS POINT_DE_COLLECTE;
-DROP TABLE IF EXISTS COLLECTE;
 DROP TABLE IF EXISTS UTILISATEUR;
 DROP TABLE IF EXISTS ENTREPRISE;
 DROP TABLE IF EXISTS CATEGORIEDECHET;
@@ -27,24 +26,24 @@ CREATE TABLE UTILISATEUR (
   numtel INT,
   motdepasse VARCHAR(42),
   id_Entreprise INT,
+  nom_role varchar(42),
   FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
 );
 
 CREATE TABLE POINT_DE_COLLECTE (
   id_point_collecte INT AUTO_INCREMENT PRIMARY KEY,
-  Adresse VARCHAR(42) UNIQUE,
+  adresse VARCHAR(200) UNIQUE,
+  nom_pt_collecte VARCHAR(42) UNIQUE,
   pos_x DECIMAL(10,4),
   pos_y DECIMAL(10,4),
-  qte_max INT
+  qte_max DECIMAL(10,4)
 );
-
-
 
 CREATE TABLE DECHET (
   id_Dechet  INT AUTO_INCREMENT PRIMARY KEY,
   nom_Dechet VARCHAR(42),
   id_Type INT NOT NULL,
-  qte INT,
+  qte DECIMAL(10,4),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 
@@ -62,7 +61,7 @@ CREATE TABLE TRAITER (
   id_point_collecte INT NOT NULL,
   id_Type       INT NOT NULL,
   dateCollecte DATETIME,
-  qtecollecte   INT,
+  qtecollecte   DECIMAL(10,4),
   PRIMARY KEY (id_point_collecte, id_Type, dateCollecte),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)

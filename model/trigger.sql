@@ -68,7 +68,7 @@ BEGIN
   FROM POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
-  IF (current_qte > NEW.qtecollecte) THEN
+  IF (current_qte > NEW.qte_collecte) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mes;
   END IF;
 
@@ -89,7 +89,7 @@ BEGIN
   FROM POINT_DE_COLLECTE natural join DEPOSER natural join DECHET
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
-  IF (current_qte > NEW.qtecollecte) THEN
+  IF (current_qte > NEW.qte_collecte) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mes;
   END IF;
 

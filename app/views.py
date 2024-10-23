@@ -106,7 +106,7 @@ def insert_dechets():
 
 @app.route("/rapport")
 def rapport():
-    traiter = get_traiter_by_date()
+    traiter = get_traiter_sort_by_date()
     return render_template("rapport.html", traiter=traiter[:10])
 
 
@@ -138,17 +138,17 @@ def download_pdf(date_collecte):
     # Ajouter les données dans le PDF
     pdf.set_font('Arial', '', 10)
     for traiter in traiter_list:
-        pdf.cell(40, 10, str(traiter[0]), 1)  # id_point_collecte
-        pdf.cell(40, 10, str(traiter[1]), 1)  # id_Type
-        pdf.cell(40, 10, str(traiter[2]), 1)  # dateCollecte
-        pdf.cell(40, 10, str(traiter[3]), 1)  # qtecollecte
+        pdf.cell(40, 10, str(traiter.id_point_collecte), 1)  # id_point_collecte
+        pdf.cell(40, 10, str(traiter.id_Type), 1)  # id_Type
+        pdf.cell(40, 10, str(traiter.dateCollecte), 1)  # dateCollecte
+        pdf.cell(40, 10, str(traiter.qtecollecte), 1)  # qtecollecte
         pdf.ln()
 
     # Sauvegarder le PDF dans un buffer en mémoire
     pdf_output = BytesIO()
-    pdf.output(pdf_output)
+    pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
     # Envoyer le fichier PDF au client
-    return send_file(pdf_output, attachment_filename=f"rapport_{date_collecte}.pdf", as_attachment=True)
+    return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 

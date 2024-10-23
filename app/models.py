@@ -47,13 +47,44 @@ def get_traiter():
     cursor.close()
     return traiter
 
-def get_traiter_by_date():
+def get_traiter_sort_by_date():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM TRAITER group by dateCollecte desc")
+    
+    query = """
+    SELECT * FROM TRAITER
+    GROUP BY DATE(dateCollecte)
+    ORDER BY dateCollecte DESC
+    """
+    
+    cursor.execute(query)
     traiter = cursor.fetchall()
+    
     listetraiter = []
     for i in traiter:
         listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
+    
+    cursor.close()
+    return listetraiter
 
+def get_traiter_sort_by_date():
+    cursor = mysql.connection.cursor()
+    
+    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
+    query = """
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(dateCollecte, '%Y-%m-%d') AS date_only,qtecollecte
+    FROM TRAITER
+    GROUP BY DATE(dateCollecte), id_point_collecte, id_Type
+    ORDER BY dateCollecte DESC
+    """
+    
+    cursor.execute(query)
+    traiter = cursor.fetchall()
+    
+    listetraiter = []
+    for i in traiter:
+        print(i)
+        # Remplace les indices selon la position des colonnes sélectionnées
+        listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
+    
     cursor.close()
     return listetraiter

@@ -89,7 +89,7 @@ class DechetsForm(FlaskForm):
     # type = SelectField("Type de déchet", choices=[("plastique", "Plastique"), ("verre", "Verre"), ("papier", "Papier"), ("métal", "Métal"), ("organique", "Organique")], validators=[DataRequired()])
     type = SelectField("Type de déchet", choices=get_categories, validators=[DataRequired()])
     # type = RadioField("Type de déchet", choices=get_categories)
-    # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=True, get_label="Nom_Type")
+    # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=False, get_label="Nom_Type", validators=[DataRequired()])
     quantite = DecimalField("Volume du déchet", validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
@@ -98,7 +98,10 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
-        insert_dechet(form.nom.data, form.type.data, form.quantite.data)
+        print(type(form.type.data))
+        dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
+        dechet.insert_dechet()
+        # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
     return render_template("insertion_dechets.html", form=form)
 

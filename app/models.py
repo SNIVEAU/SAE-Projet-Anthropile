@@ -39,6 +39,12 @@ class Dechet:
             self.id_type = id_type
         self.quantite = quantite
 
+    def __init__(self, id_dechet, nom_dechet, id_type, quantite):
+        self.id_dechet = id_dechet
+        self.nom_dechet = nom_dechet
+        self.id_type = id_type
+        self.quantite = quantite
+
     def __repr__(self):
         return self.nom_dechet
     
@@ -55,11 +61,17 @@ def get_id_type_dechet(nom_dechet):
     cursor.close()
     return id_type
 
-def insert_dechet(nom, id_type, quantite):
-    cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (nom, id_type, quantite))
-    mysql.connection.commit()
-    cursor.close()
+class PointDeCollecte:
+    def __init__(self, id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max):
+        self.id_point_de_collecte = id_point_de_collecte
+        self.adresse = adresse
+        self.nom_point = nom_point
+        self.latitude = latitude
+        self.longitude = longitude
+        self.quantite_max = quantite_max
+
+    def __repr__(self):
+        return self.nom_point
 
 def get_points_de_collecte():
     cursor = mysql.connection.cursor()
@@ -67,4 +79,9 @@ def get_points_de_collecte():
     points = cursor.fetchall()
     cursor.close()
     print(points)
-    return points
+    les_points = []
+    for id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max in points:
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max))
+    print(les_points)
+    # return points
+    return les_points

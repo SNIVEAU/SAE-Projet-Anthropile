@@ -34,7 +34,7 @@
       // Récupérer les adresses depuis le serveur (passées depuis Flask)
       var addresses = [
         {% for point in points_de_collecte %}
-          { address: "{{ point[1] }}", name: "{{ point[2] }}" }, // point[1] pour l'adresse, point[2] pour le nom
+          { address: "{{ point.adresse }}", name: "{{ point.nom_point }}" }, // point[1] pour l'adresse, point[2] pour le nom
       {% endfor %}
       ];
 

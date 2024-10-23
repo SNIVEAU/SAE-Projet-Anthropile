@@ -101,3 +101,64 @@ h1 {
     background-color: #0b5c1d;
     scale: 1.03;
 }
+
+/* Styles pour mobile */
+@media (max-width: 768px) {
+    /* Section avec l'image de fond */
+    .hero {
+        height: 50vh; /* Ajustement de la hauteur */
+        padding: 20px;
+        background-position: center;
+        justify-content: center; /* Centrer le contenu */
+    }
+
+    .hero-content {
+        max-width: 100%; /* Prendre toute la largeur disponible */
+        text-align: center; /* Centrage du texte */
+    }
+
+    .hero-content h1 {
+        font-size: 2rem; /* Ajustement de la taille du titre */
+    }
+
+    .hero-content p {
+        font-size: 1rem; /* Ajustement de la taille du texte */
+    }
+
+    /* Style pour les sections avec texte au-dessus des images */
+    section {
+        display: flex;
+        flex-direction: column; /* Empilement vertical du texte et de l'image */
+        align-items: center; /* Centrage des éléments */
+        padding: 20px; /* Réduction du padding global */
+        text-align: center; /* Centrage du texte */
+    }
+
+    .text1, .text2 {
+        margin-bottom: 20px; /* Espacement en bas du texte */
+    }
+
+    h1 {
+        font-size: 24px; /* Ajustement de la taille du titre */
+        margin-bottom: 1rem;
+    }
+
+    .p1 {
+        font-size: 14px; /* Taille du texte réduite */
+        margin-bottom: 1rem;
+    }
+
+    .image1, .image2 {
+        width: 100%; /* Prendre toute la largeur de l'écran */
+        max-width: 350px; /* Limite la taille maximale de l'image */
+        height: auto; /* Maintien des proportions de l'image */
+        margin: 0 auto; /* Centrer les images */
+    }
+
+    /* Style des boutons */
+    .btn {
+        padding: 10px 15px; /* Ajustement des marges du bouton */
+        font-size: 1rem; /* Taille du texte du bouton */
+        margin-top: 15px;
+    }
+}

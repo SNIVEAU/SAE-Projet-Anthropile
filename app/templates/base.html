@@ -8,18 +8,21 @@
 </head>
 <body>
     <header>
-        <img src="static/img/logo.png" alt="Logo de mon site">
-        <nav>
+        <div class="menu-toggle">
+            <img src="../static/img/menu.png" alt="Menu">
+        </div>
+        <img class="logo" src="static/img/logo.png" alt="Logo de mon site">
+        <nav class="menu">
             <ul>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
                 <li><a href="/">Point de collecte</a></li>
-                <li><a href="/">Rapport</a></li>    
+                <li><a href="/">Rapport</a></li>
             </ul>
         </nav>
-        <div>
-            <a class="connexioninscription" href='/'>Se connecter</a>
-            <a class="connexioninscription" href='/'>S'inscrire</a>
+        <div class="auth-buttons">
+            <a class="connexioninscription" href="/">Se connecter</a>
+            <a class="connexioninscription" href="/">S'inscrire</a>
         </div>
     </header>
 
@@ -30,7 +33,7 @@
 
     <footer>
         <div>
-            <p  >BioTrack'in</p>
+            <p>BioTrack'in</p>
             <img src="static/img/logo.png" alt="Logo de mon site">
         </div>
         <div>
@@ -40,13 +43,25 @@
             <p><strong>&copy; 2024 Anthropile - Tous droits réservés</strong></p>
         </div>
         <div>
-            <h2> Membres de l'équipe</h2>
+            <h2>Membres de l'équipe</h2>
             <ul>
                 <li>Nagarajah Niksan</li>
                 <li>Lima Romain</li>
                 <li>Wiciak Alexy</li>
                 <li>Muhamad Zaiinizee Bin Daivin</li>
                 <li>Niveau Samuel</li>
+            </ul>
+        </div>
     </footer>
+
+    <script>
+        // Script pour le menu déroulant
+        const toggleButton = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+
+        toggleButton.addEventListener('click', () => {
+            menu.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>

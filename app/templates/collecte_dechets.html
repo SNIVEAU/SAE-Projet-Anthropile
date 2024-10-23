@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Carte OpenStreetMap avec adresses détaillées{% endblock %}
+
+{% block content %}
+    <div id="mapid"></div>
+
+    <script>
+      // Initialisation de la carte et centrage sur la Guadeloupe
+      var map = L.map('mapid').setView([16.2650, -61.5510], 10); // Guadeloupe
+
+      // Ajout des tuiles OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Fonction pour géocoder une adresse avec Nominatim
+      function geocodeAddress(address, callback) {
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
+          .then(response => response.json())
+          .then(data => {
+            if (data && data.length > 0) {
+              var latLng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+              callback(latLng); // Appel du callback avec les coordonnées obtenues
+            } else {
+              console.log("Adresse non trouvée : " + address);
+            }
+          })
+          .catch(error => console.error('Erreur de géocodage :', error)); // Gestion des erreurs
+      }
+
+      // Liste d'adresses détaillées en Guadeloupe
+      var addresses = [
+        { address: "288 Rue du Moule, Morne-à-l'Eau 97111, Guadeloupe", name: "288 Rue du Moule" },
+        { address: "12 Avenue Paul Lacavé, Pointe-à-Pitre 97110, Guadeloupe", name: "12 Avenue Paul Lacavé" },
+        { address: "Route de la Plage, Sainte-Anne 97180, Guadeloupe", name: "Route de la Plage" },
+        { address: "Rue Lethière, Basse-Terre 97100, Guadeloupe", name: "Rue Lethière" },
+        { address: "Chemin de Dubellay, Le Gosier 97190, Guadeloupe", name: "Chemin de Dubellay" }
+      ];
+
+      // Parcours des adresses et ajout des marqueurs après géocodage
+      addresses.forEach(function(location) {
+        geocodeAddress(location.address, function(latLng) {
+          // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
+          if (latLng) {
+            L.marker(latLng).addTo(map)
+              .bindPopup(location.name) // Ajout d'une popup avec le nom
+              .openPopup();
+          }
+        });
+      });
+    </script>
+
+    <style>
+        #mapid { height: 600px; width: 100%; }
+    </style>
+{% endblock %}

@@ -102,3 +102,6 @@ def insert_dechets():
         return redirect(url_for("home"))
     return render_template("insertion_dechets.html", form=form)
 
+@app.route("/collecte-dechets")
+def collecte_dechets():
+    return render_template("collecte_dechets.html")

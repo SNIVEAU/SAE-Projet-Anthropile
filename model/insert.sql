@@ -75,4 +75,4 @@ VALUES (3, 3, '2024-10-26 10:00:00', 61);
 INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
 VALUES (3, 3, '2024-10-27 10:00:00', 50);
 INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (1, 1, '2024-10-27 10:00:00', 50);
+VALUES (1, 1, '2024-10-27 14:00:00', 50);

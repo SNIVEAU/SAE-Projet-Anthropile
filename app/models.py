@@ -34,4 +34,5 @@ def get_points_de_collecte():
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
     points = cursor.fetchall()
     cursor.close()
+    print(points)
     return points

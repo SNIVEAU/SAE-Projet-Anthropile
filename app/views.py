@@ -104,4 +104,4 @@ def insert_dechets():
 
 @app.route("/collecte-dechets")
 def collecte_dechets():
-    return render_template("collecte_dechets.html")
+    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())

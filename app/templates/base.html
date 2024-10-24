@@ -23,8 +23,13 @@
             </ul>
         </nav>
         <div>
-            <a class="connexioninscription" href='/'>Se connecter</a>
-            <a class="connexioninscription" href='/'>S'inscrire</a>
+            {% if 'nom_Utilisateur' in session %}
+                <span>Bienvenue, {{ session['nom_Utilisateur'] }}!</span>
+                <a class="connexioninscription" href="{{ url_for('logout') }}">Se déconnecter</a>
+            {% else %}
+                <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
+                <a class="connexioninscription" href="{{ url_for('register') }}">S'inscrire</a>
+            {% endif %}
         </div>
     </header>
 
@@ -35,7 +40,7 @@
 
     <footer>
         <div>
-            <p  >BioTrack'in</p>
+            <p>BioTrack'in</p>
             <img src="static/img/logo.png" alt="Logo de mon site">
         </div>
         <div>
@@ -45,13 +50,15 @@
             <p><strong>&copy; 2024 Anthropile - Tous droits réservés</strong></p>
         </div>
         <div>
-            <h2> Membres de l'équipe</h2>
+            <h2>Membres de l'équipe</h2>
             <ul>
                 <li>Nagarajah Niksan</li>
                 <li>Lima Romain</li>
                 <li>Wiciak Alexy</li>
                 <li>Muhamad Zaiinizee Bin Daivin</li>
                 <li>Niveau Samuel</li>
+            </ul>
+        </div>
     </footer>
 </body>
 </html>

@@ -17,3 +17,5 @@ pip install flask-mysqldb
 pip install matplotlib 
 pip install pandas 
 pip install plotly
+pip install flask-login werkzeug
+

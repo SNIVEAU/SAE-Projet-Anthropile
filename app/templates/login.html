@@ -1,28 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}Insertion des déchets{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
-
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="static/login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/login.css">    
+    <title>Connexion</title>
 </head>
 <body>
-    <h1>Login</h1>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="POST" action="/login">
-        <label for="nom_Utilisateur">Nom Utilisateur:</label>
-        <input type="text" id="nom_Utilisateur" name="nom_Utilisateur" required> <br><br>
-        <label for="motdepasse">Mot de passe:</label>
-        <input type="password" id="motdepasse" name="motdepasse" required> <br><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="container">
+        <h1>Connexion</h1>
+        
+        {% if error %}
+            <div>
+                <strong>{{ error }}</strong>
+            </div>
+        {% endif %}
+        
+        <form method="POST" action="{{ url_for('login') }}">
+            {{ form.hidden_tag() }}  <!-- Cette ligne est importante pour CSRF protection -->
+            
+            <div>
+                <label for="nom_utilisateur">{{ form.nom_utilisateur.label }}</label>
+                {{ form.nom_utilisateur(placeholder="Entrez votre nom d'utilisateur") }}
+                {% for error in form.nom_utilisateur.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div>
+                <label for="motdepasse">{{ form.motdepasse.label }}</label>
+                {{ form.motdepasse(placeholder="Entrez votre mot de passe") }}
+                {% for error in form.motdepasse.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <button type="submit">{{ form.submit.label }}</button>
+        </form>
+
+        <p>Vous n'avez pas de compte? <a href="{{ url_for('register') }}">Créez-en un ici!</a></p>
+    </div>
 </body>
 </html>
 {% endblock %}

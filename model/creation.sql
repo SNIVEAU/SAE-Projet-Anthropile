@@ -60,9 +60,9 @@ CREATE TABLE DEPOSER (
 CREATE TABLE TRAITER (
   id_point_collecte INT NOT NULL,
   id_Type       INT NOT NULL,
-  qte_collecte   DECIMAL(10,4),
-  date_collecte DATE,
-  PRIMARY KEY (id_point_collecte, id_Type),
+  dateCollecte DATETIME,
+  qtecollecte   DECIMAL(10,4),
+  PRIMARY KEY (id_point_collecte, id_Type, dateCollecte),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );

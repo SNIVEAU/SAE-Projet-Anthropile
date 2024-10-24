@@ -1,12 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/login.css">    
     <title>Connexion</title>
 </head>
 <body>
-    <div>
+    <div class="container">
         <h1>Connexion</h1>
         
         {% if error %}
@@ -41,3 +47,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

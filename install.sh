@@ -14,4 +14,6 @@ pip install wtforms-sqlalchemy
 pip install mysqlclient  
 pip install PyMySQL
 pip install flask-mysqldb
-
+pip install matplotlib 
+pip install pandas 
+pip install plotly

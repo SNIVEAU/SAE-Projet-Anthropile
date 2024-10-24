@@ -98,7 +98,6 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
-        print(type(form.type.data))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
         dechet.insert_dechet()
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
@@ -108,3 +107,15 @@ def insert_dechets():
 @app.route("/collecte-dechets")
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/statistique-pts-collecte")
+def statistique_pts_collecte():
+    get_graph_dechet()
+    get_graph_qte_dechets_categorie()
+    data_graph_qte_dechets_categorie()
+    # return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
+    return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/api")
+def api():
+    return data_graph_qte_dechets_categorie()

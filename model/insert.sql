@@ -67,6 +67,8 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (1, 1, 5, '2024-01-01');
 INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (2, 2, 15, '2024-01-01');
 INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, 3, 25, '2024-01-01');
+INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (1, 2, 15, '2024-01-01');
+
 
 --INSERTION POUR TESTER LE TRIGGER check_qte_collecte
 --INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, , 50, '2024-01-01');

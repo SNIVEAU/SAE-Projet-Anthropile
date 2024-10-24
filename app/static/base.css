@@ -129,6 +129,15 @@ footer img {
     width: 30%;
 }
 
+footer ul {
+    list-style: none;
+    margin-top: 5px;
+}
+
+footer ul li, footer div > p  {
+    margin-top: 3px;
+}
+
 /* Réactivité pour mobiles */
 @media (max-width: 768px) {
     header {

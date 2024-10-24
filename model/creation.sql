@@ -32,18 +32,18 @@ CREATE TABLE UTILISATEUR (
 
 CREATE TABLE POINT_DE_COLLECTE (
   id_point_collecte INT AUTO_INCREMENT PRIMARY KEY,
-  adresse VARCHAR(42) UNIQUE,
+  adresse VARCHAR(200) UNIQUE,
   nom_pt_collecte VARCHAR(42) UNIQUE,
   pos_x DECIMAL(10,4),
   pos_y DECIMAL(10,4),
-  qte_max INT
+  qte_max DECIMAL(10,4)
 );
 
 CREATE TABLE DECHET (
   id_Dechet  INT AUTO_INCREMENT PRIMARY KEY,
   nom_Dechet VARCHAR(42),
   id_Type INT NOT NULL,
-  qte INT,
+  qte DECIMAL(10,4),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 
@@ -60,9 +60,9 @@ CREATE TABLE DEPOSER (
 CREATE TABLE TRAITER (
   id_point_collecte INT NOT NULL,
   id_Type       INT NOT NULL,
-  qte_collecte   INT,
-  date_collecte DATE,
-  PRIMARY KEY (id_point_collecte, id_Type),
+  dateCollecte DATETIME,
+  qtecollecte   DECIMAL(10,4),
+  PRIMARY KEY (id_point_collecte, id_Type, dateCollecte),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );

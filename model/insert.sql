@@ -30,9 +30,14 @@ INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entrepris
 INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 4', 'utilisateur4@example.com', 282567892, 'password3', NULL, 'Utilisateur');
 
 
-INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 1', 'Nom Point Collecte 1', 12.3456, 78.9012, 100);
-INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 2', 'Nom Point Collecte 2', 23.4567, 89.0123, 200);
-INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 3', 'Nom Point Collecte 3', 34.5678, 90.1234, 300);
+-- INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 1', 'Nom Point Collecte 1', 12.3456, 78.9012, 100);
+-- INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 2', 'Nom Point Collecte 2', 23.4567, 89.0123, 200);
+-- INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 3', 'Nom Point Collecte 3', 34.5678, 90.1234, 300);
+INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES 
+('14 Rue Lethière, Basse-Terre 97100, Guadeloupe', 'Point Collecte A', 15.993210956167616, -61.72562080359923, 400),
+('7 Rue Hyacinthe Bastaraud, Baie-Mahault 97122, Guadeloupe', 'Point Collecte B', 16.237367097712497, -61.58691688829211, 400),
+("D 118, Saint-François 97118, Guadeloupe", 'Point Collecte C', 16.25376888483855, -61.27198821893571, 400);
+
 
 
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 1', 1, 10);
@@ -59,10 +64,17 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 
 
 
-INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (1, 1, 5, '2024-01-01');
-INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (2, 2, 15, '2024-01-01');
-INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, 3, 25, '2024-01-01');
-
---INSERTION POUR TESTER LE TRIGGER check_qte_collecte
---INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, , 50, '2024-01-01');
-
+-- Insertion des données dans la table TRAITER avec un jour entre chaque insertion
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (1, 1, '2024-10-23 10:00:00', 5);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (2, 2, '2024-10-24 10:00:00', 15);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-25 10:00:00', 25);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-26 10:00:00', 61);
+-- Insertion pour tester le trigger check_qte_collecte
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (3, 3, '2024-10-27 10:00:00', 50);
+INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
+VALUES (1, 1, '2024-10-27 14:00:00', 50);

@@ -123,6 +123,11 @@ footer {
 footer div {
     text-align: center;
     margin: 0 15px;
+    margin-right: 150px;
+}
+
+.mid {
+    margin-right: 200px;
 }
 
 footer img {
@@ -209,6 +214,10 @@ footer ul li, footer div > p  {
 
     footer img {
         width: 40%;
+    }
+
+    .mid {
+        margin-right: 0;
     }
 
     footer ul {

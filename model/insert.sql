@@ -62,8 +62,6 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 --INSERTION POUR TESTER LE TRIGGER check_qte_deposee
 --INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (5, 2, 3);
 
-
-
 -- Insertion des données dans la table TRAITER avec un jour entre chaque insertion
 INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
 VALUES (1, 1, '2024-10-23 10:00:00', 5);
@@ -78,3 +76,4 @@ INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte)
 VALUES (3, 3, '2024-10-27 10:00:00', 50);
 INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
 VALUES (1, 1, '2024-10-27 14:00:00', 50);
+

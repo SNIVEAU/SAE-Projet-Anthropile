@@ -5,6 +5,11 @@
 BIOTRACK’IN | Accueil
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
 {% block content %}
 <!-- Section avec l'image de fond, h1 et paragraphe -->
 <section class="hero">
@@ -30,14 +35,14 @@ BIOTRACK’IN | Accueil
 
 <!-- Deuxième section avec image à gauche et texte à droite -->
 <section class="section-with-image-left">
-    <div class="image">
-        <img class="image2" src="../static/img/bouteille_sable2.jpg" alt="Nos produits">
-    </div>
     <div class="text2">
         <h1>Sensibilisation à la Gestion des Déchets</h1>
         <p class="p1">La sensibilisation à la gestion des déchets est primordiale pour encourager les citoyens à adopter des comportements responsables et respectueux de l'environnement. En organisant des campagnes d'information et des ateliers éducatifs, nous pouvons informer la population sur l'importance du tri sélectif, du recyclage et de la réduction des déchets.</p>
         <p class="p1">Il est crucial d'impliquer les écoles, les associations locales et les entreprises pour créer une culture collective de responsabilité environnementale. En favorisant des gestes simples, comme la réduction de l'utilisation de plastiques jetables ou la participation à des journées de nettoyage, nous pouvons ensemble contribuer à un environnement plus sain.</p>
         <a href="#" class="btn">Participer aux actions</a>
+    </div>
+    <div class="image">
+        <img class="image2" src="../static/img/bouteille_sable2.jpg" alt="Nos produits">
     </div>
 </section>
 {% endblock %}

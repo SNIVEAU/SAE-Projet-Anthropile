@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block styles %}
     <link rel="stylesheet" href="static/base.css">
+    {% endblock %}
     <title>{% block title %}Anthropile{% endblock %}</title>
 </head>
 <body>
     <header>
         <div class="menu-toggle">
-            <img src="../static/img/menu.png" alt="Menu">
+            <img src="static/img/menu.png" alt="Menu" />
         </div>
         <img class="logo" src="static/img/logo.png" alt="Logo de mon site">
         <nav class="menu">
             <ul>
+                <div class="menu-header">
+                    <button class="close-menu">
+                        <img src="static/img/close.png" alt="Fermer le menu" />
+                    </button>
+                </div>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
                 <li><a href="/">Point de collecte</a></li>
@@ -55,12 +62,27 @@
     </footer>
 
     <script>
-        // Script pour le menu déroulant
-        const toggleButton = document.querySelector('.menu-toggle');
-        const menu = document.querySelector('.menu');
-
-        toggleButton.addEventListener('click', () => {
+        // Ouvrir/fermer le menu au clic
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            const menu = document.querySelector('nav.menu');
             menu.classList.toggle('active');
+        });
+
+        // Fermer le menu si on clique sur la croix
+        document.querySelector('.close-menu').addEventListener('click', function() {
+            const menu = document.querySelector('nav.menu');
+            menu.classList.remove('active');
+        });
+
+        // Fermer le menu si on clique en dehors
+        document.addEventListener('click', function(event) {
+            const menu = document.querySelector('nav.menu');
+            const menuToggle = document.querySelector('.menu-toggle');
+
+            // Vérifiez si le clic a eu lieu en dehors du menu et du bouton de menu
+            if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                menu.classList.remove('active'); // Ferme le menu
+            }
         });
     </script>
 </body>

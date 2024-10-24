@@ -1,18 +1,59 @@
+/* Styles globaux */
 html, body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #fff;
+    background-color: #f2f2f2;
+    color: #333;
 }
 
-/* Style pour l'en-tête et le positionnement des éléments */
+/* En-tête */
 header {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    padding: 10px 5%;
+    background-color: white;
 }
 
-header img {
-    width: 5%;
+header img.logo {
+    width: 75px;
+    margin-right: 15px;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.menu-toggle img {
+    width: 30px;
+}
+
+/* Navigation */
+header nav {
+    flex: 1;
+}
+
+header nav .menu-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Pousse le bouton de fermeture à droite */
+header nav .close-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none;
+    margin-left: auto;
+}
+
+header nav .close-menu img {
+    width: 20px;
+    margin-right: 10px;
 }
 
 header nav ul {
@@ -26,15 +67,14 @@ header nav ul li {
     margin: 0 15px;
 }
 
-/* Style de base pour les liens de navigation */
 header nav ul li a {
     text-decoration: none;
     color: #333;
-    position: relative;
     padding-bottom: 5px;
+    position: relative;
 }
 
-/* Effet de survol pour les liens de navigation */
+/* Ajout d'un soulignage au survol des liens de navigation */
 header nav ul li a::after {
     content: '';
     position: absolute;
@@ -42,134 +82,27 @@ header nav ul li a::after {
     height: 2px;
     left: 0;
     bottom: 0;
-    background-color: #4CAF50; /* Vert */
+    background-color: #4CAF50;
     transition: width 0.3s ease-in-out;
 }
 
-/* Déclenche l'effet de soulignement vert de gauche à droite */
 header nav ul li a:hover::after {
     width: 100%;
 }
 
-/* Autres styles pour le header */
-header a {
-    margin-left: 15px;
-    text-decoration: none;
-    color: #333;
-}
-
-nav {
-    margin-right: auto;
-}
-
-header div {
-    padding-right: 5%;
-}
-
-a {
-    text-decoration: none;
-    color: #333;
-}
-
-/*************************************/
-
-/* Style pour la section avec l'image de fond */
-.hero {
-    position: relative;
-    height: 75vh;
-    background-image: url('../static/img/banniere_poubelles.jpeg');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding-left: 50px;
-    color: white;
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 900px;
-    text-align: left;
-}
-
-.hero-content .presentation-title {
-    font-size: 3rem;
-    color: white;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.hero-content p {
-    font-size: 1.5rem;
-    color: white;
-}
-
-/* Style pour les sections avec images et texte */
-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 50px 100px;
-}
-
-/* Styles spécifiques aux sections */
-.text1 {
-    margin-right: 10rem;
-}
-
-.text2 {
-    margin-left: 5rem;
-}
-
-.p1 {
-    font-size: 18px;
-    margin-bottom: 1rem;
-}
-
-.image1, .image2 {
-    width: 600px;
-    height: 350px;
-    margin: 3rem 2rem 0;
-}
-
-/* Styles pour les boutons */
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #17280B;
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #0b5c1d;
-    scale: 1.03;
+/* Boutons d'authentification */
+.auth-buttons {
+    margin-left: auto;
 }
 
 .connexioninscription {
+    text-decoration: none;
     border: 2px solid #3e88b9;
     border-radius: 8px;
     padding: 5px 10px;
     color: #3e88b9;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    margin-left: 10px;
 }
 
 .connexioninscription:hover {
@@ -177,212 +110,105 @@ section {
     color: white;
 }
 
+/* Footer */
 footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #0c2910;
     color: white;
-    width: 100%;
+    padding: 20px 5%;
 }
 
 footer div {
+    text-align: center;
     margin: 0 15px;
-}
-
-footer p,
-footer h2,
-footer ul {
-    margin: 0;
-    padding: 0;
-}
-
-footer ul {
-    list-style: none;
-}
-
-footer ul li {
-    margin: 0;
 }
 
 footer img {
     width: 30%;
 }
 
-footer div {
-    text-align: center;
-}
-
-footer div:last-child {
-    padding-right: 10%;
-}
-
-/* Style global */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
-    color: #333;
-}
-
-.insert-title {
-    text-align: center;
-    color: #4CAF50;
-    margin-top: 20px;
-}
-
-form {
-    max-width: 600px;
-    margin: 30px auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Alignement des étiquettes */
-.form-horizontal .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.form-horizontal .form-group label {
-    width: 150px;
-    margin-right: 10px;
-    color: #555;
-}
-
-/* Champs de saisie */
-.form-control {
-    flex-grow: 1;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s;
-    width: 200px;
-}
-
-.form-control:focus {
-    border-color: #4CAF50;
-    outline: none;
-}
-
-/* Bouton de soumission */
-.btn-insert {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.btn-insert:hover {
-    background-color: #45a049;
-}
-
-/* Gestion des erreurs */
-.erreur {
-    color: #d9534f;
-    font-weight: bold;
-}
-
-/* Style des boutons en bas */
-.les-btn {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-/* Media query pour la vue mobile */
+/* Réactivité pour mobiles */
 @media (max-width: 768px) {
     header {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start; /* Aligne les éléments à gauche */
-        padding: 10px;
-        position: relative;
-        z-index: 1;
-        margin-left: 0; /* Suppression de la marge gauche */
+        justify-content: space-between;
     }
 
     .logo {
-        order: 1;
-        width: 75px; /* Taille du logo */
-        margin-right: 10px; /* Espace entre le logo et le bouton menu */
-        z-index: 1;
+        width: 75px;
     }
 
     .menu-toggle {
-        order: 2;
         display: block;
-        cursor: pointer;
-        position: relative;
-        z-index: 2;
     }
 
-    /* Agrandissement de l'image du bouton menu */
-    .menu-toggle img {
-        width: 40px; /* Ajustez cette valeur pour la taille désirée */
-        height: auto; /* Garde les proportions de l'image */
-    }
-
-    /* Cacher les éléments du menu par défaut */
     nav.menu ul {
         display: none;
     }
 
-    /* Styles du menu déroulant actif */
     nav.menu.active ul {
         display: flex;
         flex-direction: column;
         position: absolute;
-        top: 50px; /* Ajustez cette valeur pour le positionnement */
+        top: 60px;
         left: 0;
-        width: 30%;
+        width: 200px;
+        max-width: 250px;
         background-color: white;
-        padding: 5px; /* Réduisez le padding */
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 3;
+        padding: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 30;
+    }
+
+    nav.menu.active .close-menu {
+        display: block;
     }
 
     nav.menu.active ul li {
-        margin: 5px 0; /* Réduisez l'espace entre les éléments */
-        text-align: left; /* Aligne le texte à gauche */
-        font-size: 12px; /* Réduisez encore la taille de la police */
+        margin: 5px 0;
+        text-align: left;
+        font-size: 14px;
+        padding: 5px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
     }
 
-    .auth-buttons {
-        display: flex;
-        order: 3;
-        margin-left: auto; /* Aligne les boutons à droite */
-        z-index: 1;
+    nav.menu.active ul li:hover {
+        background-color: #f0f0f0;
     }
 
-    /* Réduction des tailles des boutons pour mobile */
     .auth-buttons a {
-        padding: 5px 8px; /* Réduire le padding des boutons */
-        font-size: 12px; /* Réduire la taille de la police */
-        margin-left: 5px; /* Espacement entre les boutons */
-        white-space: nowrap; /* Évite que le texte soit coupé sur plusieurs lignes */
+        padding: 5px 8px;
+        font-size: 12px;
+        margin-left: 5px;
+        white-space: nowrap;
     }
-}
 
-/* Assure que le bouton menu est toujours visible en dehors du mode mobile */
-.menu-toggle {
-    display: none; /* Le bouton menu ne s'affiche que sur mobile */
-}
+    /* Styles pour le footer */
+    footer {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+    }
 
-/* Lorsque le mode mobile est activé, le menu-toggle (bouton menu) s'affiche */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
+    footer div {
+        margin: 10px 0;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    footer img {
+        width: 40%;
+    }
+
+    footer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    footer ul li {
+        margin: 10px 0;
     }
 }

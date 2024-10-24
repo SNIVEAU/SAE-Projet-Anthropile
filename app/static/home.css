@@ -1,4 +1,4 @@
-/* Réinitialisation des marges et des paddings */
+/* Réinitialisation des marges et paddings */
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +7,7 @@
 
 /* Style pour la section avec l'image de fond */
 .hero {
-    position: relative; /* Nécessaire pour positionner le pseudo-élément */
+    position: relative;
     height: 75vh;
     background-image: url('../static/img/banniere_poubelles.jpeg');
     background-size: cover;
@@ -15,7 +15,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding-left: 50px;
+    padding-left: 5%;
     color: white;
 }
 
@@ -33,20 +33,19 @@
 .hero-content {
     position: relative;
     z-index: 2;
-    max-width: 900px;
+    max-width: 60%;
     text-align: left;
 }
 
 .hero-content h1 {
-    font-size: 3rem;
+    font-size: 4vw;
     color: white;
     margin-bottom: 10px;
     text-transform: uppercase;
-    white-space: nowrap;
 }
 
 .hero-content p {
-    font-size: 1.5rem;
+    font-size: 1.2vw;
     color: white;
 }
 
@@ -55,49 +54,124 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 50px 100px;
+    padding: 5% 10%;
 }
 
-/* Styles spécifiques aux sections */
-.text1 {
-    margin-right: 10rem;
+.section-with-image-left {
+    flex-direction: row-reverse; /* Image à droite, texte à gauche */
 }
 
-.text2 {
-    margin-left: 5rem;
+.text1, .text2 {
+    width: 50%;
 }
 
-h1 {
+.text1 h1, .text2 h1 {
+    font-size: 2vw;
+    margin-bottom: 1.5rem;
     text-transform: uppercase;
-    font-size: 36px;
-    margin-bottom: 2rem;
+    display: inline-block;
 }
 
 .p1 {
-    font-size: 18px;
+    font-size: 1vw;
     margin-bottom: 1rem;
 }
 
 .image1, .image2 {
-    width: 600px;
-    height: 350px;
-    margin: 3rem 2rem 0;
+    width: 650px;
+    height: auto;
+    margin: 2rem;
 }
 
 /* Styles pour les boutons */
 .btn {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 1rem 2rem;
     margin-top: 20px;
     background-color: #17280B;
     color: white;
     text-decoration: none;
     border-radius: 25px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     transition: background-color 0.3s ease;
 }
 
 .btn:hover {
     background-color: #0b5c1d;
-    scale: 1.03;
 }
+
+/* Styles pour mobile */
+@media (max-width: 768px) {
+    /* Section avec l'image de fond */
+    .hero {
+        height: 50vh;
+        padding: 2%;
+        background-position: left;
+        justify-content: center;
+    }
+
+    .hero-content {
+        max-width: 90%;
+        text-align: left;
+    }
+
+    .hero-content h1 {
+        font-size: 4vw;
+    }
+
+    .hero-content p {
+        font-size: 18px; /* Taille fixe pour les paragraphes */
+    }
+
+    /* Style pour les sections avec texte et images */
+    section {
+        display: block;
+        /*flex-direction: column; /* Aligner le texte au-dessus de l'image */
+        align-items: center;
+        padding: 5%;
+        text-align: center;
+    }
+
+    .text1, .text2 {
+        width: 100%;
+        margin-bottom: 3%;
+    }
+
+    .text1 h1, .text2 h1 {
+        font-size: 24px;
+        margin-bottom: 2%;
+    }
+
+    .p1 {
+        font-size: 16px; /* Taille fixe pour les paragraphes */
+        margin-bottom: 1.5%;
+    }
+
+    /* Correctif pour aligner le texte au-dessus de l'image dans la deuxième section */
+    .section-texte-image {
+        display: flex;
+        flex-direction: column; /* Texte au-dessus de l'image */
+        align-items: center;
+    }
+
+    .section-texte-image img {
+        width: 250px;
+        height: auto;
+        margin: 5% auto; /* Centrer l'image */
+    }
+
+    /* Ajustement de la taille des images pour qu'elles ne soient pas trop grandes */
+    .image1, .image2 {
+        width: 250px;
+        height: auto;
+        margin: 5% auto; /* Centrer l'image */
+    }
+
+    /* Style des boutons */
+    .btn {
+        padding: 2% 4%;
+        font-size: 14px; /* Taille fixe pour les boutons */
+        margin-top: 3%;
+    }
+}
+

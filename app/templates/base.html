@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {%block styles%}
+    {% block styles %}
     <link rel="stylesheet" href="static/base.css">
     {%endblock%}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>     
-
     <title>{% block title %}Anthropile{% endblock %}</title>
 </head>
 <body>
     <header>
-        <img src="static/img/logo.png" alt="Logo de mon site">
-        <nav>
+        <div class="menu-toggle">
+            <img src="static/img/menu.png" alt="Menu" />
+        </div>
+        <img class="logo" src="static/img/logo.png" alt="Logo de mon site">
+        <nav class="menu">
             <ul>
+                <div class="menu-header">
+                    <button class="close-menu">
+                        <img src="static/img/close.png" alt="Fermer le menu" />
+                    </button>
+                </div>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
                 <li><a href="/">Point de collecte</a></li>
-                <li><a href="{{ url_for('rapport') }}">Rapport</a></li>
+                <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
             </ul>
         </nav>
         <div>
@@ -60,5 +67,30 @@
             </ul>
         </div>
     </footer>
+
+    <script>
+        // Ouvrir/fermer le menu au clic
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            const menu = document.querySelector('nav.menu');
+            menu.classList.toggle('active');
+        });
+
+        // Fermer le menu si on clique sur la croix
+        document.querySelector('.close-menu').addEventListener('click', function() {
+            const menu = document.querySelector('nav.menu');
+            menu.classList.remove('active');
+        });
+
+        // Fermer le menu si on clique en dehors
+        document.addEventListener('click', function(event) {
+            const menu = document.querySelector('nav.menu');
+            const menuToggle = document.querySelector('.menu-toggle');
+
+            // Vérifiez si le clic a eu lieu en dehors du menu et du bouton de menu
+            if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                menu.classList.remove('active'); // Ferme le menu
+            }
+        });
+    </script>
 </body>
 </html>

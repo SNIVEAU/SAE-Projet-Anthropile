@@ -1,10 +1,20 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, url_for,session
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+app.secret_key = '3ade9a2f-84da-4b64-8b31-8fc35860d740'
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
-app.config['SECRET_KEY'] = 'c83a8169-f861-4435-ad00-d13f227bc888'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://nagarajah:nagarajah@servinfo-maria/DBnagarajah'
 
-db = SQLAlchemy(app)
+#Mysql configuration
+
+app.config['MYSQL_HOST'] = 'servinfo-maria'
+app.config['MYSQL_USER'] = 'niveau'
+app.config['MYSQL_PASSWORD'] = 'niveau'
+app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
+
+mysql=MySQL(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)

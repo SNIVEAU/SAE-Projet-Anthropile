@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+</head>
+<body>
+    <div>
+        <h1>Connexion</h1>
+        
+        {% if error %}
+            <div>
+                <strong>{{ error }}</strong>
+            </div>
+        {% endif %}
+        
+        <form method="POST" action="{{ url_for('login') }}">
+            {{ form.hidden_tag() }}  <!-- Cette ligne est importante pour CSRF protection -->
+            
+            <div>
+                <label for="nom_utilisateur">{{ form.nom_utilisateur.label }}</label>
+                {{ form.nom_utilisateur(placeholder="Entrez votre nom d'utilisateur") }}
+                {% for error in form.nom_utilisateur.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div>
+                <label for="motdepasse">{{ form.motdepasse.label }}</label>
+                {{ form.motdepasse(placeholder="Entrez votre mot de passe") }}
+                {% for error in form.motdepasse.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <button type="submit">{{ form.submit.label }}</button>
+        </form>
+
+        <p>Vous n'avez pas de compte? <a href="{{ url_for('register') }}">Créez-en un ici!</a></p>
+    </div>
+</body>
+</html>

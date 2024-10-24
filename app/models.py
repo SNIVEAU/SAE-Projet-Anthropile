@@ -104,23 +104,14 @@ def get_traiter():
     cursor.close()
     return traiter
 
-def get_traiter_sort_by_date():
+def get_traiter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    
-    query = """
-    SELECT * FROM TRAITER
-    GROUP BY DATE(dateCollecte)
-    ORDER BY dateCollecte DESC
-    """
-    
-    cursor.execute(query)
+    cursor.execute("SELECT * FROM TRAITER WHERE DATE(dateCollecte) = %s", (date_collecte,))
     traiter = cursor.fetchall()
-    
+    cursor.close()
     listetraiter = []
     for i in traiter:
         listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
-    
-    cursor.close()
     return listetraiter
 
 def get_traiter_sort_by_date():

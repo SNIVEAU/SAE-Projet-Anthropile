@@ -1,7 +1,6 @@
 DELETE FROM DEPOSER;
 DELETE FROM TRAITER;
 DELETE FROM DECHET;
-DELETE FROM COLLECTE;
 DELETE FROM POINT_DE_COLLECTE;
 DELETE FROM UTILISATEUR;
 DELETE FROM ENTREPRISE;
@@ -11,7 +10,6 @@ ALTER TABLE CATEGORIEDECHET AUTO_INCREMENT = 1;
 ALTER TABLE ENTREPRISE AUTO_INCREMENT = 1;
 ALTER TABLE UTILISATEUR AUTO_INCREMENT = 1;
 ALTER TABLE POINT_DE_COLLECTE AUTO_INCREMENT = 1;
-ALTER TABLE COLLECTE AUTO_INCREMENT = 1;
 ALTER TABLE DECHET AUTO_INCREMENT = 1;
 ALTER TABLE DEPOSER AUTO_INCREMENT = 1;
 ALTER TABLE TRAITER AUTO_INCREMENT = 1;
@@ -25,22 +23,16 @@ INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise A');
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise B');
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise C');
 
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise) VALUES ('Utilisateur 1', 'utilisateur1@example.com', 1234567890, 'password1', 1);
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise) VALUES ('Utilisateur 2', 'utilisateur2@example.com', 1234567891, 'password2', 2);
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise) VALUES ('Utilisateur 3', 'utilisateur3@example.com', 1234567892, 'password3', 3);
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 1', 'utilisateur1@example.com', 1234567890, 'password1', 1, 'Administrateur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 2', 'utilisateur2@example.com', 1234567891, 'password2', 2, 'Visiteur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 3', 'utilisateur3@example.com', 1234567892, 'password3', 3, 'Utilisateur');
 
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise) VALUES ('Utilisateur 4', 'utilisateur4@example.com', 282567892, 'password3', NULL);
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 4', 'utilisateur4@example.com', 282567892, 'password3', NULL, 'Utilisateur');
 
 
-INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 1', 12.3456, 78.9012, 100);
-INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 2', 23.4567, 89.0123, 200);
-INSERT INTO POINT_DE_COLLECTE (Adresse, pos_x, pos_y, qte_max) VALUES ('Adresse 3', 34.5678, 90.1234, 300);
-
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-01-01');
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-02-01');
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-03-01');
-
-INSERT INTO COLLECTE (Date_Collecte) VALUES ('2024-04-01');
+INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 1', 'Nom Point Collecte 1', 12.3456, 78.9012, 100);
+INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 2', 'Nom Point Collecte 2', 23.4567, 89.0123, 200);
+INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 3', 'Nom Point Collecte 3', 34.5678, 90.1234, 300);
 
 
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 1', 1, 10);
@@ -67,12 +59,10 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 
 
 
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (1, 1, 1, 5);
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (2, 2, 2, 15);
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 3, 3, 25);
-
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 4, 3, 61);
+INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (1, 1, 5, '2024-01-01');
+INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (2, 2, 15, '2024-01-01');
+INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, 3, 25, '2024-01-01');
 
 --INSERTION POUR TESTER LE TRIGGER check_qte_collecte
-INSERT INTO TRAITER (id_point_collecte, id_Collecte, id_Type, qtecollecte) VALUES (3, 4, 3, 50);
+--INSERT INTO TRAITER (id_point_collecte, id_Type, qte_collecte, date_collecte) VALUES (3, , 50, '2024-01-01');
 

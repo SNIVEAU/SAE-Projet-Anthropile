@@ -1,14 +1,20 @@
 from .app import *
 from flask import render_template, url_for, redirect
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField
+from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired,Email,Length,Regexp
 from flask_login import login_required
 from app.models import *
 from sqlalchemy import func
 
-
+class UtilisateurForm(FlaskForm):
+    nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
+    email = StringField("E-mail", validators=[DataRequired(), Email()])
+    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(max=15), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
+    motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
+    entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
+    submit = SubmitField("Ajouter")
 @app.route("/")
 def home():
 
@@ -17,70 +23,53 @@ def home():
     else:
         return render_template("home.html")
 
+class LoginForm(FlaskForm):
+    nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
+    motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
+    submit = SubmitField("Se connecter")
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
-    if request.method == 'POST':
-        username = request.form['nom_Utilisateur']
-        print(username)
-        pwd = request.form['motdepasse']
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT nom_Utilisateur, motdepasse FROM UTILISATEUR WHERE nom_Utilisateur = %s", [username])
-        user = cur.fetchone()
-        cur.close()
-
-        if user and pwd == user[1]:
-            session['nom_Utilisateur'] = user[0]
+    form = LoginForm()
+    if form.validate_on_submit():
+        existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
+        mdp_entre = form.motdepasse.data
+        if existing_user and mdp_entre == get_motdepasse(existing_user[0]):
+            # Si l'utilisateur existe et que le mot de passe est correct
+            session['nom_Utilisateur'] = form.nom_utilisateur.data
             return redirect(url_for('home'))
         else:
-            return render_template('login.html', error='Invalid username or password') 
+            # Mot de passe ou nom d'utilisateur incorrect
+            return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
+    
+    # Si la méthode est GET, on retourne le formulaire de connexion
+    return render_template('login.html', form=form)
 
-    return render_template('login.html')
+   
+
        
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        # Récupération des données du formulaire
-        nom_utilisateur = request.form['nom_Utilisateur']
-        mail = request.form['mail']
-        numtel = request.form['numtel']
-        motdepasse = request.form['motdepasse']
-        id_entreprise = request.form['id_Entreprise']
-        
-        # Vérifier si l'utilisateur existe déjà
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT nom_Utilisateur FROM UTILISATEUR WHERE nom_Utilisateur = %s", [nom_utilisateur])
-        existing_user = cur.fetchone()
-        
+    form = UtilisateurForm()
+    if form.validate_on_submit():
+        existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
-            cur.close()
-            return render_template('register.html', error="Le nom d'utilisateur est déjà pris")
-       
+            return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
+
         # Insertion dans la base de données
-        cur.execute("INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise) VALUES (%s, %s, %s, %s, %s)", 
-                    (nom_utilisateur, mail, numtel, motdepasse, id_entreprise))
-        mysql.connection.commit()
-        cur.close()
-        
-        # Enregistrer l'utilisateur dans la session après l'inscription
-        session['nom_Utilisateur'] = nom_utilisateur
-        
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, form.motdepasse.data, form.entreprise.data, "utilisateur")
         # Rediriger vers la page d'accueil après inscription réussie
+        session['nom_Utilisateur'] = form.nom_utilisateur.data
         return redirect(url_for('home'))
     
-    # Si la méthode est GET, afficher la page d'inscription
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @app.route('/logout')
 def logout():
     session.pop('nom_Utilisateur', None)
     return redirect(url_for('home'))
-
-
-    return render_template("home.html",)
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
@@ -101,4 +90,3 @@ def insert_dechets():
         insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
     return render_template("insertion_dechets.html", form=form)
-

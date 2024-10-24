@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%block styles%}
     <link rel="stylesheet" href="static/base.css">
+    {%endblock%}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>     
+
     <title>{% block title %}Anthropile{% endblock %}</title>
 </head>
 <body>
@@ -16,7 +19,7 @@
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
                 <li><a href="/">Point de collecte</a></li>
-                <li><a href="/">Rapport</a></li>    
+                <li><a href="{{ url_for('rapport') }}">Rapport</a></li>
             </ul>
         </nav>
         <div>

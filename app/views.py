@@ -1,5 +1,5 @@
 from .app import *
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, send_file
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField
 from wtforms_sqlalchemy.fields import QuerySelectField
@@ -7,6 +7,8 @@ from wtforms.validators import DataRequired
 from flask_login import login_required
 from app.models import *
 from sqlalchemy import func
+from io import BytesIO
+from fpdf import FPDF
 
 
 @app.route("/")
@@ -107,4 +109,51 @@ def insert_dechets():
 
 @app.route("/collecte-dechets")
 def collecte_dechets():
-    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())@app.route("/rapport")
+def rapport():
+    traiter = get_traiter_sort_by_date()
+    return render_template("rapport.html", traiter=traiter[:10])
+
+
+@app.route('/download_pdf/<date_collecte>')
+def download_pdf(date_collecte):
+    # Récupérer les données pour cette date
+    traiter_list = get_traiter_by_date(date_collecte)
+
+    if not traiter_list:
+        return "Aucune collecte trouvée pour cette date."
+
+    # Créer un PDF avec les données récupérées
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 12)
+
+    # Titre du PDF
+    pdf.cell(200, 10, f"Rapport de collecte pour le {date_collecte}", ln=True, align='C')
+
+    # Ajouter les en-têtes de table
+    pdf.ln(10)
+    pdf.set_font('Arial', 'B', 10)
+    pdf.cell(40, 10, 'Point de Collecte', 1)
+    pdf.cell(40, 10, 'Type de Dechet', 1)
+    pdf.cell(40, 10, 'Date Collecte', 1)
+    pdf.cell(40, 10, 'Quantité Collectée (kg)', 1)
+    pdf.ln()
+
+    # Ajouter les données dans le PDF
+    pdf.set_font('Arial', '', 10)
+    for traiter in traiter_list:
+        pdf.cell(40, 10, str(traiter.id_point_collecte), 1)  # id_point_collecte
+        pdf.cell(40, 10, str(traiter.id_Type), 1)  # id_Type
+        pdf.cell(40, 10, str(traiter.dateCollecte), 1)  # dateCollecte
+        pdf.cell(40, 10, str(traiter.qtecollecte), 1)  # qtecollecte
+        pdf.ln()
+
+    # Sauvegarder le PDF dans un buffer en mémoire
+    pdf_output = BytesIO()
+    pdf_output.write(pdf.output(dest='S').encode('latin1'))
+    pdf_output.seek(0)
+
+    # Envoyer le fichier PDF au client
+    return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
+

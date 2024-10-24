@@ -109,7 +109,8 @@ def insert_dechets():
 
 @app.route("/collecte-dechets")
 def collecte_dechets():
-    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())@app.route("/rapport")
+    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+@app.route("/rapport")
 def rapport():
     traiter = get_traiter_sort_by_date()
     return render_template("rapport.html", traiter=traiter[:10])

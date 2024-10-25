@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Statistique de collecte{% endblock %}
+
+{% block content %}
+{% for pts in points_de_collecte %}
+<p>{{ pts.nom_point }}</p>
+{% endfor %}
+<img src="{{ url_for('static', filename='img/graph_dechets.png') }}" alt="">
+<img src="{{ url_for('static', filename='img/graph_qte_dechets_categorie.png') }}" alt="">
+
+<h1>Quantité de Déchets par Catégorie</h1>
+<canvas id="dechetChart" width="400" height="200"></canvas>
+
+<script>
+    // Generate random colors for each waste type
+    function getRandomColor() {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16); // Random hex color
+    }
+
+    // Fetch data from Flask API and render chart
+    fetch('/api')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('dechetChart').getContext('2d');
+
+            const datasets = [];
+            const wasteTypes = {};
+
+            // Process data
+            data.details.forEach((categoryDetails, categoryIndex) => {
+                categoryDetails.forEach(dechet => {
+                    if (!wasteTypes[dechet.nom]) {
+                        wasteTypes[dechet.nom] = {
+                            label: dechet.nom,
+                            backgroundColor: getRandomColor(),
+                            data: Array(data.categories.length).fill(0)
+                        };
+                        datasets.push(wasteTypes[dechet.nom]);
+                    }
+                    wasteTypes[dechet.nom].data[categoryIndex] = dechet.quantite;
+                });
+            });
+
+            // Create the stacked bar chart
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.categories,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, stacked: true },
+                        x: { stacked: true }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    const dataset = tooltipItem.dataset;
+                                    return `${dataset.label}: ${dataset.data[tooltipItem.dataIndex]} unités`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+</script>
+{% endblock %}

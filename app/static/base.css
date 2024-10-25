@@ -4,6 +4,7 @@ html, body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
+    overflow-x: hidden;
     color: #333;
 }
 
@@ -74,25 +75,67 @@ header nav ul li a {
     position: relative;
 }
 
-/* Ajout d'un soulignage au survol des liens de navigation */
+/* Soulignement animé au survol des liens de navigation */
 header nav ul li a::after {
     content: '';
     position: absolute;
     width: 0;
-    height: 2px;
+    height: 2px; /* Épaisseur de la ligne */
     left: 0;
     bottom: 0;
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Couleur du soulignement */
     transition: width 0.3s ease-in-out;
 }
 
 header nav ul li a:hover::after {
-    width: 100%;
+    width: 100%; /* Animer l'extension de la ligne sous l'élément */
 }
 
-/* Boutons d'authentification */
-.auth-buttons {
-    margin-left: auto;
+
+/* Style pour les sections avec images et texte */
+section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 100px;
+}
+
+/* Styles spécifiques aux sections */
+.text1 {
+    margin-right: 10rem;
+}
+
+.text2 {
+    margin-left: 5rem;
+}
+
+.p1 {
+    font-size: 18px;
+    margin-bottom: 1rem;
+}
+
+.image1, .image2 {
+    width: 600px;
+    height: 350px;
+    margin: 3rem 2rem 0;
+}
+
+/* Styles pour les boutons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #17280B;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0b5c1d;
+    scale: 1.03;
 }
 
 .connexioninscription {
@@ -117,6 +160,7 @@ footer {
     justify-content: space-between;
     background-color: #0c2910;
     color: white;
+    width: 100%;
     padding: 20px 5%;
 }
 

@@ -58,7 +58,7 @@ section {
 }
 
 .section-with-image-left {
-    flex-direction: row-reverse; /* Image à droite, texte à gauche */
+    flex-direction: row-reverse;
 }
 
 .text1, .text2 {
@@ -102,7 +102,6 @@ section {
 
 /* Styles pour mobile */
 @media (max-width: 768px) {
-    /* Section avec l'image de fond */
     .hero {
         height: 50vh;
         padding: 2%;
@@ -120,21 +119,23 @@ section {
     }
 
     .hero-content p {
-        font-size: 18px; /* Taille fixe pour les paragraphes */
+        font-size: 18px;
     }
 
-    /* Style pour les sections avec texte et images */
     section {
         display: block;
-        /*flex-direction: column; /* Aligner le texte au-dessus de l'image */
         align-items: center;
         padding: 5%;
         text-align: center;
     }
 
     .text1, .text2 {
-        width: 100%;
-        margin-bottom: 3%;
+        width: 90%;
+        margin: 0 auto 3%;
+    }
+
+    .text2 {
+        margin-right: 5%;
     }
 
     .text1 h1, .text2 h1 {
@@ -143,34 +144,32 @@ section {
     }
 
     .p1 {
-        font-size: 16px; /* Taille fixe pour les paragraphes */
+        font-size: 16px;
         margin-bottom: 1.5%;
     }
 
-    /* Correctif pour aligner le texte au-dessus de l'image dans la deuxième section */
     .section-texte-image {
         display: flex;
-        flex-direction: column; /* Texte au-dessus de l'image */
+        flex-direction: column; 
         align-items: center;
     }
 
     .section-texte-image img {
         width: 250px;
         height: auto;
-        margin: 5% auto; /* Centrer l'image */
+        margin: 5% auto;
     }
 
-    /* Ajustement de la taille des images pour qu'elles ne soient pas trop grandes */
     .image1, .image2 {
         width: 250px;
         height: auto;
-        margin: 5% auto; /* Centrer l'image */
+        margin: 5% auto;
     }
 
     /* Style des boutons */
     .btn {
         padding: 2% 4%;
-        font-size: 14px; /* Taille fixe pour les boutons */
+        font-size: 14px;
         margin-top: 3%;
     }
 }

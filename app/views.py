@@ -4,6 +4,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired,Email,Length,Regexp
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from flask_login import login_required
 from app.models import *
 from sqlalchemy import func
@@ -13,7 +15,7 @@ from fpdf import FPDF
 class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
     email = StringField("E-mail", validators=[DataRequired(), Email()])
-    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(max=15), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
+    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
     entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
     submit = SubmitField("Ajouter")
@@ -35,10 +37,16 @@ def login():
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
         mdp_entre = form.motdepasse.data
-        if existing_user and mdp_entre == get_motdepasse(existing_user[0]):
+        nom_user = form.nom_utilisateur.data
+        if existing_user :
+            hashed_password = get_motdepasse(existing_user[0])
+            if check_password_hash(hashed_password,mdp_entre):
             # Si l'utilisateur existe et que le mot de passe est correct
-            session['nom_Utilisateur'] = form.nom_utilisateur.data
-            return redirect(url_for('home'))
+                session['nom_Utilisateur'] = nom_user
+                return redirect(url_for('home'))
+            else:
+            # Mot de passe ou nom d'utilisateur incorrect
+                return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
         else:
             # Mot de passe ou nom d'utilisateur incorrect
             return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
@@ -60,13 +68,23 @@ def register():
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
 
-        # Insertion dans la base de données
-        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, form.motdepasse.data, form.entreprise.data, "utilisateur")
-        # Rediriger vers la page d'accueil après inscription réussie
+        # Hacher le mot de passe avant de l'insérer dans la base de données
+        hashed_password = generate_password_hash(form.motdepasse.data)
+        print("c'est le mot de passe hashed, longeur")
+        print(len(hashed_password))
+        # print("c'est le mot de passe déhashed")
+        # deashed_password = check_password_hash(hashed_password)
+        # print(deashed_password)
+
+        # Insertion dans la base de données avec le mot de passe haché
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
+
+        # Stocker le nom d'utilisateur dans la session après une inscription réussie
         session['nom_Utilisateur'] = form.nom_utilisateur.data
         return redirect(url_for('home'))
     
     return render_template('register.html', form=form)
+
 
 @app.route('/logout')
 def logout():
@@ -89,7 +107,6 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
-        print(type(form.type.data))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
         dechet.insert_dechet()
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
@@ -99,6 +116,19 @@ def insert_dechets():
 @app.route("/collecte-dechets")
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/statistique-pts-collecte")
+def statistique_pts_collecte():
+    get_graph_dechet()
+    get_graph_qte_dechets_categorie()
+    data_graph_qte_dechets_categorie()
+    # return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
+    return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/api")
+def api():
+    return data_graph_qte_dechets_categorie()
+
 @app.route("/rapport")
 def rapport():
     traiter = get_traiter_sort_by_date()

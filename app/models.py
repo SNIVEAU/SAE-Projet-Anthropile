@@ -292,7 +292,6 @@ def get_motdepasse(nom_utilisateur):
     cursor.close()
     return motdepasse[0] if motdepasse else None  # Retourne None si pas d'utilisateur trouvé
 
-
 def data_graph_qte_dechets_cat_pts_collecte():
     cursor = mysql.connection.cursor()
     cursor.execute("""
@@ -315,4 +314,10 @@ def data_graph_qte_dechets_cat_pts_collecte():
 
     return jsonify(data)
 
+def get_quantite_courante(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT IFNULL(SUM(qte),0) FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    quantite_courante = cursor.fetchone()
+    cursor.close()
+    return quantite_courante[0]
 

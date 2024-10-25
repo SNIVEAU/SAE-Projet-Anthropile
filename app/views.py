@@ -185,3 +185,10 @@ def download_pdf(date_collecte):
     # Envoyer le fichier PDF au client
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
+@app.route("/details/<id>")
+def detaille(id):
+    points_de_collecte = get_points_de_collecte()
+    for pt in points_de_collecte:
+        if pt.id_point_de_collecte == int(id):
+            return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)))
+    return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())

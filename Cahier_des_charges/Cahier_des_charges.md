@@ -6,19 +6,21 @@
 L'entreprise **Anthropile** cherche à améliorer la gestion des biodéchets en Guadeloupe en développant une application dédiée. Les biodéchets, issus de la cuisine, du jardinage ou d'activités professionnelles, peuvent être valorisés via des procédés comme le compostage ou la méthanisation. L'objectif est d'optimiser la collecte de ces déchets afin de réduire les coûts logistiques et améliorer l'efficacité du recyclage.
 
 ### 1.2 **Objectifs de l'application**
-- **Suivre les flux** de biodéchets produits par les particuliers et les entreprises.
-- **Optimiser la collecte** en fonction des volumes et des fréquences de génération.
-- **Planifier les tournées de collecte** de manière plus efficace.
-- **Classer les biodéchets** en catégories pour orienter la collecte vers les filières de traitement appropriées.
+- Permettre aux utilisateurs de pouvoir informer de leur déchet déposer
+- Permettre aux dirigeants de pouvoir mieux optimiser leur tournée 
+
+- Permettre une classification des déchets
+
+- Prévoir les prochaines tournées
+
 
 ## 2. **Fonctionnalités principales**
 
 ### 2.1 **Enregistrement des utilisateurs**
 - Gestion des comptes utilisateurs : particuliers et entreprises.
-- Collecte d’informations telles que : nom, adresse, type de biodéchets générés, volume estimé, fréquence souhaitée pour la collecte.
-
+- Permettre aux administrateurs de gérer les entreprises et les utilisateurs 
 ### 2.2 **Suivi des quantités de biodéchets**
-- Saisie manuelle des quantités par les utilisateurs à travers une interface simple.
+- Saisie manuelle des quantités par les utilisateurs à travers une interface simple ou ils doivent renseigner le type de déchets ainsi que la quantité qui lui est associée.
 - Intégration possible de **capteurs connectés** pour une saisie automatique des quantités à l’avenir.
 
 ### 2.3 **Tableau de bord pour visualisation des flux**
@@ -32,7 +34,7 @@ L'entreprise **Anthropile** cherche à améliorer la gestion des biodéchets en 
 - **Planification des tournées** optimisée en fonction des données collectées, pour améliorer les trajets et réduire les coûts.
 
 ### 2.5 **Notifications**
-- Envoi de **notifications** pour informer les utilisateurs des prochaines collectes prévues selon les données saisies (fréquences ajustées dynamiquement).
+- Envoi de **notifications** (possiblement par mail) pour informer les utilisateurs des prochaines collectes prévues selon les données saisies (fréquences ajustées dynamiquement).
 - Rappel aux utilisateurs pour saisir les quantités de biodéchets en temps opportun.
 
 ## 3. **Fonctionnalités secondaires**
@@ -42,7 +44,7 @@ L'entreprise **Anthropile** cherche à améliorer la gestion des biodéchets en 
 - Suggestions automatiques pour ajuster les itinéraires et fréquences de collecte basées sur les données historiques.
 
 ### 3.2 **Rapports et statistiques**
-- Génération de **rapports** pour permettre aux utilisateurs de voir la répartition des types de biodéchets qu'ils génèrent.
+- Génération de **rapports** sous format pdf pour permettre aux utilisateurs de voir la répartition des types de biodéchets qu'ils génèrent.
 - **Analyse des flux** pour améliorer l’efficacité des processus de recyclage ou de traitement.
 
 ### 3.3 **Catégorisation des biodéchets**
@@ -54,11 +56,11 @@ L'entreprise **Anthropile** cherche à améliorer la gestion des biodéchets en 
 
 ### 4.1 **Technologies à utiliser**
 - Développement de l’application mobile en Flask
-- Utilisation de bases de données telle que **MySQL** pour stocker les informations (utilisateurs, biodéchets, tournées).
-- **Google Maps API** pour la gestion de la cartographie des points de collecte.
+- Utilisation de bases de données stockés en MySQL pour stocker les informations (utilisateurs, biodéchets, tournées).
+- Utilisation d'une API afin de gérer la cartographie par l'utilisateur
 
 ### 4.2 **Sécurité et authentification**
-- Authentification des utilisateurs avec un système sécurisé.
+- Authentification des utilisateurs avec un système de création de compte avec des mots de passes chiffrés
 - Gestion des rôles : accès restreint à certaines fonctionnalités (gestion des tournées, visualisation des flux) pour les administrateurs et certaines entreprises.
 
 ## 5. **Ergonomie et interface utilisateur**
@@ -75,5 +77,5 @@ L'entreprise **Anthropile** cherche à améliorer la gestion des biodéchets en 
 ## 6. **Délais**
 
 ### 6.1 **Développement**
-- Durée estimée du développement : **90 heures**.
+- Durée estimée du développement : 3 semaine
 - Intégration des tests utilisateurs et corrections avant le déploiement final.

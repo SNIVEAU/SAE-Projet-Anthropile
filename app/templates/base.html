@@ -24,9 +24,9 @@
                         <img src="static/img/close.png" alt="Fermer le menu" />
                     </button>
                 </div>
-                <li><a href="/">Accueil</a></li>
+                <li><a href="{{ url_for('home') }}">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
-                <li><a href="/">Point de collecte</a></li>
+                <li><a href="{{ url_for('collecte_dechets') }}">Points de collecte</a></li>
                 <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
             </ul>
         </nav>

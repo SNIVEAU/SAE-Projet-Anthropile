@@ -96,6 +96,33 @@ a {
     color: white;
 }
 
+header nav ul li a {
+    position: relative;
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px; /* Ajuste la position verticale selon tes besoins */
+    width: 0;
+    height: 2px; /* Épaisseur de la ligne */
+    background-color: #1b9410; /* Couleur de la ligne */
+    transition: width 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #000000; /* Change la couleur du texte au survol */
+}
+
+header nav ul li a:hover::after {
+    width: 100%; /* Étend la ligne sous l'élément */
+}
+
+
 /* Style pour les sections avec images et texte */
 section {
     display: flex;
@@ -112,12 +139,6 @@ section {
 .text2 {
     margin-left: 5rem;
 }
-
-/* h1 {
-    text-transform: uppercase;
-    font-size: 36px;
-    margin-bottom: 2rem;
-} */
 
 .p1 {
     font-size: 18px;
@@ -154,13 +175,11 @@ section {
     padding: 5px 10px;
     color: #3e88b9;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    /* Add transition for smooth effect */
 }
 
 .connexioninscription:hover {
     background-color: #3e88b9;
     color: white;
-    /* border-color: white; */
 }
 
 footer {
@@ -170,7 +189,6 @@ footer {
     background-color: #0c2910;
     color: white;
     width: 100%;
-    /* Ensure footer spans full width */
 }
 
 footer div {

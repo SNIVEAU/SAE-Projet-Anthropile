@@ -24,7 +24,7 @@ CREATE TABLE UTILISATEUR (
   nom_Utilisateur VARCHAR(42),
   mail VARCHAR(42),
   numtel INT,
-  motdepasse VARCHAR(42),
+  motdepasse VARCHAR(255),
   id_Entreprise INT,
   nom_role varchar(42),
   FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)

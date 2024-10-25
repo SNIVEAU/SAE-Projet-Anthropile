@@ -15,7 +15,7 @@
         <div class="menu-toggle">
             <img src="static/img/menu.png" alt="Menu" />
         </div>
-        <img class="logo" src="static/img/logo.png" alt="Logo de mon site">
+        <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
         <nav class="menu">
             <ul>
                 <div class="menu-header">
@@ -25,7 +25,7 @@
                 </div>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/">Tableau de bord</a></li>
-                <li><a href="/">Point de collecte</a></li>
+                <li><a href="{{ url_for('collecte_dechets') }}">Point de collecte</a></li>
                 <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
             </ul>
         </nav>
@@ -48,7 +48,7 @@
     <footer>
         <div>
             <p>BioTrack'in</p>
-            <img src="static/img/logo.png" alt="Logo de mon site">
+            <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
         </div>
         <div>
             <p>Contacts</p>

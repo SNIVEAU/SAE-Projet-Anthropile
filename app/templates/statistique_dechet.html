@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+{% endblock %}
+
 {% block title %}Statistique sur les déchets{% endblock %}
 
 {% block content %}
@@ -64,17 +69,4 @@
         })
         .catch(error => console.error('Error fetching data:', error));
 </script>
-<style>
-    .graph {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    canvas {
-        max-width: 800px;
-        max-height: 400px;
-    }
-</style>
 {% endblock %}

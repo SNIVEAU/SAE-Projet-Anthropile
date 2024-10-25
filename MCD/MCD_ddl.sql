@@ -48,7 +48,8 @@ CREATE TABLE POINT_DE_COLLECTE (
 CREATE TABLE TOURNEE (
   PRIMARY KEY (id_Tournee),
   id_Tournee    VARCHAR(42) NOT NULL,
-  date_collecte VARCHAR(42)
+  date_collecte DATETIME,
+  duree         INT
 );
 
 CREATE TABLE UTILISATEUR (

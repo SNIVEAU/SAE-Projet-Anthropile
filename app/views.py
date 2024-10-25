@@ -117,17 +117,25 @@ def insert_dechets():
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
+@app.route("/statistique-dechets")
+def statistique_dechet():
+    # get_graph_dechet()
+    # get_graph_qte_dechets_categorie()
+    # data_graph_qte_dechets_categorie()
+    # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+    return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/data/dechets")
+def statistique_dechets():
+    return data_graph_qte_dechets_categorie()
+
 @app.route("/statistique-pts-collecte")
 def statistique_pts_collecte():
-    get_graph_dechet()
-    get_graph_qte_dechets_categorie()
-    data_graph_qte_dechets_categorie()
-    # return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
-    return render_template("statistique_collecte.html", points_de_collecte=get_points_de_collecte())
+    return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
 
-@app.route("/api")
-def api():
-    return data_graph_qte_dechets_categorie()
+@app.route("/data/graph-pts-collecte")
+def data_graph_pts_collecte():
+    return data_graph_qte_dechets_cat_pts_collecte()
 
 @app.route("/rapport")
 def rapport():

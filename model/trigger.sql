@@ -57,7 +57,7 @@ DELIMITER ;
 -- Trigger pour vérifier que la quantité d'une collecte ne dépasse pas la quantité entière categorisé par le type
 DELIMITER |
 CREATE OR REPLACE TRIGGER check_qte_collecte
-BEFORE INSERT ON TRAITER
+BEFORE INSERT ON COLLECTER
 FOR EACH ROW
 BEGIN
   DECLARE max_qte INT;
@@ -65,10 +65,10 @@ BEGIN
   DECLARE current_qte INT;
   
   SELECT IFNULL(SUM(qte),0) INTO current_qte
-  FROM POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET
+  FROM POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET 
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
-  IF (current_qte > NEW.qte_collecte) THEN
+  IF (current_qte > NEW.qtecollecte) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mes;
   END IF;
 
@@ -78,7 +78,7 @@ DELIMITER ;
 
 DELIMITER |
 CREATE OR REPLACE TRIGGER check_qte_collecte
-BEFORE UPDATE ON TRAITER
+BEFORE UPDATE ON COLLECTER
 FOR EACH ROW
 BEGIN
   DECLARE max_qte INT;
@@ -89,7 +89,7 @@ BEGIN
   FROM POINT_DE_COLLECTE natural join DEPOSER natural join DECHET
   where id_point_collecte = NEW.id_point_collecte and id_Type=NEW.id_Type;
   
-  IF (current_qte > NEW.qte_collecte) THEN
+  IF (current_qte > NEW.qtecollecte) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mes;
   END IF;
 
@@ -126,4 +126,36 @@ BEGIN
 END |
 DELIMITER ;
 
-select quantite_point_collecte_filtree(2,3);
+select quantite_point_collecte_filtree(2,2);
+
+
+DELIMITER |
+CREATE OR REPLACE TRIGGER SUPPRIME_DECHET_APRES_ETRE_TRAITE
+AFTER INSERT ON COLLECTER
+FOR EACH ROW
+BEGIN 
+  DECLARE dechet INT;
+  DECLARE _point INT;
+  DECLARE fini BOOLEAN DEFAULT false;
+  
+  DECLARE lesDechets CURSOR FOR
+    SELECT id_Dechet, id_point_collecte
+    FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE  
+    WHERE id_point_collecte = NEW.id_point_collecte AND id_Type = NEW.id_Type;
+    
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = true;
+
+  OPEN lesDechets;
+
+  WHILE NOT fini DO
+    FETCH lesDechets INTO dechet, _point;
+
+    IF NOT fini THEN
+      DELETE FROM DEPOSER WHERE id_Dechet = dechet AND id_point_collecte = _point;
+      DELETE FROM DECHET WHERE id_Dechet = dechet;
+    END IF;
+  END WHILE;
+  
+  CLOSE lesDechets;
+END |
+DELIMITER ;

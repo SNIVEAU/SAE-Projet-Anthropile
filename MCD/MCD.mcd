@@ -1,4 +1,4 @@
-TOURNEE : id_Tournee, date_collecte
+TOURNEE : id_Tournee, date_collecte[DATETIME], duree[INT]
 COLLECTER, 0N POINT_DE_COLLECTE, 0N CATEGORIEDECHET, 0N TOURNEE :qte_collecte
 POINT_DE_COLLECTE: id_point_collecte, adresse, nom_pt_collecte, pos_x, pos_y, qte_max
 :

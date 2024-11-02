@@ -1,3 +1,4 @@
+from functools import wraps
 from .app import *
 from flask import render_template, url_for, redirect, send_file
 from flask_wtf import FlaskForm
@@ -6,7 +7,7 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired,Email,Length,Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask_login import login_required
+from flask_login import current_user, login_required, login_user, logout_user
 from app.models import *
 from sqlalchemy import func
 from io import BytesIO
@@ -18,40 +19,48 @@ class UtilisateurForm(FlaskForm):
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
     entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
+    next = HiddenField()
     submit = SubmitField("Ajouter")
+
+
+def guest(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated:
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route("/")
 def home():
+    return render_template("home.html")
 
-    if 'nom_Utilisateur' in session:
-        return render_template("home.html",username=session['nom_Utilisateur'])
-    else:
-        return render_template("home.html")
 
+    #return decorated_function
 class LoginForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
+    next = HiddenField()
+
     submit = SubmitField("Se connecter")
 @app.route('/login', methods=['GET', 'POST'])
+@guest
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
-        mdp_entre = form.motdepasse.data
-        nom_user = form.nom_utilisateur.data
-        if existing_user :
-            hashed_password = get_motdepasse(existing_user[0])
-            if check_password_hash(hashed_password,mdp_entre):
-            # Si l'utilisateur existe et que le mot de passe est correct
-                session['nom_Utilisateur'] = nom_user
-                return redirect(url_for('home'))
-            else:
-            # Mot de passe ou nom d'utilisateur incorrect
-                return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
-        else:
-            # Mot de passe ou nom d'utilisateur incorrect
-            return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
-    
-    # Si la méthode est GET, on retourne le formulaire de connexion
+    if not form.is_submitted():
+        form.next.data = request.args.get("next")
+    elif form.validate_on_submit():
+        user_data = get_all_user_info(form.nom_utilisateur.data)
+        
+        if user_data:
+            user = Utilisateur(*user_data)
+            if check_password_hash(user.motdepasse, form.motdepasse.data):
+                login_user(user)  # Connexion avec Flask-Login
+                next = form.next.data or url_for("home")
+                return redirect(next)
+        
+        return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
+
     return render_template('login.html', form=form)
 
    
@@ -60,6 +69,7 @@ def login():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@guest
 def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
@@ -71,24 +81,24 @@ def register():
         # Hacher le mot de passe avant de l'insérer dans la base de données
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
-        print(len(hashed_password))
-        # print("c'est le mot de passe déhashed")
-        # deashed_password = check_password_hash(hashed_password)
-        # print(deashed_password)
-
         # Insertion dans la base de données avec le mot de passe haché
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
 
-        # Stocker le nom d'utilisateur dans la session après une inscription réussie
-        session['nom_Utilisateur'] = form.nom_utilisateur.data
+        #récupérer l'inscrit dans la bd
+        new_user = get_all_user_info(form.nom_utilisateur.data)
+        if new_user:
+            user_data = Utilisateur(*new_user)
+            login_user(user_data)
+
         return redirect(url_for('home'))
     
     return render_template('register.html', form=form)
 
 
 @app.route('/logout')
+@login_required  # Protège cette route
 def logout():
-    session.pop('nom_Utilisateur', None)
+    logout_user()  # Déconnexion avec Flask-Login
     return redirect(url_for('home'))
 
 class DechetsForm(FlaskForm):
@@ -103,7 +113,7 @@ class DechetsForm(FlaskForm):
     submit = SubmitField("Ajouter")
 
 @app.route("/insert-dechets", methods=["GET", "POST"])
-# @login_required
+@login_required
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
@@ -114,10 +124,12 @@ def insert_dechets():
     return render_template("insertion_dechets.html", form=form)
 
 @app.route("/collecte-dechets")
+@login_required
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/statistique-dechets")
+@login_required
 def statistique_dechet():
     # get_graph_dechet()
     # get_graph_qte_dechets_categorie()
@@ -126,24 +138,29 @@ def statistique_dechet():
     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/dechets")
+@login_required
 def statistique_dechets():
     return data_graph_qte_dechets_categorie()
 
 @app.route("/statistique-pts-collecte")
+@login_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/graph-pts-collecte")
+@login_required
 def data_graph_pts_collecte():
     return data_graph_qte_dechets_cat_pts_collecte()
 
 @app.route("/rapport")
+@login_required
 def rapport():
     traiter = get_traiter_sort_by_date()
     return render_template("rapport.html", traiter=traiter[:10])
 
 
 @app.route('/download_pdf/<date_collecte>')
+@login_required
 def download_pdf(date_collecte):
     # Récupérer les données pour cette date
     traiter_list = get_traiter_by_date(date_collecte)
@@ -186,6 +203,7 @@ def download_pdf(date_collecte):
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
 @app.route("/details/<id>")
+@login_required
 def detaille(id):
     points_de_collecte = get_points_de_collecte()
     for pt in points_de_collecte:

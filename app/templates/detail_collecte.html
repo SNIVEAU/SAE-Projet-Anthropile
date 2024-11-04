@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Rapport
+{% endblock %}
+{%block styles%}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='details.css') }}">
+{%endblock%}
+{% block content %}
+<div class = details>
+    {% if point %}
+        <h1>Détails du Point de Collecte</h1>
+        <div>
+            <p><strong>Nom:</strong> {{ point.nom_point }}</p> 
+            <p><strong>Adresse:</strong> {{ point.adresse }}</p> 
+            <p><strong>Quantité Max:</strong> {{ point.quantite_max }} kg</p> 
+            <p><strong>Quantité Courante:</strong> {{ quantite_courant }} kg</p> 
+
+        </div>
+    {% else %}
+        <p>Aucun point de collecte trouvé.</p>
+    {% endif %}
+</div>
+{% endblock %}

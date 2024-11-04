@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+{% endblock %}
+
 {% block title %}Carte OpenStreetMap avec adresses de collecte{% endblock %}
 
 {% block content %}
@@ -34,30 +39,28 @@
       // Récupérer les adresses depuis le serveur (passées depuis Flask)
       var addresses = [
         {% for point in points_de_collecte %}
-          { address: "{{ point.adresse }}", name: "{{ point.nom_point }}" }, // point[1] pour l'adresse, point[2] pour le nom
-      {% endfor %}
+          { 
+            address: "{{ point.adresse }}", 
+            name: "{{ point.nom_point }}", 
+            detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}" 
+          },
+        {% endfor %}
       ];
 
-    // Parcours des adresses et ajout des marqueurs après géocodage
-    addresses.forEach(function (location) {
-      geocodeAddress(location.address, function (latLng) {
-        // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
-        if (latLng) {
-          L.marker(latLng).addTo(map)
-            .bindPopup(location.name) // Ajout d'une popup avec le nom
-            .openPopup();
-        }
+      // Parcours des adresses et ajout des marqueurs après géocodage
+      addresses.forEach(function (location) {
+        geocodeAddress(location.address, function (latLng) {
+          // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
+          if (latLng) {
+            L.marker(latLng).addTo(map)
+              .bindPopup(
+                `<strong>${location.name}</strong><br>
+                <button onclick="window.location.href='${location.detailUrl}'">Voir le détail</button>`
+              ); // Ajout d'une popup avec le nom et le bouton
+          }
+        });
       });
-    });
 
   });
-
 </script>
-
-<style>
-  #mapid {
-    height: 600px;
-    width: 100%;
-  }
-</style>
 {% endblock %}

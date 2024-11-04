@@ -93,15 +93,6 @@ button:hover {
     }
 }
 
-footer {
-    background-color: #0c2910;
-    color: white;
-    padding: 10px 20px;
-    width: 100%;
-    text-align: center;
-    margin-top: auto;
-}
-
 .container {
     background-color: white;
     padding: 40px;
@@ -109,4 +100,5 @@ footer {
     margin: 50px auto;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 175px;
 }

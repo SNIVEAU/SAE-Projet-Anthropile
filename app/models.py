@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from .app import mysql
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -279,6 +280,12 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
+def get_all_user_info(user_name):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
+    user_data = cursor.fetchone()
+    cursor.close()
+    return user_data 
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role):
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,id_Entreprise,nom_role) VALUES ( %s, %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role))
@@ -291,4 +298,33 @@ def get_motdepasse(nom_utilisateur):
     motdepasse = cursor.fetchone()
     cursor.close()
     return motdepasse[0] if motdepasse else None  # Retourne None si pas d'utilisateur trouvé
+
+def data_graph_qte_dechets_cat_pts_collecte():
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT nom_pt_collecte, nom_Type, SUM(qte) as quantite
+        FROM POINT_DE_COLLECTE 
+        NATURAL JOIN CATEGORIEDECHET 
+        NATURAL JOIN DECHET 
+        NATURAL JOIN DEPOSER 
+        GROUP BY nom_pt_collecte, nom_Type 
+        ORDER BY nom_pt_collecte;
+    """)
+    results = cursor.fetchall()
+    cursor.close()
+
+    data = {}
+    for nom_pt_collecte, nom_type, quantite in results:
+        if nom_pt_collecte not in data:
+            data[nom_pt_collecte] = []
+        data[nom_pt_collecte].append({'categorie': nom_type, 'quantite': quantite})
+
+    return jsonify(data)
+
+def get_quantite_courante(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT IFNULL(SUM(qte),0) FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    quantite_courante = cursor.fetchone()
+    cursor.close()
+    return quantite_courante[0]
 

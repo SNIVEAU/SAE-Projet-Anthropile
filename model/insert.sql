@@ -11,9 +11,9 @@ ALTER TABLE ENTREPRISE AUTO_INCREMENT = 1;
 ALTER TABLE UTILISATEUR AUTO_INCREMENT = 1;
 ALTER TABLE POINT_DE_COLLECTE AUTO_INCREMENT = 1;
 ALTER TABLE DECHET AUTO_INCREMENT = 1;
+ALTER TABLE TOURNEE AUTO_INCREMENT = 1;
 ALTER TABLE DEPOSER AUTO_INCREMENT = 1;
-ALTER TABLE TRAITER AUTO_INCREMENT = 1;
-
+ALTER TABLE COLLECTER AUTO_INCREMENT = 1;
 
 INSERT INTO CATEGORIEDECHET (nom_Type) VALUES ('Déchet organique');
 INSERT INTO CATEGORIEDECHET (nom_Type) VALUES ('Déchet recyclable');
@@ -48,7 +48,11 @@ INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 4', 3, 30);
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 5', 1, 500);
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 6', 2, 50);
 
-
+INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-25 08:00:00', 120);
+INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-26 09:00:00', 90);
+INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-27 10:30:00', 150);
+INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-28 08:30:00', 180);
+INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-29 07:45:00', 135);
 
 
 INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (1, 1, 1);
@@ -63,17 +67,11 @@ INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (6, 1,
 --INSERT INTO DEPOSER (id_Dechet, id_Utilisateur, id_point_collecte) VALUES (5, 2, 3);
 
 -- Insertion des données dans la table TRAITER avec un jour entre chaque insertion
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (1, 1, '2024-10-23 10:00:00', 5);
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (2, 2, '2024-10-24 10:00:00', 15);
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (3, 3, '2024-10-25 10:00:00', 25);
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (3, 3, '2024-10-26 10:00:00', 61);
--- Insertion pour tester le trigger check_qte_collecte
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (3, 3, '2024-10-27 10:00:00', 50);
-INSERT INTO TRAITER (id_point_collecte, id_Type, dateCollecte, qtecollecte) 
-VALUES (1, 1, '2024-10-27 14:00:00', 50);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (1, 1, 1, 15.5);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (1, 2, 2, 25.0);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (2, 2, 1, 35.0);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (3, 3, 3, 40.0);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (2, 4, 1, 22.5);
+INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (1, 5, 2, 18.0);
+
 

@@ -33,7 +33,15 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     transition: border-color 0.3s;
+    /* width: 200px; */
+}
+
+input {
     width: 200px;
+}
+
+select {
+    width: 218px;
 }
 
 .form-control:focus {
@@ -65,6 +73,7 @@
 .les-btn {
     display: flex;
     justify-content: center;
+    margin: auto;
     margin-top: 20px;
 }
 
@@ -88,6 +97,37 @@
 
 #mapid {
     height: 300px;
-    width: 90%;
-    margin-top: 20px;
+    width: 80%;
+    /* height: 200px;
+    width: 300px; */
+    margin: auto;
+    border-radius: 10px;
 }
+
+.map-container {
+    display: flex;
+    justify-content: center;
+}
+
+.map-container button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.map-container button:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+
+
+

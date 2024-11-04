@@ -46,4 +46,60 @@ BIOTRACK’IN | Accueil
         <img class="image2" src="../static/img/bouteille_sable2.jpg" alt="Nos produits">
     </div>
 </section>
+<!-- Section du carrousel d'actualités -->
+<section class="section-actus">
+    <h1 class="carousel-title">Actualités</h1>
+    <section class="news-carousel">
+        <button class="carousel-btn prev-btn" onclick="moveCarousel(-1)">❮</button>
+        <div class="carousel-track-container">
+            <div class="carousel-track">
+                <div class="news-box">
+                    <img src="../static/img/actualite1.jpeg" alt="Actualité 1">
+                    <p>Prochaine collecte à Basse-Terre le 29 novembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite2.jpeg" alt="Actualité 2">
+                    <p>Atelier sur le recyclage le 30 novembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite3.jpeg" alt="Actualité 3">
+                    <p>Campagne de nettoyage de plage le 2 décembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite4.jpeg" alt="Actualité 4">
+                    <p>Sondage sur les habitudes de consommation des Guadeloupéens lors des prochaines collectes</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite5.jpeg" alt="Actualité 5">
+                    <p>Journée de sensibilisation dans les écoles le 6 décembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite6.jpeg" alt="Actualité 6">
+                    <p>Participez au défi zéro déchet tout au long de décembre !</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-btn next-btn" onclick="moveCarousel(1)">❯</button>
+    </section>
+</section>
+<script>
+    let currentSlide = 0;
+    const totalSlides = document.querySelectorAll('.news-box').length;
+    const slidesToShow = 3;
+
+function moveCarousel(direction) {
+    const track = document.querySelector('.carousel-track');
+    const slideWidth = document.querySelector('.news-box').offsetWidth + 20; // 20px gap
+    const maxSlide = totalSlides - slidesToShow;
+    currentSlide += direction;
+    if (currentSlide < 0) {
+        currentSlide = maxSlide;
+    } else if (currentSlide > maxSlide) {
+        currentSlide = 0;
+    }
+    const offset = -(slideWidth * currentSlide);
+    track.style.transform = `translateX(${offset}px)`;
+}
+</script>
+
 {% endblock %}

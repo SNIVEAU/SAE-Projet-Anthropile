@@ -321,3 +321,27 @@ def get_quantite_courante(id):
     cursor.close()
     return quantite_courante[0]
 
+
+class Collecter:
+    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
+        self.id_point_collecte = id_point_collecte
+        self.id_Tournee = id_Tournee
+        self.id_Type = id_Type
+        self.qtecollecte = qtecollecte
+    
+    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
+        self.date_collecte = date_collecte
+        self.nom_Type = nom_Type
+        self.qtecollecte = qtecollecte
+        self.duree = duree
+    
+
+def get_liste_collectes(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select date_collecte, nom_Type, qtecollecte, duree from COLLECTER natural join CATEGORIEDECHET natural join TOURNEE where id_point_collecte=%s", (id,))
+    liste_collectes = cursor.fetchall()
+    cursor.close()
+    collectes = []
+    for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
+        collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
+    return collectes

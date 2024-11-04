@@ -31,8 +31,8 @@
             </ul>
         </nav>
         <div>
-            {% if 'nom_Utilisateur' in session %}
-                <span>Bienvenue, {{ session['nom_Utilisateur'] }}!</span>
+            {% if current_user.is_authenticated %}
+                <span>Bienvenue, {{ current_user.nom_utilisateur }} 👋!</span>
                 <a class="connexioninscription" href="{{ url_for('logout') }}">Se déconnecter</a>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
@@ -46,7 +46,7 @@
         {% endblock %}
     </main>
 
-    <footer>
+    <footer class="fixed-bottom">
         <div>
             <p>BioTrack'in</p>
             <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">

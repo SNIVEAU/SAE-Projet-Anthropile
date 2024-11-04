@@ -12,13 +12,12 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 #Mysql configuration
 class Utilisateur(UserMixin):
-    def __init__(self, id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role):
+    def __init__(self, id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, nom_role):
         self.id = id_Utilisateur
         self.nom_utilisateur = nom_Utilisateur
         self.mail = mail
         self.numtel = numtel
         self.motdepasse = motdepasse
-        self.id_entreprise = id_Entreprise
         self.nom_role = nom_role
 
 @login_manager.user_loader

@@ -33,7 +33,7 @@ def load_user(user_name):
     return None
 
 
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = 'servinfo-maria'
 app.config['MYSQL_USER'] = 'lima'
 app.config['MYSQL_PASSWORD'] = 'lima'
 app.config['MYSQL_DB'] = 'DBlima' #mettre sa propre BD

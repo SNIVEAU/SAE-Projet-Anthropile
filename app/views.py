@@ -103,6 +103,7 @@ def logout():
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
+    id_user = HiddenField("ID de l'utilisateur")
     nom = StringField("Nom du déchet", validators=[DataRequired()])
     # type = StringField("Type de déchet", validators=[DataRequired()])
     # type = SelectField("Type de déchet", choices=[("plastique", "Plastique"), ("verre", "Verre"), ("papier", "Papier"), ("métal", "Métal"), ("organique", "Organique")], validators=[DataRequired()])
@@ -110,6 +111,7 @@ class DechetsForm(FlaskForm):
     # type = RadioField("Type de déchet", choices=get_categories)
     # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=False, get_label="Nom_Type", validators=[DataRequired()])
     quantite = DecimalField("Volume du déchet", validators=[DataRequired()])
+    id_point_collecte = SelectField("Point de collecte", choices=get_pts_collecte_and_id, validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
 @app.route("/insert-dechets", methods=["GET", "POST"])
@@ -117,11 +119,16 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
+        print(form.id_user.data, "''''''''''''''''''''")
+        print(form.id_point_collecte.data, "-----------------")
+        print(form.id_point_collecte.data)
+        print(type(form.id_point_collecte))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
-        dechet.insert_dechet()
+        id_dechet = dechet.insert_dechet()
+        insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
-    return render_template("insertion_dechets.html", form=form)
+    return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/collecte-dechets")
 @login_required

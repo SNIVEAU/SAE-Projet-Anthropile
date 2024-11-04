@@ -85,3 +85,9 @@
         margin-top: 10px;
     }
 }
+
+#mapid {
+    height: 300px;
+    width: 90%;
+    margin-top: 20px;
+}

@@ -34,13 +34,26 @@
         <div>
             {% if current_user.is_authenticated %}
                 <span>Bienvenue, {{ current_user.nom_utilisateur }} 👋!</span>
-                <a class="connexioninscription" href="{{ url_for('logout') }}">Se déconnecter</a>
+                <a id="logout-link" class="connexioninscription">Se déconnecter</a>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
                 <a class="connexioninscription" href="{{ url_for('register') }}">S'inscrire</a>
             {% endif %}
         </div>
-    </header>
+        </header>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const logoutLink = document.getElementById('logout-link');
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function () {
+                        if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                            window.location.href = "{{ url_for('logout') }}";
+                        }
+                    });
+                }
+            });
+        </script>        
 
     <main>
         {% block content %}

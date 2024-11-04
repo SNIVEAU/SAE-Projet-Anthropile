@@ -167,6 +167,7 @@ section {
 .connexioninscription:hover {
     background-color: #3e88b9;
     color: white;
+    cursor: pointer;
 }
 
 /* Footer */

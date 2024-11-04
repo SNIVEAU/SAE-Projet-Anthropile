@@ -16,8 +16,9 @@ class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
     email = StringField("E-mail", validators=[DataRequired(), Email()])
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
+    adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
+    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 @app.route("/")
 def home():
@@ -77,7 +78,14 @@ def register():
         # print(deashed_password)
 
         # Insertion dans la base de données avec le mot de passe haché
-        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
+        print(form.entreprise.data)
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "utilisateur")
+        if not form.entreprise.data == 'Aucune':
+            idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
+            insert_travailler(idUtilisateur, form.entreprise.data)
+        if not get_pts_de_collecte_by_adresse(form.adresse.data):
+
+            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,0,0)
 
         # Stocker le nom d'utilisateur dans la session après une inscription réussie
         session['nom_Utilisateur'] = form.nom_utilisateur.data

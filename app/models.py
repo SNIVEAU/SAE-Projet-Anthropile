@@ -60,16 +60,16 @@ def get_id_type_dechet(nom_dechet):
     return id_type
 
 class PointDeCollecte:
-    def __init__(self, id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max):
+    def __init__(self, id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max):
         self.id_point_de_collecte = id_point_de_collecte
         self.adresse = adresse
-        self.nom_point = nom_point
+        self.nom_pt_collecte = nom_pt_collecte
         self.latitude = latitude
         self.longitude = longitude
         self.quantite_max = quantite_max
 
     def __repr__(self):
-        return self.nom_point
+        return self.nom_pt_collecte
 
 def get_points_de_collecte():
     cursor = mysql.connection.cursor()
@@ -78,8 +78,8 @@ def get_points_de_collecte():
     cursor.close()
     print(points)
     les_points = []
-    for id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max in points:
-        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max))
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     print(les_points)
     # return points
     return les_points
@@ -238,6 +238,28 @@ def get_traiter_by_date(date_collecte):
         listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
     return listetraiter
 
+
+def get_pts_de_collecte_by_adresse(adresse):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+    points = cursor.fetchall()
+    listepoints = []
+    for point in points:
+        listepoints.append(PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]))
+
+        
+    cursor.close()
+    return listepoints
+
+
+def insert_pts_de_collecte(adresse, nom_pt_collecte, pos_x, pos_y, 
+                           qte_max=500 #Quantité modifiable par défaut
+                           ):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO POINT_DE_COLLECTE(adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES (%s, %s, %s, %s, %s)", (adresse, nom_pt_collecte, pos_x, pos_y, qte_max))
+    mysql.connection.commit()
+    cursor.close()
+
 def get_traiter_sort_by_date():
     cursor = mysql.connection.cursor()
     
@@ -269,6 +291,26 @@ def get_nom_utilisateur(nom_utilisateur):
     cursor.close()
     return existing_user
 
+def get_id_utilisateur(nom_utilisateur):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id_Utilisateur FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))
+    existing_user = cursor.fetchone()
+    cursor.close()
+    return existing_user[0]
+
+class Entreprise:
+    def __init__(self, id_entreprise, nom_entreprise):
+        self.id_entreprise = id_entreprise
+        self.nom_entreprise = nom_entreprise
+    def __str__(self):
+        return self.nom_entreprise
+
+def get_entreprise_register():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE")
+    entreprises = cursor.fetchall()
+    cursor.close()
+    return [(e[0],e[1]) for e in entreprises]+[('Aucune', 'Aucune')] 
 
 
 def get_entreprise(): #choix de l'entreprise
@@ -279,12 +321,18 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
-def insert_user(nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role):
+def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,id_Entreprise,nom_role) VALUES ( %s, %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role))
+    cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,nom_role) VALUES ( %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,nom_role))
     mysql.connection.commit()
     cursor.close()
      
+def insert_travailler(id_Utilisateur,id_entreprise):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO TRAVAILLER(id_utilisateur,id_Entreprise) VALUES (%s, %s)", (id_Utilisateur,id_entreprise))
+    mysql.connection.commit()
+    cursor.close()
+
 def get_motdepasse(nom_utilisateur):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT motdepasse FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))

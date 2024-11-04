@@ -23,11 +23,10 @@ INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise A');
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise B');
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise C');
 
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 1', 'utilisateur1@example.com', 1234567890, 'password1', 1, 'Administrateur');
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 2', 'utilisateur2@example.com', 1234567891, 'password2', 2, 'Visiteur');
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 3', 'utilisateur3@example.com', 1234567892, 'password3', 3, 'Utilisateur');
-
-INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, id_Entreprise, nom_role) VALUES ('Utilisateur 4', 'utilisateur4@example.com', 282567892, 'password3', NULL, 'Utilisateur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 1', 'utilisateur1@example.com', 1234567890, 'password1','Administrateur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 2', 'utilisateur2@example.com', 1234567891, 'password2','Visiteur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 3', 'utilisateur3@example.com', 1234567892, 'password3','Utilisateur');
+INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 4', 'utilisateur4@example.com', 282567892, 'password3', 'Utilisateur');
 
 
 -- INSERT INTO POINT_DE_COLLECTE (adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES ('Adresse 1', 'Nom Point Collecte 1', 12.3456, 78.9012, 100);

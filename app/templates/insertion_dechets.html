@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="static/insertion_dechets.css">
+{%endblock%}
+
 {% block title %}Insertion des déchets{% endblock %}
 
 {% block content %}

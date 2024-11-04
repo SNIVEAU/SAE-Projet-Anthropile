@@ -1,13 +1,11 @@
--- Supprimer les tables dans l'ordre inverse de leur création
 DROP TABLE IF EXISTS DEPOSER;
-DROP TABLE IF EXISTS TRAITER;
-DROP TABLE IF EXISTS TRAVAILLER;
+DROP TABLE IF EXISTS COLLECTER;
 DROP TABLE IF EXISTS DECHET;
 DROP TABLE IF EXISTS POINT_DE_COLLECTE;
 DROP TABLE IF EXISTS UTILISATEUR;
 DROP TABLE IF EXISTS ENTREPRISE;
 DROP TABLE IF EXISTS CATEGORIEDECHET;
-
+DROP TABLE IF EXISTS TOURNEE;
 
 CREATE TABLE CATEGORIEDECHET (
   id_Type INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,13 +18,13 @@ CREATE TABLE ENTREPRISE (
 );
 
 CREATE TABLE UTILISATEUR (
-  id_Utilisateur  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id_Utilisateur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Utilisateur VARCHAR(42),
   mail VARCHAR(42),
   numtel INT,
-  motdepasse VARCHAR(42),
+  motdepasse VARCHAR(255),
   id_Entreprise INT,
-  nom_role varchar(42),
+  nom_role VARCHAR(42),
   FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
 );
 
@@ -40,30 +38,36 @@ CREATE TABLE POINT_DE_COLLECTE (
 );
 
 CREATE TABLE DECHET (
-  id_Dechet  INT AUTO_INCREMENT PRIMARY KEY,
+  id_Dechet INT AUTO_INCREMENT PRIMARY KEY,
   nom_Dechet VARCHAR(42),
   id_Type INT NOT NULL,
   qte DECIMAL(10,4),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 
+CREATE TABLE TOURNEE (
+  id_Tournee INT AUTO_INCREMENT PRIMARY KEY,
+  date_collecte TIMESTAMP,
+  duree INT
+);
+
 CREATE TABLE DEPOSER (
   id_Dechet INT,
   id_Utilisateur INT,
-  id_point_collecte INT ,
+  id_point_collecte INT,
   PRIMARY KEY (id_Dechet, id_Utilisateur, id_point_collecte),
   FOREIGN KEY (id_Dechet) REFERENCES DECHET (id_Dechet),
   FOREIGN KEY (id_Utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte)
 );
 
-CREATE TABLE TRAITER (
-  id_point_collecte INT NOT NULL,
-  id_Type       INT NOT NULL,
-  dateCollecte DATETIME,
-  qtecollecte   DECIMAL(10,4),
-  PRIMARY KEY (id_point_collecte, id_Type, dateCollecte),
+CREATE TABLE COLLECTER (
+  id_point_collecte INT,
+  id_Tournee INT,
+  id_Type INT,
+  qtecollecte DECIMAL(10,4),
+  PRIMARY KEY (id_point_collecte, id_Tournee, id_Type),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
+  FOREIGN KEY (id_Tournee) REFERENCES TOURNEE (id_Tournee),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
-

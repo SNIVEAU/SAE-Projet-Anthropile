@@ -1,4 +1,9 @@
+from flask_login import UserMixin
 from .app import mysql
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
+from flask import jsonify
 
 # def get_id_max_dechets():
 #     cursor = mysql.connection.cursor()
@@ -37,12 +42,6 @@ class Dechet:
             self.id_type = get_id_type_dechet(id_type)
         else:
             self.id_type = id_type
-        self.quantite = quantite
-
-    def __init__(self, id_dechet, nom_dechet, id_type, quantite):
-        self.id_dechet = id_dechet
-        self.nom_dechet = nom_dechet
-        self.id_type = id_type
         self.quantite = quantite
 
     def __repr__(self):
@@ -85,6 +84,132 @@ def get_points_de_collecte():
     print(les_points)
     # return points
     return les_points
+
+# def 
+# -- to install ???
+# -- matplotlib pandas
+
+def get_dechets():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM DECHET")
+    dechets = cursor.fetchall()
+    cursor.close()
+    print(dechets)
+    les_dechets = []
+    for _, nom_dechet, id_type, quantite in dechets:
+        les_dechets.append(Dechet(nom_dechet, id_type, quantite))
+    return les_dechets
+
+def get_graph_dechet():
+    dechets = get_dechets()
+    nom_dechets = []
+    quantites = []
+    for dechet in dechets:
+        nom_dechets.append(dechet.nom_dechet)
+        quantites.append(dechet.quantite)
+    print(nom_dechets, quantites)
+    plt.bar(nom_dechets, quantites)
+    plt.xlabel("Déchets")
+    plt.ylabel("Quantité")
+    plt.title("Quantité de déchets")
+
+    chemin_img = os.path.join('static', 'img', 'graph_dechets.png')
+    plt.savefig(chemin_img)
+    plt.close()
+
+def get_qte_dechets_categorie():
+    cursor = mysql.connection.cursor()
+    cursor.execute("select SUM(qte) as quantite, id_Type, nom_Type from DECHET NATURAL join CATEGORIEDECHET GROUP BY id_Type")
+    qte_dechets_categorie = cursor.fetchall()
+    cursor.close()
+    print(qte_dechets_categorie)
+    return qte_dechets_categorie
+
+def get_graph_qte_dechets_categorie():
+    qte_dechets_categorie = get_qte_dechets_categorie()
+    nom_types = []
+    quantites = []
+    for quantite, _, nom_type in qte_dechets_categorie:
+        nom_types.append(nom_type)
+        quantites.append(quantite)
+    print(nom_types, quantites)
+    plt.bar(nom_types, quantites)
+    plt.xlabel("Catégories de déchets")
+    plt.ylabel("Quantité")
+    plt.title("Quantité de déchets par catégorie")
+
+    chemin_img = os.path.join('static', 'img', 'graph_qte_dechets_categorie.png')
+    plt.savefig(chemin_img)
+    plt.close()
+
+# def data_graph_qte_dechets_categorie():
+#     categorie = get_categories()
+#     dechets = get_dechets()
+
+#     categorie_data = {}
+
+#     for categorie in categorie:
+#         categorie_data[categorie.id_type] = {
+#             "nom_type": categorie.nom_type,
+#             "quantite": 0, 
+#             "dechets": []
+#         }
+#     print()
+#     print(categorie_data)
+#     print()
+
+#     for dechet in dechets:
+#         if dechet.id_type not in categorie_data:
+#             categorie_data[dechet.id_type] = {
+#                 "nom_type": dechet.nom_type,
+#                 "quantite": 0, 
+#                 "dechets": []
+#             }
+#         categorie_data[dechet.id_type]["quantite"] += dechet.quantite
+#         categorie_data[dechet.id_type]["dechets"].append({
+#             "nom_dechet": dechet.nom_dechet,
+#             "quantite": dechet.quantite
+#         })
+
+#     print(categorie_data)
+
+#     data = {
+#         'categories': [cat['nom_type'] for cat in categorie_data.values()],
+#         'quantities': [cat['quantite'] for cat in categorie_data.values()],
+#         'details': [
+#             [{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
+#             for cat in categorie_data.values()
+#         ]
+#     }
+
+#     print()
+#     print(data)
+#     print()
+
+#     # return categorie_data
+#     return jsonify(data)
+
+def data_graph_qte_dechets_categorie():
+    categories = get_categories()
+    dechets = get_dechets()
+
+    # Initialize data structure for categories
+    category_data = {cat.id_type: {'nom_type': cat.nom_type, 'quantite': 0, 'dechets': []} for cat in categories}
+
+    # Populate quantities and details
+    for dechet in dechets:
+        category_data[dechet.id_type]['quantite'] += dechet.quantite
+        category_data[dechet.id_type]['dechets'].append({'nom_dechet': dechet.nom_dechet, 'quantite': dechet.quantite})
+
+    data = {
+        'categories': [cat['nom_type'] for cat in category_data.values()],
+        'quantities': [cat['quantite'] for cat in category_data.values()],
+        'details': [[{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
+                    for cat in category_data.values()]
+    }
+
+    return jsonify(data)
+
 class Traiter:
     def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte):
         self.id_point_collecte = id_point_collecte
@@ -155,6 +280,12 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
+def get_all_user_info(user_name):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
+    user_data = cursor.fetchone()
+    cursor.close()
+    return user_data 
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role):
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,id_Entreprise,nom_role) VALUES ( %s, %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role))
@@ -168,4 +299,32 @@ def get_motdepasse(nom_utilisateur):
     cursor.close()
     return motdepasse[0] if motdepasse else None  # Retourne None si pas d'utilisateur trouvé
 
+def data_graph_qte_dechets_cat_pts_collecte():
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT nom_pt_collecte, nom_Type, SUM(qte) as quantite
+        FROM POINT_DE_COLLECTE 
+        NATURAL JOIN CATEGORIEDECHET 
+        NATURAL JOIN DECHET 
+        NATURAL JOIN DEPOSER 
+        GROUP BY nom_pt_collecte, nom_Type 
+        ORDER BY nom_pt_collecte;
+    """)
+    results = cursor.fetchall()
+    cursor.close()
+
+    data = {}
+    for nom_pt_collecte, nom_type, quantite in results:
+        if nom_pt_collecte not in data:
+            data[nom_pt_collecte] = []
+        data[nom_pt_collecte].append({'categorie': nom_type, 'quantite': quantite})
+
+    return jsonify(data)
+
+def get_quantite_courante(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT IFNULL(SUM(qte),0) FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    quantite_courante = cursor.fetchone()
+    cursor.close()
+    return quantite_courante[0]
 

@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from .app import mysql
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -51,6 +52,17 @@ class Dechet:
         cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (self.nom_dechet, self.id_type, self.quantite))
         mysql.connection.commit()
         cursor.close()
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
+        id_max,  = cursor.fetchone()
+        cursor.close()
+        return id_max
+
+def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_id_type_dechet(nom_dechet):
     cursor = mysql.connection.cursor()
@@ -140,53 +152,6 @@ def get_graph_qte_dechets_categorie():
     chemin_img = os.path.join('static', 'img', 'graph_qte_dechets_categorie.png')
     plt.savefig(chemin_img)
     plt.close()
-
-# def data_graph_qte_dechets_categorie():
-#     categorie = get_categories()
-#     dechets = get_dechets()
-
-#     categorie_data = {}
-
-#     for categorie in categorie:
-#         categorie_data[categorie.id_type] = {
-#             "nom_type": categorie.nom_type,
-#             "quantite": 0, 
-#             "dechets": []
-#         }
-#     print()
-#     print(categorie_data)
-#     print()
-
-#     for dechet in dechets:
-#         if dechet.id_type not in categorie_data:
-#             categorie_data[dechet.id_type] = {
-#                 "nom_type": dechet.nom_type,
-#                 "quantite": 0, 
-#                 "dechets": []
-#             }
-#         categorie_data[dechet.id_type]["quantite"] += dechet.quantite
-#         categorie_data[dechet.id_type]["dechets"].append({
-#             "nom_dechet": dechet.nom_dechet,
-#             "quantite": dechet.quantite
-#         })
-
-#     print(categorie_data)
-
-#     data = {
-#         'categories': [cat['nom_type'] for cat in categorie_data.values()],
-#         'quantities': [cat['quantite'] for cat in categorie_data.values()],
-#         'details': [
-#             [{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
-#             for cat in categorie_data.values()
-#         ]
-#     }
-
-#     print()
-#     print(data)
-#     print()
-
-#     # return categorie_data
-#     return jsonify(data)
 
 def data_graph_qte_dechets_categorie():
     categories = get_categories()
@@ -321,7 +286,15 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
+
+def get_all_user_info(user_name):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
+    user_data = cursor.fetchone()
+    cursor.close()
+    return user_data 
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
+
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,nom_role) VALUES ( %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,nom_role))
     mysql.connection.commit()
@@ -368,4 +341,35 @@ def get_quantite_courante(id):
     quantite_courante = cursor.fetchone()
     cursor.close()
     return quantite_courante[0]
+
+def get_pts_collecte_and_id():
+    pts_de_collecte = get_points_de_collecte()
+    choices = []
+    for point in pts_de_collecte:
+        choices.append((point.id_point_de_collecte, point))
+    return choices
+
+class Collecter:
+    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
+        self.id_point_collecte = id_point_collecte
+        self.id_Tournee = id_Tournee
+        self.id_Type = id_Type
+        self.qtecollecte = qtecollecte
+    
+    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
+        self.date_collecte = date_collecte
+        self.nom_Type = nom_Type
+        self.qtecollecte = qtecollecte
+        self.duree = duree
+    
+
+def get_liste_collectes(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select date_collecte, nom_Type, qtecollecte, duree from COLLECTER natural join CATEGORIEDECHET natural join TOURNEE where id_point_collecte=%s", (id,))
+    liste_collectes = cursor.fetchall()
+    cursor.close()
+    collectes = []
+    for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
+        collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
+    return collectes
 

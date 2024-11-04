@@ -6,6 +6,17 @@ html, body {
     background-color: #f2f2f2;
     overflow-x: hidden;
     color: #333;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+}
+
+main {
+    flex: 1;
 }
 
 /* En-tête */
@@ -165,21 +176,25 @@ footer {
     justify-content: space-between;
     background-color: #0c2910;
     color: white;
-    width: 100%;    
+    /* width: 100%; */
+    padding: 20px 5%;
+    height: 150px;
+    
 }
 
 footer div {
     text-align: center;
     margin: 0 15px;
-    margin-right: 150px;
+    /* margin-right: 150px; */
 }
 
-.mid {
+/* .mid {
     margin-right: 200px;
-}
+} */
 
 footer img {
     width: 30%;
+    max-width: 100px;
 }
 
 footer ul {
@@ -252,6 +267,7 @@ footer ul li, footer div > p  {
         flex-direction: column;
         align-items: center;
         padding: 20px 0;
+        height: auto;
     }
 
     footer div {

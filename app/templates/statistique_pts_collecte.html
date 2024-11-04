@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+{% endblock %}
+
+
 {% block title %}Statistique des points de collecte{% endblock %}
 
 {% block content %}
@@ -67,17 +73,4 @@
         });
     });
 </script>
-<style>
-    .graph {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    canvas {
-        max-width: 800px;
-        max-height: 400px;
-    }
-</style>
 {% endblock %}

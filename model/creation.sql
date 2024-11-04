@@ -23,7 +23,7 @@ CREATE TABLE UTILISATEUR (
   mail VARCHAR(42),
   numtel INT,
   motdepasse VARCHAR(255),
-  nom_role varchar(42)
+  nom_role ENUM('Administrateur', 'Utilisateur') DEFAULT 'Utilisateur' 
 );
 
 CREATE TABLE TRAVAILLER (

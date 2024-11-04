@@ -26,6 +26,7 @@ def load_user(user_name):
     cursor.execute("SELECT * FROM UTILISATEUR WHERE id_Utilisateur = %s", (user_name,))
     user_data = cursor.fetchone()
     cursor.close() #peut être remplacer par une fonction
+    print(user_data, "c'est le user_data")
 
     if user_data:
         return Utilisateur(*user_data)

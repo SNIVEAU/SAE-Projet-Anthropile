@@ -41,7 +41,7 @@
         {% for point in points_de_collecte %}
           { 
             address: "{{ point.adresse }}", 
-            name: "{{ point.nom_point }}", 
+            name: "{{ point.nom_pt_collecte }}", 
             detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}" 
           },
         {% endfor %}

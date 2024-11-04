@@ -52,6 +52,17 @@ class Dechet:
         cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (self.nom_dechet, self.id_type, self.quantite))
         mysql.connection.commit()
         cursor.close()
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
+        id_max,  = cursor.fetchone()
+        cursor.close()
+        return id_max
+
+def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_id_type_dechet(nom_dechet):
     cursor = mysql.connection.cursor()
@@ -141,53 +152,6 @@ def get_graph_qte_dechets_categorie():
     chemin_img = os.path.join('static', 'img', 'graph_qte_dechets_categorie.png')
     plt.savefig(chemin_img)
     plt.close()
-
-# def data_graph_qte_dechets_categorie():
-#     categorie = get_categories()
-#     dechets = get_dechets()
-
-#     categorie_data = {}
-
-#     for categorie in categorie:
-#         categorie_data[categorie.id_type] = {
-#             "nom_type": categorie.nom_type,
-#             "quantite": 0, 
-#             "dechets": []
-#         }
-#     print()
-#     print(categorie_data)
-#     print()
-
-#     for dechet in dechets:
-#         if dechet.id_type not in categorie_data:
-#             categorie_data[dechet.id_type] = {
-#                 "nom_type": dechet.nom_type,
-#                 "quantite": 0, 
-#                 "dechets": []
-#             }
-#         categorie_data[dechet.id_type]["quantite"] += dechet.quantite
-#         categorie_data[dechet.id_type]["dechets"].append({
-#             "nom_dechet": dechet.nom_dechet,
-#             "quantite": dechet.quantite
-#         })
-
-#     print(categorie_data)
-
-#     data = {
-#         'categories': [cat['nom_type'] for cat in categorie_data.values()],
-#         'quantities': [cat['quantite'] for cat in categorie_data.values()],
-#         'details': [
-#             [{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
-#             for cat in categorie_data.values()
-#         ]
-#     }
-
-#     print()
-#     print(data)
-#     print()
-
-#     # return categorie_data
-#     return jsonify(data)
 
 def data_graph_qte_dechets_categorie():
     categories = get_categories()
@@ -328,6 +292,12 @@ def get_quantite_courante(id):
     cursor.close()
     return quantite_courante[0]
 
+def get_pts_collecte_and_id():
+    pts_de_collecte = get_points_de_collecte()
+    choices = []
+    for point in pts_de_collecte:
+        choices.append((point.id_point_de_collecte, point))
+    return choices
 
 class Collecter:
     def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
@@ -352,3 +322,4 @@ def get_liste_collectes(id):
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
         collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
     return collectes
+

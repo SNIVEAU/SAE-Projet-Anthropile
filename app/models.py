@@ -52,6 +52,17 @@ class Dechet:
         cursor.execute("INSERT INTO DECHET(nom_Dechet, id_Type, qte) VALUES (%s, %s, %s)", (self.nom_dechet, self.id_type, self.quantite))
         mysql.connection.commit()
         cursor.close()
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
+        id_max,  = cursor.fetchone()
+        cursor.close()
+        return id_max
+
+def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_id_type_dechet(nom_dechet):
     cursor = mysql.connection.cursor()
@@ -61,16 +72,16 @@ def get_id_type_dechet(nom_dechet):
     return id_type
 
 class PointDeCollecte:
-    def __init__(self, id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max):
+    def __init__(self, id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max):
         self.id_point_de_collecte = id_point_de_collecte
         self.adresse = adresse
-        self.nom_point = nom_point
+        self.nom_pt_collecte = nom_pt_collecte
         self.latitude = latitude
         self.longitude = longitude
         self.quantite_max = quantite_max
 
     def __repr__(self):
-        return self.nom_point
+        return self.nom_pt_collecte
 
 def get_points_de_collecte():
     cursor = mysql.connection.cursor()
@@ -79,8 +90,8 @@ def get_points_de_collecte():
     cursor.close()
     print(points)
     les_points = []
-    for id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max in points:
-        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_point, latitude, longitude, quantite_max))
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     print(les_points)
     # return points
     return les_points
@@ -142,53 +153,6 @@ def get_graph_qte_dechets_categorie():
     plt.savefig(chemin_img)
     plt.close()
 
-# def data_graph_qte_dechets_categorie():
-#     categorie = get_categories()
-#     dechets = get_dechets()
-
-#     categorie_data = {}
-
-#     for categorie in categorie:
-#         categorie_data[categorie.id_type] = {
-#             "nom_type": categorie.nom_type,
-#             "quantite": 0, 
-#             "dechets": []
-#         }
-#     print()
-#     print(categorie_data)
-#     print()
-
-#     for dechet in dechets:
-#         if dechet.id_type not in categorie_data:
-#             categorie_data[dechet.id_type] = {
-#                 "nom_type": dechet.nom_type,
-#                 "quantite": 0, 
-#                 "dechets": []
-#             }
-#         categorie_data[dechet.id_type]["quantite"] += dechet.quantite
-#         categorie_data[dechet.id_type]["dechets"].append({
-#             "nom_dechet": dechet.nom_dechet,
-#             "quantite": dechet.quantite
-#         })
-
-#     print(categorie_data)
-
-#     data = {
-#         'categories': [cat['nom_type'] for cat in categorie_data.values()],
-#         'quantities': [cat['quantite'] for cat in categorie_data.values()],
-#         'details': [
-#             [{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
-#             for cat in categorie_data.values()
-#         ]
-#     }
-
-#     print()
-#     print(data)
-#     print()
-
-#     # return categorie_data
-#     return jsonify(data)
-
 def data_graph_qte_dechets_categorie():
     categories = get_categories()
     dechets = get_dechets()
@@ -239,6 +203,28 @@ def get_traiter_by_date(date_collecte):
         listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
     return listetraiter
 
+
+def get_pts_de_collecte_by_adresse(adresse):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+    points = cursor.fetchall()
+    listepoints = []
+    for point in points:
+        listepoints.append(PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]))
+
+        
+    cursor.close()
+    return listepoints
+
+
+def insert_pts_de_collecte(adresse, nom_pt_collecte, pos_x, pos_y, 
+                           qte_max=500 #Quantité modifiable par défaut
+                           ):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO POINT_DE_COLLECTE(adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES (%s, %s, %s, %s, %s)", (adresse, nom_pt_collecte, pos_x, pos_y, qte_max))
+    mysql.connection.commit()
+    cursor.close()
+
 def get_traiter_sort_by_date():
     cursor = mysql.connection.cursor()
     
@@ -270,6 +256,26 @@ def get_nom_utilisateur(nom_utilisateur):
     cursor.close()
     return existing_user
 
+def get_id_utilisateur(nom_utilisateur):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id_Utilisateur FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))
+    existing_user = cursor.fetchone()
+    cursor.close()
+    return existing_user[0]
+
+class Entreprise:
+    def __init__(self, id_entreprise, nom_entreprise):
+        self.id_entreprise = id_entreprise
+        self.nom_entreprise = nom_entreprise
+    def __str__(self):
+        return self.nom_entreprise
+
+def get_entreprise_register():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE")
+    entreprises = cursor.fetchall()
+    cursor.close()
+    return [(e[0],e[1]) for e in entreprises]+[('Aucune', 'Aucune')] 
 
 
 def get_entreprise(): #choix de l'entreprise
@@ -280,18 +286,26 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
+
 def get_all_user_info(user_name):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
     user_data = cursor.fetchone()
     cursor.close()
     return user_data 
-def insert_user(nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role):
+def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
+
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,id_Entreprise,nom_role) VALUES ( %s, %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role))
+    cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,nom_role) VALUES ( %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,nom_role))
     mysql.connection.commit()
     cursor.close()
      
+def insert_travailler(id_Utilisateur,id_entreprise):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO TRAVAILLER(id_utilisateur,id_Entreprise) VALUES (%s, %s)", (id_Utilisateur,id_entreprise))
+    mysql.connection.commit()
+    cursor.close()
+
 def get_motdepasse(nom_utilisateur):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT motdepasse FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))
@@ -328,6 +342,12 @@ def get_quantite_courante(id):
     cursor.close()
     return quantite_courante[0]
 
+def get_pts_collecte_and_id():
+    pts_de_collecte = get_points_de_collecte()
+    choices = []
+    for point in pts_de_collecte:
+        choices.append((point.id_point_de_collecte, point))
+    return choices
 
 class Collecter:
     def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
@@ -352,3 +372,4 @@ def get_liste_collectes(id):
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
         collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
     return collectes
+

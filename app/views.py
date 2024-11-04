@@ -17,8 +17,10 @@ class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
     email = StringField("E-mail", validators=[DataRequired(), Email()])
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
+    adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
+    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+
     next = HiddenField()
     submit = SubmitField("Ajouter")
 
@@ -82,7 +84,14 @@ def register():
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
-        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
+        print(form.entreprise.data)
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "utilisateur")
+        if not form.entreprise.data == 'Aucune':
+            idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
+            insert_travailler(idUtilisateur, form.entreprise.data)
+        if not get_pts_de_collecte_by_adresse(form.adresse.data):
+
+            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,0,0)
 
         #récupérer l'inscrit dans la bd
         new_user = get_all_user_info(form.nom_utilisateur.data)
@@ -103,6 +112,7 @@ def logout():
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
+    id_user = HiddenField("ID de l'utilisateur")
     nom = StringField("Nom du déchet", validators=[DataRequired()])
     # type = StringField("Type de déchet", validators=[DataRequired()])
     # type = SelectField("Type de déchet", choices=[("plastique", "Plastique"), ("verre", "Verre"), ("papier", "Papier"), ("métal", "Métal"), ("organique", "Organique")], validators=[DataRequired()])
@@ -110,6 +120,7 @@ class DechetsForm(FlaskForm):
     # type = RadioField("Type de déchet", choices=get_categories)
     # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=False, get_label="Nom_Type", validators=[DataRequired()])
     quantite = DecimalField("Volume du déchet", validators=[DataRequired()])
+    id_point_collecte = SelectField("Point de collecte", choices=get_pts_collecte_and_id, validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
 @app.route("/insert-dechets", methods=["GET", "POST"])
@@ -117,11 +128,16 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
+        print(form.id_user.data, "''''''''''''''''''''")
+        print(form.id_point_collecte.data, "-----------------")
+        print(form.id_point_collecte.data)
+        print(type(form.id_point_collecte))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
-        dechet.insert_dechet()
+        id_dechet = dechet.insert_dechet()
+        insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
-    return render_template("insertion_dechets.html", form=form)
+    return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/collecte-dechets")
 @login_required

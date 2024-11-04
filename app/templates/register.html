@@ -42,6 +42,12 @@
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor %}
             </div>
+            <div class="form-group">
+                <label for="adresse">{{ form.adresse.label }}</label>
+                {{ form.adresse(class_="form-control", placeholder="Adresse") }}
+                {% for error in form.adresse.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
 
             <div class="form-group">
                 <label for="motdepasse">{{ form.motdepasse.label }}</label>

@@ -33,10 +33,9 @@ def load_user(user_name):
     return None
 
 app.config['MYSQL_HOST'] = 'servinfo-maria'
-app.config['MYSQL_USER'] = 'bindaivin'
-app.config['MYSQL_PASSWORD'] = 'bindaivin'
-app.config['MYSQL_DB'] = 'DBbindaivin' #mettre sa propre BD
-
+app.config['MYSQL_USER'] = 'niveau'
+app.config['MYSQL_PASSWORD'] = 'niveau'
+app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
 
 mysql=MySQL(app)
 

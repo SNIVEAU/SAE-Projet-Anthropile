@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="static/base.css">
     {%endblock%}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <title>{% block title %}Anthropile{% endblock %}</title>
@@ -33,13 +34,26 @@
         <div>
             {% if current_user.is_authenticated %}
                 <span>Bienvenue, {{ current_user.nom_utilisateur }} 👋!</span>
-                <a class="connexioninscription" href="{{ url_for('logout') }}">Se déconnecter</a>
+                <a id="logout-link" class="connexioninscription">Se déconnecter</a>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
                 <a class="connexioninscription" href="{{ url_for('register') }}">S'inscrire</a>
             {% endif %}
         </div>
-    </header>
+        </header>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const logoutLink = document.getElementById('logout-link');
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function () {
+                        if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                            window.location.href = "{{ url_for('logout') }}";
+                        }
+                    });
+                }
+            });
+        </script>        
 
     <main>
         {% block content %}
@@ -47,18 +61,18 @@
     </main>
 
     <footer class="fixed-bottom">
-        <div>
-            <p>BioTrack'in</p>
+        <!-- <div>
+            <p>BioTrack'in</p> -->
             <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
-        </div>
+        <!-- </div> -->
         <div class="mid">
-            <p>Contacts</p>
+            <h3>Contacts</h3>
             <p>tel : 00 00 00 00</p>
             <p>Rue d'issoudun 45067 Orléans</p>
             <p><strong>&copy; 2024 Anthropile - Tous droits réservés</strong></p>
         </div>
         <div>
-            <h2>Membres de l'équipe</h2>
+            <h3>Membres de l'équipe</h3>
             <ul>
                 <li>Nagarajah Niksan</li>
                 <li>Lima Romain</li>

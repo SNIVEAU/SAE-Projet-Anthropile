@@ -23,9 +23,16 @@ CREATE TABLE UTILISATEUR (
   mail VARCHAR(42),
   numtel INT,
   motdepasse VARCHAR(255),
-  id_Entreprise INT,
-  nom_role VARCHAR(42),
-  FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
+  nom_role varchar(42)
+);
+
+CREATE TABLE TRAVAILLER (
+id_utilisateur INT,
+id_Entreprise INT,
+PRIMARY KEY (id_utilisateur, id_Entreprise),
+FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
+FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
+
 );
 
 CREATE TABLE POINT_DE_COLLECTE (

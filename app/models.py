@@ -210,7 +210,7 @@ def data_graph_qte_dechets_categorie():
 
     return jsonify(data)
 
-class Traiter:
+class Collecter:
     def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte):
         self.id_point_collecte = id_point_collecte
         self.id_Type = id_Type
@@ -222,6 +222,7 @@ class Traiter:
         cursor.execute("INSERT INTO TRAITER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
+
 def get_traiter():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM TRAITER")
@@ -231,12 +232,12 @@ def get_traiter():
 
 def get_traiter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM TRAITER WHERE DATE(dateCollecte) = %s", (date_collecte,))
+    cursor.execute("SELECT id_point_collecte,id_Type,date_collecte,qtecollecte FROM COLLECTER natural join TOURNEE WHERE DATE(date_collecte) = %s", (date_collecte,))
     traiter = cursor.fetchall()
     cursor.close()
     listetraiter = []
     for i in traiter:
-        listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
+        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
     return listetraiter
 
 def get_traiter_sort_by_date():
@@ -244,10 +245,10 @@ def get_traiter_sort_by_date():
     
     # Sélectionne les colonnes explicitement et formate 'dateCollecte'
     query = """
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(dateCollecte, '%Y-%m-%d') AS date_only,qtecollecte
-    FROM TRAITER
-    GROUP BY DATE(dateCollecte), id_point_collecte, id_Type
-    ORDER BY dateCollecte DESC
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
+    ORDER BY date_collecte DESC
     """
     
     cursor.execute(query)
@@ -257,7 +258,7 @@ def get_traiter_sort_by_date():
     for i in traiter:
         print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
-        listetraiter.append(Traiter(i[0], i[1], i[2], i[3]))
+        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
     return listetraiter
@@ -329,19 +330,19 @@ def get_quantite_courante(id):
     return quantite_courante[0]
 
 
-class Collecter:
-    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
-        self.id_point_collecte = id_point_collecte
-        self.id_Tournee = id_Tournee
-        self.id_Type = id_Type
-        self.qtecollecte = qtecollecte
-    
-    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
-        self.date_collecte = date_collecte
-        self.nom_Type = nom_Type
-        self.qtecollecte = qtecollecte
-        self.duree = duree
-    
+#class Collecter:
+#    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
+#        self.id_point_collecte = id_point_collecte
+#        self.id_Tournee = id_Tournee
+#        self.id_Type = id_Type
+#        self.qtecollecte = qtecollecte
+#    
+#    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
+#        self.date_collecte = date_collecte
+#        self.nom_Type = nom_Type
+#        self.qtecollecte = qtecollecte
+#        self.duree = duree
+#    
 
 def get_liste_collectes(id):
     cursor = mysql.connection.cursor()
@@ -350,5 +351,5 @@ def get_liste_collectes(id):
     cursor.close()
     collectes = []
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
-        collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
+        collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes

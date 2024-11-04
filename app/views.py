@@ -213,7 +213,8 @@ def download_pdf(date_collecte):
 @login_required
 def detaille(id):
     points_de_collecte = get_points_de_collecte()
+    liste_collectes = get_liste_collectes(int(id))
     for pt in points_de_collecte:
         if pt.id_point_de_collecte == int(id):
-            return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)))
+            return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)), collectes=liste_collectes)
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())

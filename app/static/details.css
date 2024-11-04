@@ -8,7 +8,7 @@ html, body {
 body {
     flex: 1;
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa; /* Light grey background */
+    background-color: #f8f9fa; 
 }
 
 .details {
@@ -18,53 +18,52 @@ body {
     max-width: 700px;
     margin: 50px auto;
     padding: 40px;
-    transition: transform 0.3s; /* Smooth hover effect */
-    margin-bottom: 400px;
+    transition: transform 0.3s; 
 }
 
 .details:hover {
-    transform: scale(1.02); /* Slight zoom on hover */
+    transform: scale(1.02); 
 }
 
 h1 {
     text-align: center;
     color: #333;
     margin-bottom: 30px;
-    background-color: #d4edda; /* Soft green background color */
-    padding: 10px; /* Adds padding around the text */
-    border-radius: 5px; /* Optional: round the corners */
+    background-color: #d4edda;
+    padding: 10px; 
+    border-radius: 5px; 
 }
 
 .details p {
-    font-size: 16px; /* Standardize font size */
+    font-size: 16px;
     line-height: 1.6;
-    margin: 15px 0; /* Consistent spacing */
-    color: #555; /* Darker text color for readability */
+    margin: 15px 0; 
+    color: #555;
 }
 
 .details strong {
-    color: #007BFF; /* Bootstrap primary color */
-    font-weight: bold; /* Emphasize strong text */
+    color: #007BFF; 
+    font-weight: bold;
 }
 
 .details hr {
     border: 0;
     height: 1px;
-    background: #dee2e6; /* Light grey horizontal line */
-    margin: 20px 0; /* Space around the line */
+    background: #dee2e6; 
+    margin: 20px 0; 
 }
 
 @media (max-width: 600px) {
     .details {
-        padding: 20px; /* Adjust padding for smaller screens */
+        padding: 20px;
     }
 
     h1 {
-        font-size: 24px; /* Smaller heading size */
+        font-size: 24px; 
     }
 
     .details p {
-        font-size: 14px; /* Smaller paragraph text for mobile */
+        font-size: 14px;
     }
 }
 

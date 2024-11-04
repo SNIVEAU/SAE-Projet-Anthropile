@@ -32,7 +32,6 @@ def load_user(user_name):
         return Utilisateur(*user_data)
     return None
 
-
 app.config['MYSQL_HOST'] = 'servinfo-maria'
 app.config['MYSQL_USER'] = 'lima'
 app.config['MYSQL_PASSWORD'] = 'lima'

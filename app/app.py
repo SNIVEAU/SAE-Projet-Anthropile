@@ -34,9 +34,9 @@ def load_user(user_name):
 
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Btpvrd455216!!!!!12345'
-app.config['MYSQL_DB'] = 'world' #mettre sa propre BD
+app.config['MYSQL_USER'] = 'lima'
+app.config['MYSQL_PASSWORD'] = 'lima'
+app.config['MYSQL_DB'] = 'DBlima' #mettre sa propre BD
 
 mysql=MySQL(app)
 

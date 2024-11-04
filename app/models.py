@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from .app import mysql
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -279,6 +280,12 @@ def get_entreprise(): #choix de l'entreprise
     print(entreprises)
     return entreprises
     
+def get_all_user_info(user_name):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
+    user_data = cursor.fetchone()
+    cursor.close()
+    return user_data 
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role):
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO UTILISATEUR(nom_Utilisateur,mail,numtel,motdepasse,id_Entreprise,nom_role) VALUES ( %s, %s, %s, %s, %s, %s)", (nom_utilisateur,mail,numtel,motdepasse,id_entreprise,nom_role))

@@ -21,11 +21,11 @@ main {
 
 /* En-tête */
 header {
-    /* position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 2; */
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -225,10 +225,11 @@ footer ul li, footer div > p  {
         display: none;
     }
 
+    /* Menu actif avec z-index plus élevé et position fixed */
     nav.menu.active ul {
         display: flex;
         flex-direction: column;
-        position: absolute;
+        position: fixed;
         top: 60px;
         left: 0;
         width: 200px;
@@ -236,7 +237,7 @@ footer ul li, footer div > p  {
         background-color: white;
         padding: 10px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 30;
+        z-index: 1000; /* Valeur plus élevée pour passer au-dessus de tout */
     }
 
     nav.menu.active .close-menu {
@@ -268,7 +269,6 @@ footer ul li, footer div > p  {
         flex-direction: column;
         align-items: center;
         padding: 20px 0;
-        height: auto;
     }
 
     footer div {

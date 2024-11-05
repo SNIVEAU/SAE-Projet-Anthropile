@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Toutes les entreprises
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+{% endblock %}
+{% block content %}
+<div class="entreprise">
+    <!-- Status message for different actions -->
+    {% if request.args.get('status') == 'insert_success' %}
+        <div class="alert alert-success">L'entreprise a été insérée avec succès.</div>
+    {% elif request.args.get('status') == 'modify_success' %}
+        <div class="alert alert-success">L'entreprise a été modifiée avec succès.</div>
+    {% elif request.args.get('status') == 'delete_success' %}
+        <div class="alert alert-success">L'entreprise a été supprimée avec succès.</div>
+    {% elif request.args.get('status') == 'delete_error' %}
+        <div class="alert alert-error">Impossible de supprimer cette entreprise : il y a un/des utilisateurs associé(s).</div>
+    {% endif %}
+
+    <div class="insert">
+        <a href="/inserer_entreprise" class="btn btn-primary">Insérer une entreprise</a>
+    </div>
+
+    {% if entreprises %}
+    <h1>Les entreprises</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th colspan=2>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ent in entreprises %}
+            <tr>
+                <td>{{ ent.id_entreprise }}</td>
+                <td>{{ ent.nom_entreprise }}</td>
+                <td>
+                    <a href="/supprimer_entreprise/{{ ent.id_entreprise }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</a>
+                </td>
+                <td>
+                    <a href="/modifier_entreprise/{{ ent.id_entreprise }}">Modifier</a>
+                </td>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No companies found.</p>
+    {% endif %}
+</div>
+{% endblock %}

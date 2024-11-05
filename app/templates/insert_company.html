@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Modifier Entreprise
+{% endblock %}
+{%block styles%}
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+    {%endblock%}
+{% block content %}
+{% if request.args.get('status') == 'insert_error' %}
+        <div class="alert alert-error">Erreur lors de l'insertion de l'entreprise. Elle existe peut-être déjà.</div>
+{% endif %}
+
+<h1>Insérer entreprise</h1>
+<form action="{{ url_for('inserer_entreprise') }}" method="POST">
+    <label for="id_entreprise"></label>
+    <input type="text" id="id_entreprise" name="id_entreprise" value="{{ id_entreprise }}" disabled>
+
+    <label for="nom_entreprise">Nom de l'Entreprise:</label>
+    <input type="text" id="nom_entreprise" name="nom_entreprise" value="" required>
+
+    <button type="submit">Modifier</button>
+</form>
+{% endblock %}

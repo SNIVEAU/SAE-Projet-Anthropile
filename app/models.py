@@ -286,8 +286,73 @@ def get_entreprise(): #choix de l'entreprise
     cursor.close()
     print(entreprises)
     return entreprises
-    
 
+def get_entreprise_sous_forme_classe():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE order by id_entreprise")
+    entreprises = cursor.fetchall()
+    cursor.close()
+    ents =[]
+    for id_entreprise, nom_entreprise in entreprises:
+        ents.append(Entreprise(id_entreprise, nom_entreprise))
+    print(ents)
+    return ents
+
+def get_entreprise_par_id(id):
+    entreprises=get_entreprise_sous_forme_classe()
+    for entreprise in entreprises:
+        if entreprise.id_entreprise == id:
+            return entreprise
+
+def get_id_max_entreprise():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT max(id_entreprise) FROM ENTREPRISE")
+    id_max = cursor.fetchone()[0]
+    cursor.close()
+    return id_max
+        
+def update_entreprise(id, nom):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE WHERE nom_entreprise=%s", (nom,))
+    ent = cursor.fetchone()
+    if ent:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("UPDATE ENTREPRISE SET nom_entreprise=%s WHERE id_entreprise=%s", (nom, id))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+
+def delete_company(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE NATURAL JOIN TRAVAILLER NATURAL JOIN UTILISATEUR WHERE id_entreprise=%s", (id,))
+    utilisateur_avec_entreprise = cursor.fetchone()
+
+    if utilisateur_avec_entreprise:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("DELETE FROM ENTREPRISE WHERE id_entreprise=%s", (id,))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+    
+def insert_entreprise(id, nom):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE WHERE id_entreprise=%s OR nom_entreprise=%s", (id, nom))
+    ent = cursor.fetchone()
+
+    if ent:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise) VALUES (%s, %s)", (id, nom))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+    
+    
 def get_all_user_info(user_name):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))

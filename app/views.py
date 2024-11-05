@@ -227,3 +227,52 @@ def detaille(id):
         if pt.id_point_de_collecte == int(id):
             return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)), collectes=liste_collectes)
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/entreprises/")
+@login_required
+def toutes_entreprises():
+    return render_template(
+        "all_companies.html",
+        entreprises=get_entreprise_sous_forme_classe()
+    )
+
+@app.route("/supprimer_entreprise/<int:id>")
+@login_required
+def supprimer_entreprise(id):
+    if delete_company(int(id)):
+        return redirect(url_for('toutes_entreprises', status='delete_success'))
+    else:
+        return redirect(url_for('toutes_entreprises', status='delete_error'))
+
+
+@app.route("/modifier_entreprise/<int:id>", methods=['GET', 'POST'])
+@login_required
+def modifier_entreprise(id):
+    if request.method == "POST":
+        nom_entreprise = request.form.get("nom_entreprise")
+        success = update_entreprise(id, nom_entreprise)
+        if success:
+            return redirect(url_for('toutes_entreprises', status='modify_success'))
+        else:
+            return redirect(url_for('modifier_entreprise',id=id, status='modify_error'))
+    return render_template(
+        "edit_company.html", ent = get_entreprise_par_id(id)
+    )  
+
+@app.route("/inserer_entreprise", methods=['GET', 'POST'])
+@login_required
+def inserer_entreprise():
+    if request.method == "POST":
+        id_entreprise = get_id_max_entreprise() + 1
+
+        nom_entreprise = request.form.get("nom_entreprise")
+        
+        # Call insert_entreprise only once and store the result
+        success = insert_entreprise(id_entreprise, nom_entreprise)
+        
+        if success:
+            return redirect(url_for('toutes_entreprises', status='insert_success'))
+        else:
+            return redirect(url_for('inserer_entreprise', status='insert_error'))
+    
+    return render_template("insert_company.html", id_entreprise = get_id_max_entreprise() + 1)

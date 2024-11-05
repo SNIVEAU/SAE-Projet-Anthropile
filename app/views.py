@@ -36,6 +36,41 @@ def guest(f):
 
 @app.route("/")
 def home():
+    # les_points_de_collecte = get_points_de_collecte()
+    # for pts in les_points_de_collecte:
+    #     address = pts.adresse
+    #     url = f'https://nominatim.openstreetmap.org/search?q={requests.utils.quote(address)}&format=json&addressdetails=1'
+    #     try:
+    #         response = requests.get(url)
+    #         data = response.json()
+            
+    #         if data:
+    #             latitude = data[0]['lat']
+    #             longitude = data[0]['lon']
+    #             return print(latitude, longitude)
+    #         else:
+    #             return print("Aucune donnée trouvée")
+    #     except Exception as e:
+    #         return print("Erreur lors de la requête", e)
+
+
+    # from geopy.geocoders import Nominatim
+    # from .models import get_points_de_collecte
+
+    # les_points_de_collecte = get_points_de_collecte()
+    # geolocator = Nominatim(user_agent="YourAppName/1.0")
+
+    # for point_de_collecte in les_points_de_collecte:
+    #     try:
+    #         location = geolocator.geocode(point_de_collecte.adresse)
+    #         if location:
+    #             print(f"Adresse : {point_de_collecte.adresse}")
+    #             print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
+    #         else:
+    #             print(f"Adresse non trouvée : {point_de_collecte.adresse}")  
+    #     except Exception as e:
+    #         print(f"Erreur lors de la recherche de l'adresse : {point_de_collecte.adresse}", e)
+
     return render_template("home.html")
 
 
@@ -249,12 +284,18 @@ def gerer_pts_collecte():
     form = PtsDeCollecteForm()
     points_de_collecte = get_points_de_collecte()
     if form.validate_on_submit():
-        insert_pts_de_collecte(
-            form.adresse.data,
-            form.nom_pt_collecte.data,
-            form.quantite_max.data
-        )
-        return redirect(url_for("gerer_pts_collecte"))
+        try:
+            insert_pts_de_collecte(
+                form.adresse.data,
+                form.nom_pt_collecte.data,
+                form.quantite_max.data
+            )
+        except Exception as e:
+            print(e)
+            print("Un point de collecte avec ce nom existe déjà")
+            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, error="Un point de collecte avec ce nom existe déjà")
+        print("Point de collecte ajouté avec succès")
+        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, success="Point de collecte ajouté avec succès")
     return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte)
 
 

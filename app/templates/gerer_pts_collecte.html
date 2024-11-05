@@ -10,6 +10,18 @@
 
 {% block content %}
 <h1>Gestion des Points de Collecte</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if success %}
+    <div class="alert alert-success" role="alert">
+        {{ success }}
+    </div>
+{% endif %}
+
 <div class="gere">
     <div class="container-gere">
         <div id="mapid"></div>
@@ -28,8 +40,8 @@
                 <div>
                     {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
                 </div>
-                <div>
-                    {{ form.submit() }}
+                <div class="les-btn">
+                    {{ form.submit(class_="btn-insert") }}
                 </div>
             </form>
         </div>
@@ -53,7 +65,7 @@
                 </ul>
 
                 <!-- Lien pour modifier avec confirmation -->
-                <a href="#">Détail</a>
+                <a href="{{ url_for('detaille', id=pt.id_point_de_collecte) }}">Détail</a>
                 <a href="javascript:void(0);"
                     onclick="confirmEdit('{{ url_for('modifier_pt_collecte', id=pt.id_point_de_collecte) }}')">
                     Modifier
@@ -61,8 +73,7 @@
 
                 <!-- Lien pour supprimer avec confirmation -->
                 <a href="javascript:void(0);"
-                    onclick="confirmDelete('{{ url_for('supprimer_pt_collecte', id=pt.id_point_de_collecte) }}')"
-                    style="color: red; margin-left: 10px;">
+                    onclick="confirmDelete('{{ url_for('supprimer_pt_collecte', id=pt.id_point_de_collecte) }}')">
                     Supprimer
                 </a>
             </li>

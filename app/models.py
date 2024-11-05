@@ -246,6 +246,19 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte,
     mysql.connection.commit()
     cursor.close()
 
+# def get_pos_irl(adresse): ICICICICIC
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("SELECT pos_x, pos_y FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+#     pos = cursor.fetchone()
+#     cursor.close()
+#     return pos
+
+# def update_pos_pts_de_collecte(id, pos_x, pos_y):
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
+#     mysql.connection.commit()
+#     cursor.close()
+
 def get_traiter_sort_by_date():
     cursor = mysql.connection.cursor()
     

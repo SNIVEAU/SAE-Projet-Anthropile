@@ -204,6 +204,7 @@ def get_collecter_by_date(date_collecte):
     return listecollecter
 
 
+
 def get_pts_de_collecte_by_adresse(adresse):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
@@ -230,11 +231,11 @@ def get_collecter_sort_by_date():
     
     # Sélectionne les colonnes explicitement et formate 'dateCollecte'
     query = """
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(dateCollecte, '%Y-%m-%d') AS date_only,qtecollecte
-    FROM COLLECTER
-    GROUP BY DATE(dateCollecte), id_point_collecte, id_Type
-    ORDER BY dateCollecte DESC
-    """
+
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
+    ORDER BY date_collecte DESC
     
     cursor.execute(query)
     collecter = cursor.fetchall()
@@ -243,7 +244,8 @@ def get_collecter_sort_by_date():
     for i in collecter:
         print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
-        listecollecter.append(collecter(i[0], i[1], i[2], i[3]))
+
+        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
     return listecollecter
@@ -349,19 +351,19 @@ def get_pts_collecte_and_id():
         choices.append((point.id_point_de_collecte, point))
     return choices
 
-class Collecter:
-    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
-        self.id_point_collecte = id_point_collecte
-        self.id_Tournee = id_Tournee
-        self.id_Type = id_Type
-        self.qtecollecte = qtecollecte
-    
-    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
-        self.date_collecte = date_collecte
-        self.nom_Type = nom_Type
-        self.qtecollecte = qtecollecte
-        self.duree = duree
-    
+#class Collecter:
+#    def __init__(self, id_point_collecte,id_Tournee, id_Type, qtecollecte):
+#        self.id_point_collecte = id_point_collecte
+#        self.id_Tournee = id_Tournee
+#        self.id_Type = id_Type
+#        self.qtecollecte = qtecollecte
+#    
+#    def __init__(self, date_collecte, nom_Type, qtecollecte, duree):
+#        self.date_collecte = date_collecte
+#        self.nom_Type = nom_Type
+#        self.qtecollecte = qtecollecte
+#        self.duree = duree
+#    
 
 def get_liste_collectes(id):
     cursor = mysql.connection.cursor()
@@ -370,6 +372,6 @@ def get_liste_collectes(id):
     cursor.close()
     collectes = []
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
-        collectes.append(Collecter(date_collecte, nom_Type, qtecollecte, duree))
+        collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
 

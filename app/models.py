@@ -237,6 +237,7 @@ def get_collecter_sort_by_date():
     FROM COLLECTER natural join TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
     ORDER BY date_collecte DESC
+    """
     
     cursor.execute(query)
     collecter = cursor.fetchall()
@@ -246,7 +247,7 @@ def get_collecter_sort_by_date():
         print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
 
-        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
     return listecollecter

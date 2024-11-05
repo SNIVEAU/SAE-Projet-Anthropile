@@ -258,6 +258,7 @@ footer ul li, footer div > p  {
         flex-direction: column;
         align-items: center;
         padding: 20px 0;
+        background-color: #0c2910;
     }
 
     footer div {

@@ -27,7 +27,7 @@ BIOTRACK’IN | Accueil
         <p class="p1">En Guadeloupe, la valorisation des bio-déchets est essentielle pour promouvoir une économie circulaire et réduire notre impact environnemental. Ce dispositif vise à transformer les déchets organiques en ressources utiles, comme le compost, ce qui contribue à enrichir nos sols et à soutenir l'agriculture locale.</p>
         <p class="p1">En intégrant la gestion des bio-déchets dans notre quotidien, nous participons activement à la préservation de notre belle île. Cela permet non seulement de diminuer la quantité de déchets envoyés en décharge, mais aussi de lutter contre le gaspillage et de favoriser un mode de vie plus durable.</p>
         <p class="p1">En adoptant de bonnes pratiques de valorisation des bio-déchets, nous garantissons un avenir plus sain et respectueux de notre environnement. Chaque geste compte : ensemble, agissons pour une Guadeloupe plus verte et plus responsable.</p>
-        <a href="#" class="btn">En savoir plus</a>
+        <a href="{{ url_for('statistique_pts_collecte') }}" class="btn">Voir les statistiques</a>
     </div>
     <!-- <div class="image"> -->
         <img class="image1" src="../static/img/bouteille_sable1.jpeg" alt="Nos services">
@@ -47,59 +47,61 @@ BIOTRACK’IN | Accueil
     <!-- </div> -->
 </section>
 <!-- Section du carrousel d'actualités -->
-<section class="section-actus">
-    <h1 class="carousel-title">Actualités</h1>
-    <section class="news-carousel">
-        <button class="carousel-btn prev-btn" onclick="moveCarousel(-1)">❮</button>
+<div class="section-actus">
+    <h1 class="titre-actus">Les Actualités</h1>
+    <div class="news-carousel">
+        <button class="carousel-btn prev-btn" onclick="moveSlides(-2)">&#10094;</button>
         <div class="carousel-track-container">
             <div class="carousel-track">
                 <div class="news-box">
-                    <img src="../static/img/actualite1.jpeg" alt="Actualité 1">
+                    <img src="../static/img/actualite1.jpeg" alt="Actu 1">
                     <p>Prochaine collecte à Basse-Terre le 29 novembre</p>
                 </div>
                 <div class="news-box">
-                    <img src="../static/img/actualite2.jpeg" alt="Actualité 2">
+                    <img src="../static/img/actualite2.jpeg" alt="Actu 2">
                     <p>Atelier sur le recyclage le 30 novembre</p>
                 </div>
                 <div class="news-box">
-                    <img src="../static/img/actualite3.jpeg" alt="Actualité 3">
-                    <p>Campagne de nettoyage de plage le 2 décembre</p>
+                    <img src="../static/img/actualite3.jpeg" alt="Actu 3">
+                    <p>Campagne de nettoyage de plage le 2 Décembre</p>
                 </div>
                 <div class="news-box">
-                    <img src="../static/img/actualite4.jpeg" alt="Actualité 4">
+                    <img src="../static/img/actualite4.jpeg" alt="Actu 4">
                     <p>Sondage sur les habitudes de consommation des Guadeloupéens lors des prochaines collectes</p>
                 </div>
                 <div class="news-box">
-                    <img src="../static/img/actualite5.jpeg" alt="Actualité 5">
-                    <p>Journée de sensibilisation dans les écoles le 6 décembre</p>
+                    <img src="../static/img/actualite5.jpeg" alt="Actu 5">
+                    <p>Journée de sensibilisation dans les écoles le 6 Décembre</p>
                 </div>
                 <div class="news-box">
-                    <img src="../static/img/actualite6.jpeg" alt="Actualité 6">
-                    <p>Participez au défi zéro déchet tout au long de décembre !</p>
+                    <img src="../static/img/actualite6.jpeg" alt="Actu 6">
+                    <p>Participez au défi zéro déchet tout au long de Décembre !</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite7.jpeg" alt="Actu 7">
+                    <p>Partenariat avec des Agriculteurs pour le Compostage</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite8.jpeg" alt="Actu 8">
+                    <p>Journée de Nettoyage des Plages et des Rivières le 9 Décembre</p>
                 </div>
             </div>
         </div>
-        <button class="carousel-btn next-btn" onclick="moveCarousel(1)">❯</button>
-    </section>
-</section>
+        <button class="carousel-btn next-btn" onclick="moveSlides(2)">&#10095;</button>
+    </div>
+</div>
 <script>
-    let currentSlide = 0;
-    const totalSlides = document.querySelectorAll('.news-box').length;
-    const slidesToShow = 3;
-
-function moveCarousel(direction) {
     const track = document.querySelector('.carousel-track');
-    const slideWidth = document.querySelector('.news-box').offsetWidth + 20; // 20px gap
-    const maxSlide = totalSlides - slidesToShow;
-    currentSlide += direction;
-    if (currentSlide < 0) {
-        currentSlide = maxSlide;
-    } else if (currentSlide > maxSlide) {
-        currentSlide = 0;
+    const slides = Array.from(track.children);
+    const slideWidth = slides[0].getBoundingClientRect().width + 20; // largeur d'une slide + espace
+    let currentIndex = 0;
+
+    function moveSlides(n) {
+        currentIndex = (currentIndex + n + slides.length) % slides.length;
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
     }
-    const offset = -(slideWidth * currentSlide);
-    track.style.transform = `translateX(${offset}px)`;
-}
+
+    setInterval(() => moveSlides(2), 5000); // Défilement automatique
 </script>
 
 {% endblock %}

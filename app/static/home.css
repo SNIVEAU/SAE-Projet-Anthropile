@@ -65,7 +65,7 @@ section {
     width: 50%;
 }
 
-.text1 h1, .text2 h1, .carousel-title {
+.text1 h1, .text2 h1, .titre-actus {
     font-size: 2vw;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
@@ -220,7 +220,7 @@ section {
         text-align: center;
     }
 
-    .text1, .text2, .carousel-title{
+    .text1, .text2, .titre-actus{
         width: 90%;
         margin: 0 auto 3%;
     }
@@ -229,7 +229,7 @@ section {
         margin-right: 5%;
     }
 
-    .text1 h1, .text2 h1, .carousel-title {
+    .text1 h1, .text2 h1, .titre-actus{
         font-size: 24px;
         margin-bottom: 2%;
     }

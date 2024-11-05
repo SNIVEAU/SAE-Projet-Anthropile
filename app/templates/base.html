@@ -35,7 +35,7 @@
         </nav>
         <div>
             {% if current_user.is_authenticated %}
-                <span>Bienvenue, {{ current_user.nom_utilisateur }} 👋!</span>
+                <span>Bienvenue, <a href= {{url_for('profil')}}>{{ current_user.nom_utilisateur }}</a> 👋!</span>
                 <a id="logout-link" class="connexioninscription">Se déconnecter</a>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>

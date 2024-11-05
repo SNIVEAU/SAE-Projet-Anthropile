@@ -227,3 +227,57 @@ def detaille(id):
         if pt.id_point_de_collecte == int(id):
             return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)), collectes=liste_collectes)
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SelectField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, Optional
+
+class EditProfileForm(FlaskForm):
+    user_id = HiddenField("User ID")  # Champ caché pour l'ID de l'utilisateur
+    nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=3, max=20)])
+    mail = StringField("Email", validators=[DataRequired(), Email()])
+    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min=10, max=15)])
+    motdepasse = PasswordField("Mot de passe", validators=[Optional(), Length(min=8)])
+    nom_role = SelectField("Rôle", choices=[("user", "Utilisateur"), ("admin", "Administrateur")])
+    submit = SubmitField("Sauvegarder les modifications")
+
+@app.route("/profil")
+@login_required
+def profil():
+    return render_template("profil.html", user=current_user)
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+
+    if request.method == "GET":
+        form.user_id.data = current_user.id  # Remplit le champ caché avec l'ID de l'utilisateur
+        form.nom_utilisateur.data = current_user.nom_utilisateur
+        form.mail.data = current_user.mail
+        form.numtel.data = current_user.numtel
+        form.nom_role.data = current_user.nom_role  # Charge le rôle actuel pour l'afficher
+
+    if request.method == "POST":
+        user_id = form.user_id.data  
+        nom_utilisateur = form.nom_utilisateur.data
+        mail = form.mail.data
+        numtel = form.numtel.data
+        
+        update_user(user_id, nom_utilisateur, mail, numtel)
+
+        current_user.nom_utilisateur = nom_utilisateur
+        current_user.mail = mail
+        current_user.numtel = numtel
+
+        if form.motdepasse.data:
+            current_user.set_password(form.motdepasse.data)
+            hashed_password = generate_password_hash(form.motdepasse.data)
+
+            update_password(user_id,hashed_password)
+
+        return redirect(url_for('profil'))
+
+    return render_template("edit_profile.html", form=form)

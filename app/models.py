@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 from flask import jsonify
+from .app import app
 
 # def get_id_max_dechets():
 #     cursor = mysql.connection.cursor()
@@ -294,7 +295,32 @@ def get_all_user_info(user_name):
     cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
     user_data = cursor.fetchone()
     cursor.close()
-    return user_data 
+    return user_data
+
+def update_user(user_id, nom_utilisateur, mail, numtel):
+    cursor = mysql.connection.cursor()
+    
+    query = """
+        UPDATE UTILISATEUR
+        SET nom_utilisateur = %s, mail = %s, numtel = %s
+        WHERE id_utilisateur = %s
+    """
+    
+    cursor.execute(query, (nom_utilisateur, mail, numtel, user_id))
+    
+    mysql.connection.commit()
+    
+    cursor.close()
+
+
+
+def update_password(user_id,password):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE UTILISATEUR SET motdepasse = %s WHERE id_Utilisateur = %s", (password,user_id))
+    mysql.connection.commit()
+    cursor.close()
+    
+
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
 
     cursor = mysql.connection.cursor()

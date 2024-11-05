@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 from flask import jsonify
+from .app import app
 
 # def get_id_max_dechets():
 #     cursor = mysql.connection.cursor()
@@ -200,28 +201,28 @@ class Collecter:
         self.dateCollecte = dateCollecte
         self.qtecollecte = qtecollecte
     
-    def insert_traiter(self):
+    def insert_collecter(self):
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO TRAITER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
+        cursor.execute("INSERT INTO COLLECTER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
-
-def get_traiter():
+def get_collecter():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM TRAITER")
-    traiter = cursor.fetchall()
+    cursor.execute("SELECT * FROM COLLECTER")
+    collecter = cursor.fetchall()
     cursor.close()
-    return traiter
+    return collecter
 
-def get_traiter_by_date(date_collecte):
+def get_collecter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT id_point_collecte,id_Type,date_collecte,qtecollecte FROM COLLECTER natural join TOURNEE WHERE DATE(date_collecte) = %s", (date_collecte,))
-    traiter = cursor.fetchall()
+    cursor.execute("SELECT * FROM COLLECTER WHERE DATE(dateCollecte) = %s", (date_collecte,))
+    collecter = cursor.fetchall()
     cursor.close()
-    listetraiter = []
-    for i in traiter:
-        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
-    return listetraiter
+    listecollecter = []
+    for i in collecter:
+        listecollecter.append(collecter(i[0], i[1], i[2], i[3]))
+    return listecollecter
+
 
 
 def get_pts_de_collecte_by_adresse(adresse):
@@ -259,11 +260,12 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte,
 #     mysql.connection.commit()
 #     cursor.close()
 
-def get_traiter_sort_by_date():
+def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
     
     # Sélectionne les colonnes explicitement et formate 'dateCollecte'
     query = """
+
     SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
     FROM COLLECTER natural join TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
@@ -271,16 +273,17 @@ def get_traiter_sort_by_date():
     """
     
     cursor.execute(query)
-    traiter = cursor.fetchall()
+    collecter = cursor.fetchall()
     
-    listetraiter = []
-    for i in traiter:
+    listecollecter = []
+    for i in collecter:
         print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
-        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
+
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
-    return listetraiter
+    return listecollecter
 
 def get_nom_utilisateur(nom_utilisateur):
     print(f"Recherche de l'utilisateur: {nom_utilisateur}")  # Debug
@@ -319,14 +322,104 @@ def get_entreprise(): #choix de l'entreprise
     cursor.close()
     print(entreprises)
     return entreprises
-    
 
+def get_entreprise_sous_forme_classe():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE order by id_entreprise")
+    entreprises = cursor.fetchall()
+    cursor.close()
+    ents =[]
+    for id_entreprise, nom_entreprise in entreprises:
+        ents.append(Entreprise(id_entreprise, nom_entreprise))
+    print(ents)
+    return ents
+
+def get_entreprise_par_id(id):
+    entreprises=get_entreprise_sous_forme_classe()
+    for entreprise in entreprises:
+        if entreprise.id_entreprise == id:
+            return entreprise
+
+def get_id_max_entreprise():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT max(id_entreprise) FROM ENTREPRISE")
+    id_max = cursor.fetchone()[0]
+    cursor.close()
+    return id_max
+        
+def update_entreprise(id, nom):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE WHERE nom_entreprise=%s", (nom,))
+    ent = cursor.fetchone()
+    if ent:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("UPDATE ENTREPRISE SET nom_entreprise=%s WHERE id_entreprise=%s", (nom, id))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+
+def delete_company(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE NATURAL JOIN TRAVAILLER NATURAL JOIN UTILISATEUR WHERE id_entreprise=%s", (id,))
+    utilisateur_avec_entreprise = cursor.fetchone()
+
+    if utilisateur_avec_entreprise:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("DELETE FROM ENTREPRISE WHERE id_entreprise=%s", (id,))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+    
+def insert_entreprise(id, nom):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE WHERE id_entreprise=%s OR nom_entreprise=%s", (id, nom))
+    ent = cursor.fetchone()
+
+    if ent:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise) VALUES (%s, %s)", (id, nom))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+    
+    
 def get_all_user_info(user_name):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM UTILISATEUR WHERE nom_Utilisateur = %s", (user_name,))
     user_data = cursor.fetchone()
     cursor.close()
-    return user_data 
+    return user_data
+
+def update_user(user_id, nom_utilisateur, mail, numtel):
+    cursor = mysql.connection.cursor()
+    
+    query = """
+        UPDATE UTILISATEUR
+        SET nom_utilisateur = %s, mail = %s, numtel = %s
+        WHERE id_utilisateur = %s
+    """
+    
+    cursor.execute(query, (nom_utilisateur, mail, numtel, user_id))
+    
+    mysql.connection.commit()
+    
+    cursor.close()
+
+
+
+def update_password(user_id,password):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE UTILISATEUR SET motdepasse = %s WHERE id_Utilisateur = %s", (password,user_id))
+    mysql.connection.commit()
+    cursor.close()
+    
+
 def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
 
     cursor = mysql.connection.cursor()

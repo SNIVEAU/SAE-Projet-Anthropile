@@ -14,6 +14,10 @@ from io import BytesIO
 from fpdf import FPDF
 import requests
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SelectField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, Optional
+
 class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
     email = StringField("E-mail", validators=[DataRequired(), Email()])
@@ -207,17 +211,17 @@ def data_graph_pts_collecte():
 @app.route("/rapport")
 @login_required
 def rapport():
-    traiter = get_traiter_sort_by_date()
-    return render_template("rapport.html", traiter=traiter[:10])
+    collecter = get_collecter_sort_by_date()
+    return render_template("rapport.html", collecter=collecter[:10])
 
 
 @app.route('/download_pdf/<date_collecte>')
 @login_required
 def download_pdf(date_collecte):
     # Récupérer les données pour cette date
-    traiter_list = get_traiter_by_date(date_collecte)
+    collecter_list = get_collecter_by_date(date_collecte)
 
-    if not traiter_list:
+    if not collecter_list:
         return "Aucune collecte trouvée pour cette date."
 
     # Créer un PDF avec les données récupérées
@@ -239,11 +243,11 @@ def download_pdf(date_collecte):
 
     # Ajouter les données dans le PDF
     pdf.set_font('Arial', '', 10)
-    for traiter in traiter_list:
-        pdf.cell(40, 10, str(traiter.id_point_collecte), 1)  # id_point_collecte
-        pdf.cell(40, 10, str(traiter.id_Type), 1)  # id_Type
-        pdf.cell(40, 10, str(traiter.dateCollecte), 1)  # dateCollecte
-        pdf.cell(40, 10, str(traiter.qtecollecte), 1)  # qtecollecte
+    for collecter in collecter_list:
+        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  # id_point_collecte
+        pdf.cell(40, 10, str(collecter.id_Type), 1)  # id_Type
+        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  # dateCollecte
+        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  # qtecollecte
         pdf.ln()
 
     # Sauvegarder le PDF dans un buffer en mémoire
@@ -327,5 +331,101 @@ def supprimer_pt_collecte(id):
     delete_point_collecte(id)
     return redirect(url_for("gerer_pts_collecte"))
 
+@app.route("/entreprises/")
+@login_required
+def toutes_entreprises():
+    return render_template(
+        "all_companies.html",
+        entreprises=get_entreprise_sous_forme_classe()
+    )
+
+@app.route("/supprimer_entreprise/<int:id>")
+@login_required
+def supprimer_entreprise(id):
+    if delete_company(int(id)):
+        return redirect(url_for('toutes_entreprises', status='delete_success'))
+    else:
+        return redirect(url_for('toutes_entreprises', status='delete_error'))
 
 
+@app.route("/modifier_entreprise/<int:id>", methods=['GET', 'POST'])
+@login_required
+def modifier_entreprise(id):
+    if request.method == "POST":
+        nom_entreprise = request.form.get("nom_entreprise")
+        success = update_entreprise(id, nom_entreprise)
+        if success:
+            return redirect(url_for('toutes_entreprises', status='modify_success'))
+        else:
+            return redirect(url_for('modifier_entreprise',id=id, status='modify_error'))
+    return render_template(
+        "edit_company.html", ent = get_entreprise_par_id(id)
+    )  
+
+@app.route("/inserer_entreprise", methods=['GET', 'POST'])
+@login_required
+def inserer_entreprise():
+    if request.method == "POST":
+        id_entreprise = get_id_max_entreprise() + 1
+
+        nom_entreprise = request.form.get("nom_entreprise")
+        
+        # Call insert_entreprise only once and store the result
+        success = insert_entreprise(id_entreprise, nom_entreprise)
+        
+        if success:
+            return redirect(url_for('toutes_entreprises', status='insert_success'))
+        else:
+            return redirect(url_for('inserer_entreprise', status='insert_error'))
+    
+    return render_template("insert_company.html", id_entreprise = get_id_max_entreprise() + 1)
+
+class EditProfileForm(FlaskForm):
+    user_id = HiddenField("User ID")  # Champ caché pour l'ID de l'utilisateur
+    nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=3, max=20)])
+    mail = StringField("Email", validators=[DataRequired(), Email()])
+    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min=10, max=15)])
+    motdepasse = PasswordField("Mot de passe", validators=[Optional(), Length(min=8)])
+    nom_role = SelectField("Rôle", choices=[("user", "Utilisateur"), ("admin", "Administrateur")])
+    submit = SubmitField("Sauvegarder les modifications")
+
+@app.route("/profil")
+@login_required
+def profil():
+    return render_template("profil.html", user=current_user)
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+
+    if request.method == "GET":
+        form.user_id.data = current_user.id  # Remplit le champ caché avec l'ID de l'utilisateur
+        form.nom_utilisateur.data = current_user.nom_utilisateur
+        form.mail.data = current_user.mail
+        form.numtel.data = current_user.numtel
+        form.nom_role.data = current_user.nom_role  # Charge le rôle actuel pour l'afficher
+
+    if request.method == "POST":
+        user_id = form.user_id.data  
+        nom_utilisateur = form.nom_utilisateur.data
+        mail = form.mail.data
+        numtel = form.numtel.data
+        
+        update_user(user_id, nom_utilisateur, mail, numtel)
+
+        current_user.nom_utilisateur = nom_utilisateur
+        current_user.mail = mail
+        current_user.numtel = numtel
+
+        if form.motdepasse.data:
+            current_user.set_password(form.motdepasse.data)
+            hashed_password = generate_password_hash(form.motdepasse.data)
+
+            update_password(user_id,hashed_password)
+
+        return redirect(url_for('profil'))
+
+    return render_template("edit_profile.html", form=form)
+
+  

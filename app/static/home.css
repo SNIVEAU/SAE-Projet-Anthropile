@@ -38,14 +38,14 @@
 }
 
 .hero-content h1 {
-    font-size: 4vw;
+    font-size: 80px;
     color: white;
     margin-bottom: 10px;
     text-transform: uppercase;
 }
 
 .hero-content p {
-    font-size: 1.2vw;
+    font-size: 23px;
     color: white;
 }
 
@@ -74,11 +74,13 @@ section {
 
 .p1 {
     font-size: 1vw;
+    font-size: 18px;
+    /* font-size: medium; */
     margin-bottom: 1rem;
 }
 
 .image1, .image2 {
-    width: 650px;
+    width: 50%;
     height: auto;
     margin: 2rem;
 }

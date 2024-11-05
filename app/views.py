@@ -1,6 +1,6 @@
 from functools import wraps
 from .app import *
-from flask import render_template, url_for, redirect, send_file
+from flask import render_template, url_for, redirect, send_file, request, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
@@ -12,6 +12,7 @@ from app.models import *
 from sqlalchemy import func
 from io import BytesIO
 from fpdf import FPDF
+import requests
 
 class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
@@ -227,3 +228,63 @@ def detaille(id):
         if pt.id_point_de_collecte == int(id):
             return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)), collectes=liste_collectes)
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+class PtsDeCollecteForm(FlaskForm):
+    # id_dechet = HiddenField("ID du déchet")
+    id_point_de_collecte = HiddenField("ID du point de collecte")
+    adresse = StringField("Adresse du point de collecte", validators=[DataRequired()])
+    nom_pt_collecte = StringField("Nom du point de collecte", validators=[DataRequired()])
+    quantite_max = DecimalField("Quantité maximale de déchets", validators=[DataRequired()])
+    submit = SubmitField("Ajouter")
+
+
+# @app.route("/gerer-pts-collecte")
+# @login_required
+# def gerer_pts_collecte():
+#     return render_template("gerer_pts_collecte.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/gerer-pts-collecte", methods=["GET", "POST"])
+@login_required
+def gerer_pts_collecte():
+    form = PtsDeCollecteForm()
+    points_de_collecte = get_points_de_collecte()
+    if form.validate_on_submit():
+        insert_pts_de_collecte(
+            form.adresse.data,
+            form.nom_pt_collecte.data,
+            form.quantite_max.data
+        )
+        return redirect(url_for("gerer_pts_collecte"))
+    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte)
+
+
+@app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])
+@login_required
+def modifier_pt_collecte(id):
+    form = PtsDeCollecteForm()
+    point_de_collecte = get_point_collecte(id)
+    if request.method == "GET":
+        # Pré-remplir le formulaire avec les données existantes
+        form.id_point_de_collecte.data = point_de_collecte.id_point_de_collecte
+        form.adresse.data = point_de_collecte.adresse
+        form.nom_pt_collecte.data = point_de_collecte.nom_pt_collecte
+        form.quantite_max.data = point_de_collecte.quantite_max
+    if form.validate_on_submit():
+        # Mettre à jour le point de collecte
+        update_point_collecte(
+            id,
+            form.adresse.data,
+            form.nom_pt_collecte.data,
+            form.quantite_max.data
+        )
+        return redirect(url_for("gerer_pts_collecte"))
+    return render_template("modifier_pt_collecte.html", form=form)
+
+@app.route("/supprimer-pt-collecte/<int:id>", methods=["GET", "POST"])
+@login_required
+def supprimer_pt_collecte(id):
+    delete_point_collecte(id)
+    return redirect(url_for("gerer_pts_collecte"))
+
+
+

@@ -117,24 +117,13 @@ section {
 }
 
 /* Styles spécifiques aux sections */
-.text1 {
+/* .text1 {
     margin-right: 10rem;
 }
 
 .text2 {
     margin-left: 5rem;
-}
-
-.p1 {
-    font-size: 18px;
-    margin-bottom: 1rem;
-}
-
-.image1, .image2 {
-    width: 600px;
-    height: 350px;
-    margin: 3rem 2rem 0;
-}
+} */
 
 /* Styles pour les boutons */
 .btn {

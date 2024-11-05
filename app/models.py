@@ -181,28 +181,28 @@ class Collecter:
         self.dateCollecte = dateCollecte
         self.qtecollecte = qtecollecte
     
-    def insert_traiter(self):
+    def insert_collecter(self):
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO TRAITER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
+        cursor.execute("INSERT INTO COLLECTER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
-
-def get_traiter():
+def get_collecter():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM TRAITER")
-    traiter = cursor.fetchall()
+    cursor.execute("SELECT * FROM COLLECTER")
+    collecter = cursor.fetchall()
     cursor.close()
-    return traiter
+    return collecter
 
-def get_traiter_by_date(date_collecte):
+def get_collecter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT id_point_collecte,id_Type,date_collecte,qtecollecte FROM COLLECTER natural join TOURNEE WHERE DATE(date_collecte) = %s", (date_collecte,))
-    traiter = cursor.fetchall()
+    cursor.execute("SELECT * FROM COLLECTER WHERE DATE(dateCollecte) = %s", (date_collecte,))
+    collecter = cursor.fetchall()
     cursor.close()
-    listetraiter = []
-    for i in traiter:
-        listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
-    return listetraiter
+    listecollecter = []
+    for i in collecter:
+        listecollecter.append(collecter(i[0], i[1], i[2], i[3]))
+    return listecollecter
+
 
 
 def get_pts_de_collecte_by_adresse(adresse):
@@ -226,28 +226,29 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte, pos_x, pos_y,
     mysql.connection.commit()
     cursor.close()
 
-def get_traiter_sort_by_date():
+def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
     
     # Sélectionne les colonnes explicitement et formate 'dateCollecte'
     query = """
+
     SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
     FROM COLLECTER natural join TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
     ORDER BY date_collecte DESC
-    """
     
     cursor.execute(query)
-    traiter = cursor.fetchall()
+    collecter = cursor.fetchall()
     
-    listetraiter = []
-    for i in traiter:
+    listecollecter = []
+    for i in collecter:
         print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
+
         listetraiter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
-    return listetraiter
+    return listecollecter
 
 def get_nom_utilisateur(nom_utilisateur):
     print(f"Recherche de l'utilisateur: {nom_utilisateur}")  # Debug

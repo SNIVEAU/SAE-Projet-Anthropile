@@ -247,18 +247,47 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte,
     mysql.connection.commit()
     cursor.close()
 
-# def get_pos_irl(adresse): ICICICICIC
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("SELECT pos_x, pos_y FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
-#     pos = cursor.fetchone()
-#     cursor.close()
-#     return pos
+    # for pts in get_points_de_collecte():
+    #     print(pts.adresse)
+    #     try:
+    #         latitude, longitude = get_pos_irl(pts.adresse)
+    #         print(latitude, longitude)
+    #         update_pos_pts_de_collecte(pts.id_point_de_collecte, latitude, longitude)
+    #     except Exception as e:
+    #         print(f"Erreur lors de la recherche de l'adresse : {pts.adresse}", e)
 
-# def update_pos_pts_de_collecte(id, pos_x, pos_y):
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
-#     mysql.connection.commit()
-#     cursor.close()
+def get_pos_irl(adresse): 
+    from geopy.geocoders import Nominatim
+    from .models import get_points_de_collecte
+
+    # les_points_de_collecte = get_points_de_collecte()
+    geolocator = Nominatim(user_agent="BIOTRACK'IN/1.0")
+
+    try:
+        location = geolocator.geocode(adresse)
+        if location:
+            print(f"Adresse : {adresse}")
+            print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
+            return location.latitude, location.longitude
+        else:
+            print(f"Adresse non trouvée : {adresse}")
+            return None
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
+    
+def adresse_existante_bd(adresse):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+    point = cursor.fetchone()
+    cursor.close()
+    return point
+
+def update_pos_pts_de_collecte(id, pos_x, pos_y):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
@@ -292,6 +321,13 @@ def get_nom_utilisateur(nom_utilisateur):
     existing_user = cursor.fetchone()
     cursor.close()
     return existing_user
+
+def get_nom_pts_collecte(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    existing_point = cursor.fetchone()
+    cursor.close()
+    return existing_point
 
 def get_id_utilisateur(nom_utilisateur):
     cursor = mysql.connection.cursor()

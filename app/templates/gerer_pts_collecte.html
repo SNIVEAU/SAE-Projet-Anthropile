@@ -32,10 +32,10 @@
             <form method="post" action="{{ url_for('gerer_pts_collecte') }}">
                 {{ form.hidden_tag() }}
                 <div>
-                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
+                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
                 </div>
                 <div>
-                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
+                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
                 </div>
                 <div>
                     {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}

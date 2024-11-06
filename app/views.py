@@ -40,41 +40,6 @@ def guest(f):
 
 @app.route("/")
 def home():
-    # les_points_de_collecte = get_points_de_collecte()
-    # for pts in les_points_de_collecte:
-    #     address = pts.adresse
-    #     url = f'https://nominatim.openstreetmap.org/search?q={requests.utils.quote(address)}&format=json&addressdetails=1'
-    #     try:
-    #         response = requests.get(url)
-    #         data = response.json()
-            
-    #         if data:
-    #             latitude = data[0]['lat']
-    #             longitude = data[0]['lon']
-    #             return print(latitude, longitude)
-    #         else:
-    #             return print("Aucune donnée trouvée")
-    #     except Exception as e:
-    #         return print("Erreur lors de la requête", e)
-
-
-    # from geopy.geocoders import Nominatim
-    # from .models import get_points_de_collecte
-
-    # les_points_de_collecte = get_points_de_collecte()
-    # geolocator = Nominatim(user_agent="YourAppName/1.0")
-
-    # for point_de_collecte in les_points_de_collecte:
-    #     try:
-    #         location = geolocator.geocode(point_de_collecte.adresse)
-    #         if location:
-    #             print(f"Adresse : {point_de_collecte.adresse}")
-    #             print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
-    #         else:
-    #             print(f"Adresse non trouvée : {point_de_collecte.adresse}")  
-    #     except Exception as e:
-    #         print(f"Erreur lors de la recherche de l'adresse : {point_de_collecte.adresse}", e)
-
     return render_template("home.html")
 
 
@@ -116,10 +81,18 @@ def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
-        if existing_user:
+        existing_point = get_nom_pts_collecte(form.nom_utilisateur.data)
+        if existing_user or existing_point:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
-
+        try:
+            pos = get_pos_irl(form.adresse.data)
+            print(pos)
+            if pos is None:
+                return render_template('register.html', error="Adresse non trouvée", form=form)
+        except Exception as e:
+            print(e, "-------------------")
+            return render_template('register.html', error="Adresse non trouvée", form=form)
         # Hacher le mot de passe avant de l'insérer dans la base de données
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
@@ -130,8 +103,7 @@ def register():
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
             insert_travailler(idUtilisateur, form.entreprise.data)
         if not get_pts_de_collecte_by_adresse(form.adresse.data):
-
-            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,0,0)
+            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,pos[0],pos[1])
 
         #récupérer l'inscrit dans la bd
         new_user = get_all_user_info(form.nom_utilisateur.data)
@@ -286,21 +258,29 @@ class PtsDeCollecteForm(FlaskForm):
 @login_required
 def gerer_pts_collecte():
     form = PtsDeCollecteForm()
-    points_de_collecte = get_points_de_collecte()
     if form.validate_on_submit():
         try:
+            if adresse_existante_bd(form.adresse.data):
+                print("Un point de collecte avec cette adresse existe déjà")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec cette adresse existe déjà")
+            pos = get_pos_irl(form.adresse.data)
+            if pos is None:
+                print("Adresse non trouvée")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")
             insert_pts_de_collecte(
                 form.adresse.data,
                 form.nom_pt_collecte.data,
-                form.quantite_max.data
+                form.quantite_max.data, 
+                pos[0], pos[1]
             )
         except Exception as e:
+            if str(e) == "'GeocoderServiceError' object is not subscriptable" or str(e) == "'GeocoderUnavailable' object is not subscriptable":
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
             print(e)
-            print("Un point de collecte avec ce nom existe déjà")
-            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, error="Un point de collecte avec ce nom existe déjà")
+            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
         print("Point de collecte ajouté avec succès")
-        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, success="Point de collecte ajouté avec succès")
-    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte)
+        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), success="Point de collecte ajouté avec succès")
+    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte())
 
 
 @app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])

@@ -30,6 +30,8 @@
                 <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
             </ul>
         </nav>
+        
+
         <div>
             {% if current_user.is_authenticated %}
                 <span>Bienvenue, {{ current_user.nom_utilisateur }} 👋!</span>
@@ -92,6 +94,35 @@
                 menu.classList.remove('active'); // Ferme le menu
             }
         });
+        let isNavigatingAway = false;
+
+        // Fonction pour gérer le clic sur les liens
+        let activate = false;
+        function activated(){
+            activate = true;
+        }
+        
+        function handleLinkClick() {
+            isNavigatingAway = true;
+        }
+
+        // Ajouter l'écouteur d'événement pour tous les liens
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', handleLinkClick);
+        });
+
+        // Détecter les événements de rechargement
+        window.addEventListener("beforeunload", function (event) {
+            // Vérifier si l'utilisateur quitte la page sans avoir cliqué sur un lien et sans rechargement
+            if (!isNavigatingAway && !activate) {
+                // Utiliser sendBeacon pour envoyer la requête de déconnexion
+                navigator.sendBeacon("/logout");
+            }
+            event.returnValue = ''; // Nécessaire pour certains navigateurs
+        });
+
+
+        
     </script>
 </body>
 </html>

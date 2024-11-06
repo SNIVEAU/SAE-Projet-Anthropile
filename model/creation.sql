@@ -21,7 +21,7 @@ CREATE TABLE UTILISATEUR (
   id_Utilisateur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Utilisateur VARCHAR(42),
   mail VARCHAR(42),
-  numtel INT,
+  numtel BIGINT,
   motdepasse VARCHAR(255),
   id_Entreprise INT,
   nom_role VARCHAR(42),

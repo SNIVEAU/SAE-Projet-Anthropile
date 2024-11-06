@@ -2,7 +2,7 @@ from functools import wraps
 from .app import *
 from flask import render_template, url_for, redirect, send_file
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
+from wtforms import BooleanField, StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired,Email,Length,Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -40,24 +40,28 @@ def home():
 class LoginForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
+    remember = BooleanField("Se souvenir de moi")
     next = HiddenField()
-
     submit = SubmitField("Se connecter")
+
 @app.route('/login', methods=['GET', 'POST'])
 @guest
 def login():
     form = LoginForm()
+    # Récupérer l'URL de redirection à partir des paramètres de requête
     if not form.is_submitted():
-        form.next.data = request.args.get("next")
+        form.next.data = request.args.get("next") # Log de l'état de remember
     elif form.validate_on_submit():
         user_data = get_all_user_info(form.nom_utilisateur.data)
         
         if user_data:
             user = Utilisateur(*user_data)
+            # Vérifier le mot de passe
             if check_password_hash(user.motdepasse, form.motdepasse.data):
-                login_user(user)  # Connexion avec Flask-Login
-                next = form.next.data or url_for("home")
-                return redirect(next)
+                # Connexion avec Flask-Login, en utilisant le champ remember
+                login_user(user,remember=form.remember.data)  # Utiliser le paramètre remember ici
+                next_page = form.next.data or url_for("home")
+                return redirect(next_page)
         
         return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
 
@@ -73,6 +77,8 @@ def login():
 def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
+        print(form.numtel.data)
+        print(len(form.numtel.data))
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
@@ -80,8 +86,7 @@ def register():
 
         # Hacher le mot de passe avant de l'insérer dans la base de données
         hashed_password = generate_password_hash(form.motdepasse.data)
-        print("c'est le mot de passe hashed, longeur")
-        # Insertion dans la base de données avec le mot de passe haché
+
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
 
         #récupérer l'inscrit dans la bd
@@ -95,7 +100,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required  # Protège cette route
 def logout():
     logout_user()  # Déconnexion avec Flask-Login

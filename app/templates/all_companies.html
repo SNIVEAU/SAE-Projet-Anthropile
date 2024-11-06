@@ -1,8 +1,9 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} 
 {% block title %}
     BIOTRACK’IN | Toutes les entreprises
 {% endblock %}
 {% block styles %}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">

@@ -38,6 +38,14 @@ def guest(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.nom_role != 'Administrateur':
+            return redirect(url_for('not_admin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -248,14 +256,9 @@ class PtsDeCollecteForm(FlaskForm):
     quantite_max = DecimalField("Quantité maximale de déchets", validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
-
-# @app.route("/gerer-pts-collecte")
-# @login_required
-# def gerer_pts_collecte():
-#     return render_template("gerer_pts_collecte.html", points_de_collecte=get_points_de_collecte())
-
 @app.route("/gerer-pts-collecte", methods=["GET", "POST"])
 @login_required
+@admin_required
 def gerer_pts_collecte():
     form = PtsDeCollecteForm()
     if form.validate_on_submit():
@@ -288,6 +291,7 @@ def gerer_pts_collecte():
 
 @app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def modifier_pt_collecte(id):
     form = PtsDeCollecteForm()
     point_de_collecte = get_point_collecte(id)
@@ -333,6 +337,7 @@ def modifier_pt_collecte(id):
 
 @app.route("/supprimer-pt-collecte/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def supprimer_pt_collecte(id):
     try:
         delete_point_collecte(id)
@@ -345,6 +350,7 @@ def supprimer_pt_collecte(id):
 
 @app.route("/entreprises/")
 @login_required
+@admin_required
 def toutes_entreprises():
     return render_template(
         "all_companies.html",
@@ -353,6 +359,7 @@ def toutes_entreprises():
 
 @app.route("/supprimer_entreprise/<int:id>")
 @login_required
+@admin_required
 def supprimer_entreprise(id):
     if delete_company(int(id)):
         return redirect(url_for('toutes_entreprises', status='delete_success'))
@@ -362,6 +369,7 @@ def supprimer_entreprise(id):
 
 @app.route("/modifier_entreprise/<int:id>", methods=['GET', 'POST'])
 @login_required
+@admin_required
 def modifier_entreprise(id):
     if request.method == "POST":
         nom_entreprise = request.form.get("nom_entreprise")
@@ -376,6 +384,7 @@ def modifier_entreprise(id):
 
 @app.route("/inserer_entreprise", methods=['GET', 'POST'])
 @login_required
+@admin_required
 def inserer_entreprise():
     if request.method == "POST":
         id_entreprise = get_id_max_entreprise() + 1
@@ -440,4 +449,6 @@ def edit_profile():
 
     return render_template("edit_profile.html", form=form)
 
-  
+@app.route("/not_admin")
+def not_admin():
+    return render_template("not_admin.html")

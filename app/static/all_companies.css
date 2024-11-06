@@ -1,3 +1,109 @@
+/* Base page styling */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    flex: 1;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Form container */
+form {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 40px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Fieldset and Legend Styling */
+fieldset {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+}
+
+legend {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    padding: 0 8px;
+}
+
+/* Label Styling */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+/* Input Styling */
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #5cb85c;
+    outline: none;
+}
+
+/* Submit Button Styling */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #4cae4c;
+    transform: scale(1.03);
+}
+
+@media (max-width: 600px) {
+    form {
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
 .alert {
     padding: 15px;
     margin: 10px 0;

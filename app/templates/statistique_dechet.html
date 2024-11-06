@@ -3,12 +3,13 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stats.css') }}">
 {% endblock %}
 
 {% block title %}Statistique sur les déchets{% endblock %}
 
 {% block content %}
-<h1>Quantité de Déchets par Catégorie</h1>
+<h2>Quantité de Déchets par Catégorie</h2>
 <div class="graph">
     <canvas id="dechetChart" width="400" height="200"></canvas>
 </div>

@@ -130,6 +130,25 @@ def get_points_de_collecte():
     # return points
     return les_points
 
+def get_point_collecte(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
+
+def update_point_collecte(id, adresse, nom_pt_collecte, quantite_max):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE POINT_DE_COLLECTE SET adresse = %s, nom_pt_collecte = %s, qte_max = %s WHERE id_point_collecte = %s", (adresse, nom_pt_collecte, quantite_max, id))
+    mysql.connection.commit()
+    cursor.close()
+
+def delete_point_collecte(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    mysql.connection.commit()
+    cursor.close()
+
 # def 
 # -- to install ???
 # -- matplotlib pandas
@@ -252,13 +271,27 @@ def get_pts_de_collecte_by_adresse(adresse):
     return listepoints
 
 
-def insert_pts_de_collecte(adresse, nom_pt_collecte, pos_x, pos_y, 
-                           qte_max=500 #Quantité modifiable par défaut
+def insert_pts_de_collecte(adresse, nom_pt_collecte, 
+                           qte_max=500, #Quantité modifiable par défaut
+                           pos_x=0, pos_y=0 #Position modifiable par défaut
                            ):
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO POINT_DE_COLLECTE(adresse, nom_pt_collecte, pos_x, pos_y, qte_max) VALUES (%s, %s, %s, %s, %s)", (adresse, nom_pt_collecte, pos_x, pos_y, qte_max))
     mysql.connection.commit()
     cursor.close()
+
+# def get_pos_irl(adresse): ICICICICIC
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("SELECT pos_x, pos_y FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+#     pos = cursor.fetchone()
+#     cursor.close()
+#     return pos
+
+# def update_pos_pts_de_collecte(id, pos_x, pos_y):
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
+#     mysql.connection.commit()
+#     cursor.close()
 
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()

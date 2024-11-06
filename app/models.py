@@ -105,10 +105,21 @@ def get_point_collecte(id):
     return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
 
 def update_point_collecte(id, adresse, nom_pt_collecte, quantite_max):
+    try:
+        pos = get_pos_irl(adresse)
+        if pos is None:
+            return None
+        else:
+            latitude, longitude = pos
+            update_pos_pts_de_collecte(id, latitude, longitude)
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
     cursor = mysql.connection.cursor()
     cursor.execute("UPDATE POINT_DE_COLLECTE SET adresse = %s, nom_pt_collecte = %s, qte_max = %s WHERE id_point_collecte = %s", (adresse, nom_pt_collecte, quantite_max, id))
     mysql.connection.commit()
     cursor.close()
+    return True
 
 def delete_point_collecte(id):
     cursor = mysql.connection.cursor()
@@ -281,7 +292,16 @@ def adresse_existante_bd(adresse):
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
     point = cursor.fetchone()
     cursor.close()
-    return point
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
+
+def nom_pt_collecte_existante_bd(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
 
 def update_pos_pts_de_collecte(id, pos_x, pos_y):
     cursor = mysql.connection.cursor()

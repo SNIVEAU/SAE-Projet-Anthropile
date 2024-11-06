@@ -4,89 +4,75 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='gerer_pts_collecte.css') }}">
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
 {% endblock %}
 
 {% block title %}Gérer les points de collectes{% endblock %}
 
 {% block content %}
-<h2>Gérer les points de collectes</h2>
-<div class="container">
-    <div id="mapid"></div>
-    <div class="form">
-        <!-- templates/modifier_pt_collecte.html -->
-        <h1>Modifier le Point de Collecte</h1>
+<h1>Gestion des Points de Collecte</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
 
-        <form method="post" action="{{ url_for('modifier_pt_collecte', id=form.id_point_de_collecte.data) }}">
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.adresse.label }} {{ form.adresse(size=20) }}
-            </div>
-            <div>
-                {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
-            </div>
-            <div>
-                {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
-            </div>
-            <div>
-                {{ form.submit() }}
-            </div>
-        </form>
+{% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %}
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<p class="alert alert-danger">{{ message }}</p>
+{% else %}
+<p class="alert alert-success">{{ message }}</p>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<div class="gere">
+    <div class="container-gere">
+        <div id="mapid"></div>
+        <div class="form">
+            <h2>Ajouter un Points de Collecte</h2>
+
+            <!-- Formulaire pour ajouter un nouveau point de collecte -->
+            <form method="post" action="{{ url_for('modifier_pt_collecte', id=form.id_point_de_collecte.data) }}">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
+                </div>
+                <div>
+                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
+                </div>
+                <div>
+                    {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
+                </div>
+                <div class="les-btn">
+                    {{ form.submit(class_="btn-insert") }}
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Initialisation de la carte et centrage sur la Guadeloupe
-        var map = L.map('mapid').setView([16.2650, -61.5510], 10); // Guadeloupe
-
-        // Ajout des tuiles OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Fonction pour géocoder une adresse avec Nominatim
-        function geocodeAddress(address, callback) {
-            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        var latLng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                        callback(latLng); // Appel du callback avec les coordonnées obtenues
-                    } else {
-                        console.log("Adresse non trouvée : " + address);
-                    }
-                })
-                .catch(error => console.error('Erreur de géocodage :', error)); // Gestion des erreurs
-        }
-
-        // Récupérer les adresses depuis le serveur (passées depuis Flask)
-        var addresses = [
-            {% for point in points_de_collecte %}
-        {
-            address: "{{ point.adresse }}",
-            name: "{{ point.nom_pt_collecte }}",
+    var addresses = [
+        {% for point in points_de_collecte %}
+    {
+        lat: {{ point.latitude }},   // Ajout de la latitude
+        lng: {{ point.longitude }},   // Ajout de la longitude
+        name: "{{ point.nom_pt_collecte }}",
             detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
-        },
-        {% endfor %}
-    ];
-
-    // Parcours des adresses et ajout des marqueurs après géocodage
-    addresses.forEach(function (location) {
-        geocodeAddress(location.address, function (latLng) {
-            // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
-            if (latLng) {
-                L.marker(latLng).addTo(map)
-                    .bindPopup(
-                        `<strong>${location.name}</strong><br>
-              <button onclick="window.location.href='${location.detailUrl}'">Voir le détail</button>`
-                    ); // Ajout d'une popup avec le nom et le bouton
-            }
-        });
-    });
-
-});
+    },
+    {% endfor %}
+      ];
 </script>
 
 {% endblock %}

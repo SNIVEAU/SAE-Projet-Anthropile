@@ -263,6 +263,9 @@ def gerer_pts_collecte():
             if adresse_existante_bd(form.adresse.data):
                 print("Un point de collecte avec cette adresse existe déjà")
                 return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec cette adresse existe déjà")
+            if nom_pt_collecte_existante_bd(form.adresse.data):
+                print("Un point de collecte avec ce nom existe déjà")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
             pos = get_pos_irl(form.adresse.data)
             if pos is None:
                 print("Adresse non trouvée")
@@ -274,7 +277,7 @@ def gerer_pts_collecte():
                 pos[0], pos[1]
             )
         except Exception as e:
-            if str(e) == "'GeocoderServiceError' object is not subscriptable" or str(e) == "'GeocoderUnavailable' object is not subscriptable":
+            if 'Geocoder' in str(e):
                 return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
             print(e)
             return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
@@ -288,6 +291,7 @@ def gerer_pts_collecte():
 def modifier_pt_collecte(id):
     form = PtsDeCollecteForm()
     point_de_collecte = get_point_collecte(id)
+    current_pts = point_de_collecte
     if request.method == "GET":
         # Pré-remplir le formulaire avec les données existantes
         form.id_point_de_collecte.data = point_de_collecte.id_point_de_collecte
@@ -296,14 +300,36 @@ def modifier_pt_collecte(id):
         form.quantite_max.data = point_de_collecte.quantite_max
     if form.validate_on_submit():
         # Mettre à jour le point de collecte
-        update_point_collecte(
-            id,
-            form.adresse.data,
-            form.nom_pt_collecte.data,
-            form.quantite_max.data
-        )
-        return redirect(url_for("gerer_pts_collecte"))
-    return render_template("modifier_pt_collecte.html", form=form)
+        adresse_existante = adresse_existante_bd(form.adresse.data)
+        nom_existante = nom_pt_collecte_existante_bd(form.nom_pt_collecte.data)
+        if adresse_existante and adresse_existante.id_point_de_collecte != id:
+            return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec cette adresse existe déjà")
+        if nom_existante and nom_existante.id_point_de_collecte != id:
+            print("Un point de collecte avec ce nom existe déjà")
+            return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
+        try:
+            if form.adresse.data == current_pts.adresse and form.nom_pt_collecte.data == current_pts.nom_pt_collecte and form.quantite_max.data == current_pts.quantite_max:
+                print("Aucune modification apportée")
+                flash("Aucune modification apportée", "success")
+                return redirect(url_for("gerer_pts_collecte"))
+                # return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Aucune modification apportée")
+            fait = update_point_collecte(
+                id,
+                form.adresse.data,
+                form.nom_pt_collecte.data,
+                form.quantite_max.data
+            )
+            if fait is None:
+                print("Adresse non trouvée")
+                return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")
+            if 'Geocoder' in str(fait):
+                print("Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+                return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+            return redirect(url_for("gerer_pts_collecte"))
+        except Exception as e:
+            print(e)
+            return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")
+    return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/supprimer-pt-collecte/<int:id>", methods=["GET", "POST"])
 @login_required

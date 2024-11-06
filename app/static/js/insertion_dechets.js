@@ -8,35 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Fonction pour géocoder une adresse avec Nominatim
-  function geocodeAddress(address, callback) {
-    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          var latLng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-          callback(latLng); // Appel du callback avec les coordonnées obtenues
-        } else {
-          console.log("Adresse non trouvée : " + address);
-        }
-      })
-      .catch(error => console.error('Erreur de géocodage :', error)); // Gestion des erreurs
-  }
-
   // Récupérer les adresses depuis le serveur (passées depuis Flask)
 
   // Parcours des adresses et ajout des marqueurs après géocodage
   addresses.forEach(function (location) {
-    geocodeAddress(location.address, function (latLng) {
-      // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
-      if (latLng) {
-        L.marker(latLng).addTo(map)
-          .bindPopup(
-            `<strong>${location.name}</strong><br>
-            <button type="button" onclick="selectPointDeCollecte('${location.id}')">Sélectionner ce point</button>`
-          ); // Ajout d'un bouton pour sélectionner le point
-      }
-    });
+    // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
+    if (location.lat && location.lng) {
+      var latLng = [location.lat, location.lng];
+      L.marker(latLng).addTo(map)
+        .bindPopup(
+          `<strong>${location.name}</strong><br>
+          <button type="button" onclick="selectPointDeCollecte('${location.id}')">Sélectionner ce point</button>`
+        ); // Ajout d'une popup avec le nom et le bouton
+    }
   });
 });
 

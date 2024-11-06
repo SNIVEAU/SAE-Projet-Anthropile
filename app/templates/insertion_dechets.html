@@ -54,8 +54,10 @@
         {% for point in points_de_collecte %}
         { 
             address: "{{ point.adresse }}", 
-            name: "{{ point.nom_point }}", 
-            id: "{{ point.id_point_de_collecte }}" 
+            name: "{{ point.nom_pt_collecte }}", 
+            id: "{{ point.id_point_de_collecte }}", 
+            lat: {{ point.latitude }},   // Ajout de la latitude
+            lng: {{ point.longitude }}   // Ajout de la longitude
         }{% if not loop.last %}, {% endif %}
         {% endfor %}
     ];

@@ -1,8 +1,9 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} 
 {% block title %}
     BIOTRACK’IN | Toutes les entreprises
 {% endblock %}
 {% block styles %}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
@@ -21,7 +22,7 @@
     {% endif %}
 
     <div class="insert">
-        <a href="/inserer_entreprise" class="btn btn-primary">Insérer une entreprise</a>
+        <a href="/inserer_ent" class="btn btn-primary">Insérer une entreprise</a>
     </div>
 
     {% if entreprises %}

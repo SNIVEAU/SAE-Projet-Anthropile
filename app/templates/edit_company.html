@@ -4,7 +4,6 @@
 {% endblock %}
 {%block styles%}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
     {%endblock%}
 {% block content %}
@@ -15,10 +14,10 @@
 
 <h1>Modifier entreprise: {{ ent.nom_entreprise }}</h1>
 <form action="{{ url_for('modifier_entreprise', id=ent.id_entreprise) }}" method="POST">
-    <label for="id_entreprise">ID de l'Entreprise:</label>
+    <label for="id_entreprise">ID :</label>
     <input type="text" id="id_entreprise" name="id_entreprise" value="{{ ent.id_entreprise }}" disabled>
-
-    <label for="nom_entreprise">Nom de l'Entreprise:</label>
+    
+    <label for="nom_entreprise">Nom :</label>
     <input type="text" id="nom_entreprise" name="nom_entreprise" value="{{ ent.nom_entreprise }}" required>
 
     <button type="submit">Modifier</button>

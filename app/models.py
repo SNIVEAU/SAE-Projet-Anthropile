@@ -6,14 +6,6 @@ import os
 from flask import jsonify
 from .app import app
 
-# def get_id_max_dechets():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
-#     id_max,  = cursor.fetchone()
-#     cursor.close()
-#     print(id_max, "*********")
-#     return id_max
-
 class CategorieDechet:
     def __init__(self, id_type, nom_type):
         self.id_type = id_type
@@ -30,11 +22,52 @@ def get_categories():
     les_categories = []
     for id_categorie, nom_categorie in categories:
         les_categories.append(CategorieDechet(id_categorie, nom_categorie))
-    for categorie in les_categories:
-        print(type(categorie))
-    print(categories, les_categories)
-    # return categories
+    #for categorie in les_categories:
+    #    print(type(categorie))
+    #print(categories, les_categories)
+    #return categories
     return les_categories
+
+def get_id_max_dechets():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_Type) FROM CATEGORIEDECHET")
+    id_max,  = cursor.fetchone()
+    cursor.close()
+    return id_max
+
+def insert_categorie(id_type, nom_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE id_Type=%s OR nom_Type=%s", (id_type, nom_type))
+    company = cursor.fetchone()
+
+    if company:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type) VALUES (%s, %s)", (id_type, nom_type))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+
+def delete_category(id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET NATURAL JOIN DECHET WHERE id_Type=%s", (id_type,))
+    dechet_asscocie_categorie = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM COLLECTER WHERE id_Type=%s", (id_type,))
+
+    categorie_dans_collecter = cursor.fetchone()
+
+
+    if dechet_asscocie_categorie or categorie_dans_collecter:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("DELETE FROM CATEGORIEDECHET WHERE id_Type=%s", (id_type,))
+        mysql.connection.commit()
+        cursor.close()
+
+        return True
 
 class Dechet:
     def __init__(self, nom_dechet, id_type, quantite):

@@ -172,14 +172,14 @@ def insert_dechets():
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
-@app.route("/statistique-dechets")
-@login_required
-def statistique_dechet():
-    # get_graph_dechet()
-    # get_graph_qte_dechets_categorie()
-    # data_graph_qte_dechets_categorie()
-    # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
-    return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+# @app.route("/statistique-dechets")
+# @login_required
+# def statistique_dechet():
+#     # get_graph_dechet()
+#     # get_graph_qte_dechets_categorie()
+#     # data_graph_qte_dechets_categorie()
+#     # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+#     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/dechets")
 @login_required

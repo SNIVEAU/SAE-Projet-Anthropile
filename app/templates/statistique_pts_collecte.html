@@ -3,74 +3,24 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+<script src="{{ url_for('static', filename='js/graph.js') }}"></script>
 {% endblock %}
 
 
 {% block title %}Statistique des points de collecte{% endblock %}
 
 {% block content %}
-<h2>Quantité de Déchets par Catégorie pour Chaque Point de Collecte</h2>
-<div class="graph">
-    <canvas id="myChart" width="400" height="200"></canvas>
+<div class="contenu-graph">
+    <div class="graph">
+        <h2>Quantité de Déchets par Catégorie pour Chaque Point de Collecte</h2>
+        <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+    <div class="graph">
+        <h2>Quantité de Déchets par Catégorie</h2>
+        <canvas id="dechetChart" width="400" height="200"></canvas>
+    </div>
 </div>
 <script>
-    // Fonction pour récupérer les données du serveur
-    async function fetchData() {
-        const response = await fetch('/data/graph-pts-collecte');
-        const data = await response.json();
-        return data;
-    }
 
-    // Générer le graphique
-    fetchData().then(data => {
-        const labels = Object.keys(data); // Les noms des points de collecte
-        const categories = new Set(); // Pour stocker les catégories uniques
-
-        // Organiser les données pour chaque point de collecte
-        const datasetMap = {};
-
-        labels.forEach(pt_collecte => {
-            data[pt_collecte].forEach(item => {
-                categories.add(item.categorie);
-                if (!datasetMap[item.categorie]) {
-                    datasetMap[item.categorie] = [];
-                }
-            });
-        });
-
-        // Initialiser les datasets pour chaque catégorie
-        categories.forEach(categorie => {
-            datasetMap[categorie] = labels.map(pt_collecte => {
-                const catData = data[pt_collecte].find(item => item.categorie === categorie);
-                return catData ? catData.quantite : 0;
-            });
-        });
-
-        const datasets = Array.from(categories).map(categorie => ({
-            label: categorie,
-            data: datasetMap[categorie],
-            backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16), // Couleur aléatoire
-        }));
-
-        const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels, // Les noms des points de collecte
-                datasets: datasets, // Les données pour chaque catégorie
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        stacked: true // Empilement des barres
-                    },
-                    y: {
-                        stacked: true // Empilement des barres
-                    }
-                }
-            }
-        });
-    });
 </script>
 {% endblock %}

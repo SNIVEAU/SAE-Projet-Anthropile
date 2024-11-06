@@ -22,6 +22,15 @@
     </div>
 {% endif %}
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <p class="alert alert-danger">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
 <div class="gere">
     <div class="container-gere">
         <div id="mapid"></div>

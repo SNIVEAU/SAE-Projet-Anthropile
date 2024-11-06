@@ -1,6 +1,6 @@
 from functools import wraps
 from .app import *
-from flask import render_template, url_for, redirect, send_file, request, jsonify
+from flask import render_template, url_for, redirect, send_file, request, jsonify, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
@@ -308,8 +308,14 @@ def modifier_pt_collecte(id):
 @app.route("/supprimer-pt-collecte/<int:id>", methods=["GET", "POST"])
 @login_required
 def supprimer_pt_collecte(id):
-    delete_point_collecte(id)
-    return redirect(url_for("gerer_pts_collecte"))
+    try:
+        delete_point_collecte(id)
+        flash("Point de collecte supprimé avec succès", "success")
+        return redirect(url_for("gerer_pts_collecte"))
+    except Exception as e:
+        print(e)
+        flash("Impossible de supprimer ce point de collecte, il y a des collectes et/ou déchets associées à ce point de collecte", "error")
+        return redirect(url_for("gerer_pts_collecte"))
 
 @app.route("/entreprises/")
 @login_required

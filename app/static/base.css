@@ -285,3 +285,17 @@ footer ul li, footer div > p  {
         margin: 10px 0;
     }
 }
+
+.alert {
+    margin: 0 auto;
+    max-width: 1180px;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 90%;
+}
+
+.alert-warning {
+    background-color: #ffcc00;
+    color: #333;
+}

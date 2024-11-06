@@ -17,6 +17,7 @@ import requests
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, Optional
+from geopy.exc import GeocoderUnavailable
 
 class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
@@ -98,6 +99,8 @@ def register():
             print(pos)
             if pos is None:
                 return render_template('register.html', error="Adresse non trouvée", form=form)
+            if 'Geocoder' in str(pos):
+                return render_template('register.html', error="Service de géocodage indisponible", form=form)            
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
@@ -106,21 +109,26 @@ def register():
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
         print(form.entreprise.data)
-        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "utilisateur")
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "Utilisateur")
         if not form.entreprise.data == 'Aucune':
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
             insert_travailler(idUtilisateur, form.entreprise.data)
-        if not get_pts_de_collecte_by_adresse(form.adresse.data):
-            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,pos[0],pos[1])
-
+        # or ('Geocoder' in str(pos) or 'Max retries' in str(pos) or '443' in str(pos) or 'timeout' in str(pos))
+        try:
+            if not isinstance(pos, GeocoderUnavailable):
+                if not get_pts_de_collecte_by_adresse(form.adresse.data):
+                    insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data, 50, pos[0],pos[1])
+            else:
+                flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
+        except Exception as e:
+            print(e)
+            flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
         #récupérer l'inscrit dans la bd
         new_user = get_all_user_info(form.nom_utilisateur.data)
         if new_user:
             user_data = Utilisateur(*new_user)
             login_user(user_data)
-
         return redirect(url_for('home'))
-    
     return render_template('register.html', form=form)
 
 

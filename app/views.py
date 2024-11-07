@@ -2,7 +2,7 @@ from functools import wraps
 from .app import *
 from flask import render_template, url_for, redirect, send_file, request, jsonify, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
+from wtforms import BooleanField, StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired,Email,Length,Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,6 +39,9 @@ def guest(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
+@app.route("/", methods=["Get", "POST"])
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -48,6 +51,7 @@ def admin_required(f):
     return decorated_function
 
 @app.route("/")
+
 def home():
     return render_template("home.html")
 
@@ -57,8 +61,8 @@ class LoginForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
     next = HiddenField()
-
     submit = SubmitField("Se connecter")
+    
 @app.route('/login', methods=['GET', 'POST'])
 @guest
 def login():
@@ -71,13 +75,15 @@ def login():
         if user_data:
             user = Utilisateur(*user_data)
             if check_password_hash(user.motdepasse, form.motdepasse.data):
-                login_user(user)  # Connexion avec Flask-Login
+               
+                login_user(user)  # Utilise l'option remember de Flask-Login
                 next = form.next.data or url_for("home")
                 return redirect(next)
         
         return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
 
     return render_template('login.html', form=form)
+
 
    
 
@@ -132,11 +138,15 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/logout')
-@login_required  # Protège cette route
+@app.route('/logout', methods=['POST', 'GET'])
+@login_required
 def logout():
     logout_user()  # Déconnexion avec Flask-Login
-    return redirect(url_for('home'))
+    # Optionnellement, supprimer le cookie "remember_me" ici
+    resp = redirect(url_for('home'))
+    #resp.delete_cookie('remember_me')
+    return resp
+
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")

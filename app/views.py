@@ -182,17 +182,17 @@ def collecte_dechets():
 #     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/dechets")
-@login_required
+# @login_required
 def statistique_dechets():
     return data_graph_qte_dechets_categorie()
 
 @app.route("/statistique-pts-collecte")
-@login_required
+# @login_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/graph-pts-collecte")
-@login_required
+# @login_required
 def data_graph_pts_collecte():
     return data_graph_qte_dechets_cat_pts_collecte()
 

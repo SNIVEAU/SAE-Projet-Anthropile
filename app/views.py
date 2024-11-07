@@ -337,6 +337,7 @@ def modifier_pt_collecte(id):
             if 'Geocoder' in str(fait):
                 print("Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
                 return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+            flash("Point de collecte modifié avec succès", "success")            
             return redirect(url_for("gerer_pts_collecte"))
         except Exception as e:
             print(e)

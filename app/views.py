@@ -390,17 +390,17 @@ def modifier_entreprise(id):
         "edit_company.html", ent = get_entreprise_par_id(id)
     )  
 
-@app.route("/inserer_entreprise", methods=['GET', 'POST'])
+@app.route("/inserer_ent", methods=['GET', 'POST'])
 @login_required
 @admin_required
 def inserer_entreprise():
     if request.method == "POST":
-        id_entreprise = get_id_max_entreprise() + 1
+        id_ent = get_id_max_entreprise() + 1
 
         nom_entreprise = request.form.get("nom_entreprise")
         
         # Call insert_entreprise only once and store the result
-        success = insert_entreprise(id_entreprise, nom_entreprise)
+        success = insert_entreprise(id_ent, nom_entreprise)
         
         if success:
             return redirect(url_for('toutes_entreprises', status='insert_success'))
@@ -460,3 +460,43 @@ def edit_profile():
 @app.route("/not_admin")
 def not_admin():
     return render_template("not_admin.html")
+
+
+@app.route("/categories/")
+@login_required
+def toutes_categories():
+    print(get_categories())
+    return render_template(
+        "all_categories.html",
+        categories=get_categories()
+    )
+
+@app.route("/inserer_categorie", methods=['GET', 'POST'])
+@login_required
+def inserer_categorie_dechet():
+    if request.method == "POST":
+        id_type = get_id_max_dechets() + 1
+
+        nom_type = request.form.get("nom_type")
+        
+        # Call insert_entreprise only once and store the result
+        success = insert_categorie(id_type, nom_type)
+        
+        if success:
+            return redirect(url_for('toutes_categories', status='insert_success'))
+        else:
+            return redirect(url_for('inserer_categorie_dechet', status='insert_error'))
+    
+    return render_template("insert_category.html", id_categorie_max = get_id_max_dechets() + 1)
+
+@app.route("/supprimer_categorie/<int:id>")
+@login_required
+def supprimer_cat(id):
+    if delete_category(id):
+        return redirect(url_for('toutes_categories', status='delete_success'))
+    else:
+        return redirect(url_for('toutes_categories', status='delete_error'))
+
+      
+
+

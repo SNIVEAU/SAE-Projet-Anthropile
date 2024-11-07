@@ -1,0 +1,104 @@
+main {
+    padding: 30px;
+}
+
+.container-avis {
+    max-width: 900px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    border-radius: 5px;
+}
+
+.titre {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.avis-list {
+    margin-top: 20px;
+}
+
+.avis-item {
+    border-bottom: 1px solid #ddd;
+    /* padding: 0 10px; */
+    padding: 10px;
+}
+
+.avis-item:last-child {
+    border-bottom: none;
+}
+
+.avis-header {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.utilisateur {
+    font-size: 1.1em;
+}
+
+.date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.note {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.avis-content {
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+.avis-content p {
+    margin: 0;
+}
+
+.avis-item:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+
+i {
+    font-size: 1.5em;
+    margin-right: 5px;
+    color: #f39c12; /* Couleur des étoiles */
+}
+
+i.fa-star {
+    color: #f39c12; /* Couleur des étoiles pleines */
+}
+
+i.fa-star-half-alt {
+    color: #f39c12; /* Couleur des étoiles moyennes */
+}
+
+i.fa-star-o {
+    color: #ccc; /* Couleur des étoiles vides */
+}
+
+.avis-note i {
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+.avis-note i.fa-star {
+    color: #f39c12;
+}
+
+.avis-note i.fa-star-o {
+    color: #ccc;
+}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Avis{% endblock %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='avis.css') }}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<div class="container-avis">
+    <div class="titre">
+        <h1>Vos avis</h1>
+            <div class="avis-note">
+                {% set full_stars = note_globale|round(0) %}
+                {% set half_star = note_globale - full_stars %}
+                
+                {% for i in range(1, 6) %}
+                    {% if i <= full_stars %}
+                        <i class="fa fa-solid fa-star"></i> <!-- Étoile pleine -->
+                    {% elif i == full_stars + 1 and half_star > 0 %}
+                        <i class="fa fa-solid fa-star-half-alt"></i> <!-- Étoile moitié -->
+                    {% else %}
+                        <i class="fa fa-regular fa-star"></i> <!-- Étoile vide -->
+                    {% endif %}
+                {% endfor %}
+        </div>
+    </div>
+    {% for a in avis %}
+    <div class="avis-item">
+        <div class="avis-header">
+            <span class="utilisateur">{{ a.nom_utilisateur }}</span>
+        </div>
+        <div class="note">
+            <span class="date">Avis laissé le {{ a.date_avis }}</span>
+            <div class="avis-note">
+                {% for i in range(1, 6) %}
+                <i class="fa {% if i <= a.note %}fa-solid fa-star{% else %}fa-regular fa-star{% endif %}"></i>                {% endfor %}
+            </div>            
+        </div>
+        <div class="avis-content">
+            <p>{{ a.avis }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

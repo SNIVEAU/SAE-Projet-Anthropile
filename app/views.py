@@ -497,3 +497,7 @@ def supprimer_cat(id):
         return redirect(url_for('toutes_categories', status='delete_success'))
     else:
         return redirect(url_for('toutes_categories', status='delete_error'))
+
+@app.route("/avis")
+def avis():
+    return render_template("avis.html", avis=get_avis(), note_globale=get_global_note())

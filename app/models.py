@@ -589,3 +589,29 @@ def get_liste_collectes(id):
         collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
 
+class Avis:
+    def __init__(self, nom_utilisateur, avis, note, date_avis):
+        self.nom_utilisateur = nom_utilisateur
+        self.avis = avis
+        self.note = note
+        self.date_avis = date_avis
+
+    def __repr__(self):
+        return self.nom_utilisateur + " : " + self.avis
+
+def get_avis():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR")
+    avis = cursor.fetchall()
+    cursor.close()
+    les_avis = []
+    for nom_utilisateur, avis, note, date_avis in avis:
+        les_avis.append(Avis(nom_utilisateur, avis, note, date_avis))
+    return les_avis
+
+def get_global_note():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT AVG(note) FROM AVIS")
+    note = cursor.fetchone()
+    cursor.close()
+    return note[0]

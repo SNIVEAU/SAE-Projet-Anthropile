@@ -24,6 +24,16 @@
     margin-bottom: 20px;
 }
 
+canvas {
+    max-width: 800px;
+    max-height: 400px;
+}
+
+#mapid {
+    height: 626px;
+    width: 100%;
+}
+
 /* Responsivité pour les petits écrans */
 @media (max-width: 768px) {
     .contenu-graph {

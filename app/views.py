@@ -168,7 +168,7 @@ def insert_dechets():
     return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/collecte-dechets")
-@login_required
+# @login_required
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 

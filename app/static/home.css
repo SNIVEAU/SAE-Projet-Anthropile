@@ -38,14 +38,14 @@
 }
 
 .hero-content h1 {
-    font-size: 4vw;
+    font-size: 80px;
     color: white;
     margin-bottom: 10px;
     text-transform: uppercase;
 }
 
 .hero-content p {
-    font-size: 1.2vw;
+    font-size: 23px;
     color: white;
 }
 
@@ -54,7 +54,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5% 10%;
+    padding: 5% 7%;
 }
 
 .section-with-image-left {
@@ -65,7 +65,7 @@ section {
     width: 50%;
 }
 
-.text1 h1, .text2 h1 {
+.text1 h1, .text2 h1, .titre-actus {
     font-size: 2vw;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
@@ -74,11 +74,13 @@ section {
 
 .p1 {
     font-size: 1vw;
+    font-size: 18px;
+    /* font-size: medium; */
     margin-bottom: 1rem;
 }
 
 .image1, .image2 {
-    width: 650px;
+    width: 50%;
     height: auto;
     margin: 2rem;
 }
@@ -98,6 +100,95 @@ section {
 
 .btn:hover {
     background-color: #0b5c1d;
+}
+
+.section-actus {
+    margin-bottom: 2rem;
+    text-align: center;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+
+.news-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 1200px; 
+    margin: auto; 
+    display: flex;
+    align-items: center;
+    overflow: hidden; 
+    background: #eaeaea;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+}
+
+.carousel-track-container {
+    overflow: hidden; 
+    width: 100%; 
+}
+
+.carousel-track {
+    display: flex; 
+    transition: transform 0.5s ease;
+    gap: 20px;
+}
+
+.news-box {
+    flex: 0 0 30%;
+    box-sizing: border-box;
+    background: #ffffff; 
+    border-radius: 10px; 
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+    text-align: center;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.news-box:hover {
+    transform: translateY(-5px);
+}
+
+.news-box img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.news-box p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.carousel-btn {
+    background-color: #17280B;
+    color: white;
+    border: none;
+    font-size: 2rem;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-btn:hover {
+    background-color: #0e1b00;
+}
+
+.prev-btn {
+    left: 10px;
+}
+
+.next-btn {
+    right: 10px;
 }
 
 /* Styles pour mobile */
@@ -129,7 +220,7 @@ section {
         text-align: center;
     }
 
-    .text1, .text2 {
+    .text1, .text2, .titre-actus{
         width: 90%;
         margin: 0 auto 3%;
     }
@@ -138,7 +229,7 @@ section {
         margin-right: 5%;
     }
 
-    .text1 h1, .text2 h1 {
+    .text1 h1, .text2 h1, .titre-actus{
         font-size: 24px;
         margin-bottom: 2%;
     }
@@ -166,11 +257,42 @@ section {
         margin: 5% auto;
     }
 
-    /* Style des boutons */
-    .btn {
-        padding: 2% 4%;
-        font-size: 14px;
-        margin-top: 3%;
+    /* Modifications pour le carrousel d'actualités */
+    .news-carousel {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 10px;
+    }
+
+    .news-box {
+        flex: 0 0 45%;
+        max-width: 45%;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+
+    .news-box img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .carousel-btn {
+        font-size: 1.5rem;
+        padding: 5px;
     }
 }
 

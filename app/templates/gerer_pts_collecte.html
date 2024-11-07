@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='gerer_pts_collecte.css') }}">
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}
+
+{% block title %}Gestion des Points de Collecte{% endblock %}
+
+{% block content %}
+<h1>Gestion des Points de Collecte</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if success %}
+    <div class="alert alert-success" role="alert">
+        {{ success }}
+    </div>
+{% endif %}
+
+<div class="gere">
+    <div class="container-gere">
+        <div id="mapid"></div>
+        <div class="form">
+            <h2>Ajouter un Points de Collecte</h2>
+
+            <!-- Formulaire pour ajouter un nouveau point de collecte -->
+            <form method="post" action="{{ url_for('gerer_pts_collecte') }}">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
+                </div>
+                <div>
+                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
+                </div>
+                <div>
+                    {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
+                </div>
+                <div class="les-btn">
+                    {{ form.submit(class_="btn-insert") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="pts">
+        <h2>Liste des Points de Collecte</h2>
+        <ul>
+            {% for pt in points_de_collecte %}
+            <li>
+                <ul>
+                    <li>
+                        <p><strong>Nom : </strong>{{ pt.nom_pt_collecte }}</p>
+                    </li>
+                    <li>
+                        <p><strong>Adresse : </strong>{{ pt.adresse }}</p>
+                    </li>
+                    <li>
+                        <p><strong>Quantité max : </strong>{{ pt.quantite_max }}</p>
+                    </li>
+                </ul>
+
+                <!-- Lien pour modifier avec confirmation -->
+                <a href="{{ url_for('detaille', id=pt.id_point_de_collecte) }}">Détail</a>
+                <a href="javascript:void(0);"
+                    onclick="confirmEdit('{{ url_for('modifier_pt_collecte', id=pt.id_point_de_collecte) }}')">
+                    Modifier
+                </a>
+
+                <!-- Lien pour supprimer avec confirmation -->
+                <a href="javascript:void(0);"
+                    onclick="confirmDelete('{{ url_for('supprimer_pt_collecte', id=pt.id_point_de_collecte) }}')">
+                    Supprimer
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        var addresses = [
+            {% for point in points_de_collecte %}
+        {
+            lat: {{ point.latitude }},   // Ajout de la latitude
+            lng: {{ point.longitude }},   // Ajout de la longitude
+            name: "{{ point.nom_pt_collecte }}",
+                detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
+        },
+        {% endfor %}
+      ];
+    </script>
+
+    {% endblock %}

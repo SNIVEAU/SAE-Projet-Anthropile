@@ -3,6 +3,7 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
 {% endblock %}
 
 {% block title %}Carte OpenStreetMap avec adresses de collecte{% endblock %}
@@ -11,56 +12,15 @@
 <div id="mapid"></div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // Initialisation de la carte et centrage sur la Guadeloupe
-      var map = L.map('mapid').setView([16.2650, -61.5510], 10); // Guadeloupe
-
-      // Ajout des tuiles OpenStreetMap
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      // Fonction pour géocoder une adresse avec Nominatim
-      function geocodeAddress(address, callback) {
-        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
-          .then(response => response.json())
-          .then(data => {
-            if (data && data.length > 0) {
-              var latLng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-              callback(latLng); // Appel du callback avec les coordonnées obtenues
-            } else {
-              console.log("Adresse non trouvée : " + address);
-            }
-          })
-          .catch(error => console.error('Erreur de géocodage :', error)); // Gestion des erreurs
-      }
-
-      // Récupérer les adresses depuis le serveur (passées depuis Flask)
       var addresses = [
         {% for point in points_de_collecte %}
           { 
-            address: "{{ point.adresse }}", 
-            name: "{{ point.nom_point }}", 
+            lat: {{ point.latitude }},   // Ajout de la latitude
+            lng: {{ point.longitude }},   // Ajout de la longitude
+            name: "{{ point.nom_pt_collecte }}", 
             detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}" 
           },
         {% endfor %}
       ];
-
-      // Parcours des adresses et ajout des marqueurs après géocodage
-      addresses.forEach(function (location) {
-        geocodeAddress(location.address, function (latLng) {
-          // Vérifier que les coordonnées sont valides avant d'ajouter le marqueur
-          if (latLng) {
-            L.marker(latLng).addTo(map)
-              .bindPopup(
-                `<strong>${location.name}</strong><br>
-                <button onclick="window.location.href='${location.detailUrl}'">Voir le détail</button>`
-              ); // Ajout d'une popup avec le nom et le bouton
-          }
-        });
-      });
-
-  });
 </script>
 {% endblock %}

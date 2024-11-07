@@ -26,16 +26,16 @@ def load_user(user_name):
     cursor.execute("SELECT * FROM UTILISATEUR WHERE id_Utilisateur = %s", (user_name,))
     user_data = cursor.fetchone()
     cursor.close() #peut être remplacer par une fonction
+    print(user_data, "c'est le user_data")
 
     if user_data:
         return Utilisateur(*user_data)
     return None
 
 app.config['MYSQL_HOST'] = 'servinfo-maria'
-app.config['MYSQL_USER'] = 'lima'
-app.config['MYSQL_PASSWORD'] = 'lima'
-app.config['MYSQL_DB'] = 'DBlima' #mettre sa propre BD
-
+app.config['MYSQL_USER'] = 'niveau'
+app.config['MYSQL_PASSWORD'] = 'niveau'
+app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
 
 mysql=MySQL(app)
 

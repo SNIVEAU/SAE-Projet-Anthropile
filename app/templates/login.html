@@ -35,15 +35,11 @@
                 {% endfor %}
             </div>
             
-            <div>
-                <label for="remember">{{ form.remember.label }}</label>
-                {{ form.remember() }}  <!-- Ajoutez ceci pour le champ "Se souvenir de moi" -->
-            </div>
+            
 
-        
             <button type="submit">{{ form.submit.label }}</button> <!-- Assure-toi que ce bouton est bien là -->
         </form>
-
+        
         <p>Vous n'avez pas de compte? <a href="{{ url_for('register') }}">Créez-en un ici!</a></p>
     </div>
 {% endblock %}

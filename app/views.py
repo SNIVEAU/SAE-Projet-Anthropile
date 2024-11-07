@@ -1,6 +1,6 @@
 from functools import wraps
 from .app import *
-from flask import render_template, url_for, redirect, send_file
+from flask import render_template, url_for, redirect, send_file, request, jsonify
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
@@ -12,13 +12,20 @@ from app.models import *
 from sqlalchemy import func
 from io import BytesIO
 from fpdf import FPDF
+import requests
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SelectField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, Optional
 
 class UtilisateurForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=1, max=25)])
     email = StringField("E-mail", validators=[DataRequired(), Email()])
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
+    adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise, validators=[DataRequired()])
+    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+
     next = HiddenField()
     submit = SubmitField("Ajouter")
 
@@ -31,8 +38,43 @@ def guest(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route("/")
+@app.route("/", methods=["Get", "POST"])
 def home():
+    # les_points_de_collecte = get_points_de_collecte()
+    # for pts in les_points_de_collecte:
+    #     address = pts.adresse
+    #     url = f'https://nominatim.openstreetmap.org/search?q={requests.utils.quote(address)}&format=json&addressdetails=1'
+    #     try:
+    #         response = requests.get(url)
+    #         data = response.json()
+            
+    #         if data:
+    #             latitude = data[0]['lat']
+    #             longitude = data[0]['lon']
+    #             return print(latitude, longitude)
+    #         else:
+    #             return print("Aucune donnée trouvée")
+    #     except Exception as e:
+    #         return print("Erreur lors de la requête", e)
+
+
+    # from geopy.geocoders import Nominatim
+    # from .models import get_points_de_collecte
+
+    # les_points_de_collecte = get_points_de_collecte()
+    # geolocator = Nominatim(user_agent="YourAppName/1.0")
+
+    # for point_de_collecte in les_points_de_collecte:
+    #     try:
+    #         location = geolocator.geocode(point_de_collecte.adresse)
+    #         if location:
+    #             print(f"Adresse : {point_de_collecte.adresse}")
+    #             print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
+    #         else:
+    #             print(f"Adresse non trouvée : {point_de_collecte.adresse}")  
+    #     except Exception as e:
+    #         print(f"Erreur lors de la recherche de l'adresse : {point_de_collecte.adresse}", e)
+
     return render_template("home.html")
 
 
@@ -40,32 +82,30 @@ def home():
 class LoginForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
-    remember = BooleanField("Se souvenir de moi")
     next = HiddenField()
     submit = SubmitField("Se connecter")
-
+    
 @app.route('/login', methods=['GET', 'POST'])
 @guest
 def login():
     form = LoginForm()
-    # Récupérer l'URL de redirection à partir des paramètres de requête
     if not form.is_submitted():
-        form.next.data = request.args.get("next") # Log de l'état de remember
+        form.next.data = request.args.get("next")
     elif form.validate_on_submit():
         user_data = get_all_user_info(form.nom_utilisateur.data)
         
         if user_data:
             user = Utilisateur(*user_data)
-            # Vérifier le mot de passe
             if check_password_hash(user.motdepasse, form.motdepasse.data):
-                # Connexion avec Flask-Login, en utilisant le champ remember
-                login_user(user,remember=form.remember.data)  # Utiliser le paramètre remember ici
-                next_page = form.next.data or url_for("home")
-                return redirect(next_page)
+               
+                login_user(user)  # Utilise l'option remember de Flask-Login
+                next = form.next.data or url_for("home")
+                return redirect(next)
         
         return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
 
     return render_template('login.html', form=form)
+
 
    
 
@@ -77,8 +117,6 @@ def login():
 def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
-        print(form.numtel.data)
-        print(len(form.numtel.data))
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
@@ -86,8 +124,16 @@ def register():
 
         # Hacher le mot de passe avant de l'insérer dans la base de données
         hashed_password = generate_password_hash(form.motdepasse.data)
+        print("c'est le mot de passe hashed, longeur")
+        # Insertion dans la base de données avec le mot de passe haché
+        print(form.entreprise.data)
+        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "utilisateur")
+        if not form.entreprise.data == 'Aucune':
+            idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
+            insert_travailler(idUtilisateur, form.entreprise.data)
+        if not get_pts_de_collecte_by_adresse(form.adresse.data):
 
-        insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, form.entreprise.data, "utilisateur")
+            insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data,0,0)
 
         #récupérer l'inscrit dans la bd
         new_user = get_all_user_info(form.nom_utilisateur.data)
@@ -100,14 +146,19 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required  # Protège cette route
+@app.route('/logout', methods=['POST', 'GET'])
+@login_required
 def logout():
     logout_user()  # Déconnexion avec Flask-Login
-    return redirect(url_for('home'))
+    # Optionnellement, supprimer le cookie "remember_me" ici
+    resp = redirect(url_for('home'))
+    #resp.delete_cookie('remember_me')
+    return resp
+
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
+    id_user = HiddenField("ID de l'utilisateur")
     nom = StringField("Nom du déchet", validators=[DataRequired()])
     # type = StringField("Type de déchet", validators=[DataRequired()])
     # type = SelectField("Type de déchet", choices=[("plastique", "Plastique"), ("verre", "Verre"), ("papier", "Papier"), ("métal", "Métal"), ("organique", "Organique")], validators=[DataRequired()])
@@ -115,6 +166,7 @@ class DechetsForm(FlaskForm):
     # type = RadioField("Type de déchet", choices=get_categories)
     # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=False, get_label="Nom_Type", validators=[DataRequired()])
     quantite = DecimalField("Volume du déchet", validators=[DataRequired()])
+    id_point_collecte = SelectField("Point de collecte", choices=get_pts_collecte_and_id, validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
 @app.route("/insert-dechets", methods=["GET", "POST"])
@@ -122,11 +174,16 @@ class DechetsForm(FlaskForm):
 def insert_dechets():
     form = DechetsForm()
     if form.validate_on_submit():
+        print(form.id_user.data, "''''''''''''''''''''")
+        print(form.id_point_collecte.data, "-----------------")
+        print(form.id_point_collecte.data)
+        print(type(form.id_point_collecte))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
-        dechet.insert_dechet()
+        id_dechet = dechet.insert_dechet()
+        insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
         return redirect(url_for("home"))
-    return render_template("insertion_dechets.html", form=form)
+    return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/collecte-dechets")
 @login_required
@@ -160,17 +217,17 @@ def data_graph_pts_collecte():
 @app.route("/rapport")
 @login_required
 def rapport():
-    traiter = get_traiter_sort_by_date()
-    return render_template("rapport.html", traiter=traiter[:10])
+    collecter = get_collecter_sort_by_date()
+    return render_template("rapport.html", collecter=collecter[:10])
 
 
 @app.route('/download_pdf/<date_collecte>')
 @login_required
 def download_pdf(date_collecte):
     # Récupérer les données pour cette date
-    traiter_list = get_traiter_by_date(date_collecte)
+    collecter_list = get_collecter_by_date(date_collecte)
 
-    if not traiter_list:
+    if not collecter_list:
         return "Aucune collecte trouvée pour cette date."
 
     # Créer un PDF avec les données récupérées
@@ -192,11 +249,11 @@ def download_pdf(date_collecte):
 
     # Ajouter les données dans le PDF
     pdf.set_font('Arial', '', 10)
-    for traiter in traiter_list:
-        pdf.cell(40, 10, str(traiter.id_point_collecte), 1)  # id_point_collecte
-        pdf.cell(40, 10, str(traiter.id_Type), 1)  # id_Type
-        pdf.cell(40, 10, str(traiter.dateCollecte), 1)  # dateCollecte
-        pdf.cell(40, 10, str(traiter.qtecollecte), 1)  # qtecollecte
+    for collecter in collecter_list:
+        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  # id_point_collecte
+        pdf.cell(40, 10, str(collecter.id_Type), 1)  # id_Type
+        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  # dateCollecte
+        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  # qtecollecte
         pdf.ln()
 
     # Sauvegarder le PDF dans un buffer en mémoire
@@ -216,3 +273,165 @@ def detaille(id):
         if pt.id_point_de_collecte == int(id):
             return render_template("detail_collecte.html", point = pt, quantite_courant = get_quantite_courante(int(id)), collectes=liste_collectes)
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
+
+class PtsDeCollecteForm(FlaskForm):
+    # id_dechet = HiddenField("ID du déchet")
+    id_point_de_collecte = HiddenField("ID du point de collecte")
+    adresse = StringField("Adresse du point de collecte", validators=[DataRequired()])
+    nom_pt_collecte = StringField("Nom du point de collecte", validators=[DataRequired()])
+    quantite_max = DecimalField("Quantité maximale de déchets", validators=[DataRequired()])
+    submit = SubmitField("Ajouter")
+
+
+# @app.route("/gerer-pts-collecte")
+# @login_required
+# def gerer_pts_collecte():
+#     return render_template("gerer_pts_collecte.html", points_de_collecte=get_points_de_collecte())
+
+@app.route("/gerer-pts-collecte", methods=["GET", "POST"])
+@login_required
+def gerer_pts_collecte():
+    form = PtsDeCollecteForm()
+    points_de_collecte = get_points_de_collecte()
+    if form.validate_on_submit():
+        try:
+            insert_pts_de_collecte(
+                form.adresse.data,
+                form.nom_pt_collecte.data,
+                form.quantite_max.data
+            )
+        except Exception as e:
+            print(e)
+            print("Un point de collecte avec ce nom existe déjà")
+            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, error="Un point de collecte avec ce nom existe déjà")
+        print("Point de collecte ajouté avec succès")
+        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte, success="Point de collecte ajouté avec succès")
+    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=points_de_collecte)
+
+
+@app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])
+@login_required
+def modifier_pt_collecte(id):
+    form = PtsDeCollecteForm()
+    point_de_collecte = get_point_collecte(id)
+    if request.method == "GET":
+        # Pré-remplir le formulaire avec les données existantes
+        form.id_point_de_collecte.data = point_de_collecte.id_point_de_collecte
+        form.adresse.data = point_de_collecte.adresse
+        form.nom_pt_collecte.data = point_de_collecte.nom_pt_collecte
+        form.quantite_max.data = point_de_collecte.quantite_max
+    if form.validate_on_submit():
+        # Mettre à jour le point de collecte
+        update_point_collecte(
+            id,
+            form.adresse.data,
+            form.nom_pt_collecte.data,
+            form.quantite_max.data
+        )
+        return redirect(url_for("gerer_pts_collecte"))
+    return render_template("modifier_pt_collecte.html", form=form)
+
+@app.route("/supprimer-pt-collecte/<int:id>", methods=["GET", "POST"])
+@login_required
+def supprimer_pt_collecte(id):
+    delete_point_collecte(id)
+    return redirect(url_for("gerer_pts_collecte"))
+
+@app.route("/entreprises/")
+@login_required
+def toutes_entreprises():
+    return render_template(
+        "all_companies.html",
+        entreprises=get_entreprise_sous_forme_classe()
+    )
+
+@app.route("/supprimer_entreprise/<int:id>")
+@login_required
+def supprimer_entreprise(id):
+    if delete_company(int(id)):
+        return redirect(url_for('toutes_entreprises', status='delete_success'))
+    else:
+        return redirect(url_for('toutes_entreprises', status='delete_error'))
+
+
+@app.route("/modifier_entreprise/<int:id>", methods=['GET', 'POST'])
+@login_required
+def modifier_entreprise(id):
+    if request.method == "POST":
+        nom_entreprise = request.form.get("nom_entreprise")
+        success = update_entreprise(id, nom_entreprise)
+        if success:
+            return redirect(url_for('toutes_entreprises', status='modify_success'))
+        else:
+            return redirect(url_for('modifier_entreprise',id=id, status='modify_error'))
+    return render_template(
+        "edit_company.html", ent = get_entreprise_par_id(id)
+    )  
+
+@app.route("/inserer_entreprise", methods=['GET', 'POST'])
+@login_required
+def inserer_entreprise():
+    if request.method == "POST":
+        id_entreprise = get_id_max_entreprise() + 1
+
+        nom_entreprise = request.form.get("nom_entreprise")
+        
+        # Call insert_entreprise only once and store the result
+        success = insert_entreprise(id_entreprise, nom_entreprise)
+        
+        if success:
+            return redirect(url_for('toutes_entreprises', status='insert_success'))
+        else:
+            return redirect(url_for('inserer_entreprise', status='insert_error'))
+    
+    return render_template("insert_company.html", id_entreprise = get_id_max_entreprise() + 1)
+
+class EditProfileForm(FlaskForm):
+    user_id = HiddenField("User ID")  # Champ caché pour l'ID de l'utilisateur
+    nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired(), Length(min=3, max=20)])
+    mail = StringField("Email", validators=[DataRequired(), Email()])
+    numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min=10, max=15)])
+    motdepasse = PasswordField("Mot de passe", validators=[Optional(), Length(min=8)])
+    nom_role = SelectField("Rôle", choices=[("user", "Utilisateur"), ("admin", "Administrateur")])
+    submit = SubmitField("Sauvegarder les modifications")
+
+@app.route("/profil")
+@login_required
+def profil():
+    return render_template("profil.html", user=current_user)
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+
+    if request.method == "GET":
+        form.user_id.data = current_user.id  # Remplit le champ caché avec l'ID de l'utilisateur
+        form.nom_utilisateur.data = current_user.nom_utilisateur
+        form.mail.data = current_user.mail
+        form.numtel.data = current_user.numtel
+        form.nom_role.data = current_user.nom_role  # Charge le rôle actuel pour l'afficher
+
+    if request.method == "POST":
+        user_id = form.user_id.data  
+        nom_utilisateur = form.nom_utilisateur.data
+        mail = form.mail.data
+        numtel = form.numtel.data
+        
+        update_user(user_id, nom_utilisateur, mail, numtel)
+
+        current_user.nom_utilisateur = nom_utilisateur
+        current_user.mail = mail
+        current_user.numtel = numtel
+
+        if form.motdepasse.data:
+            current_user.set_password(form.motdepasse.data)
+            hashed_password = generate_password_hash(form.motdepasse.data)
+
+            update_password(user_id,hashed_password)
+
+        return redirect(url_for('profil'))
+
+    return render_template("edit_profile.html", form=form)
+
+  

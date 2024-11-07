@@ -24,26 +24,84 @@ BIOTRACK’IN | Accueil
 <section class="section-with-image-right">
     <div class="text1">
         <h1>La pollution en Guadeloupe</h1>
-        <p class="p1">En Guadeloupe, le ramassage des déchets est essentiel pour préserver la beauté naturelle de notre île et protéger notre riche biodiversité. Une gestion efficace des déchets permet de maintenir nos paysages, tels que les forêts luxuriantes et les rivières cristallines, en évitant l'accumulation de détritus qui peuvent altérer notre environnement.</p>
-        <p class="p1">De plus, un ramassage régulier contribue à la santé publique en réduisant les risques sanitaires liés à l'accumulation de déchets, tels que la prolifération d'insectes nuisibles.</p>
-        <p class="p1">En adoptant de bonnes pratiques de gestion des déchets, nous pouvons assurer un cadre de vie sain et agréable pour tous les Guadeloupéens, tout en préservant notre patrimoine naturel pour les générations futures. Chaque action compte : ensemble, agissons pour une Guadeloupe plus propre et plus durable.</p>
-        <a href="#" class="btn">En savoir plus</a>
+        <p class="p1">En Guadeloupe, la valorisation des bio-déchets est essentielle pour promouvoir une économie circulaire et réduire notre impact environnemental. Ce dispositif vise à transformer les déchets organiques en ressources utiles, comme le compost, ce qui contribue à enrichir nos sols et à soutenir l'agriculture locale.</p>
+        <p class="p1">En intégrant la gestion des bio-déchets dans notre quotidien, nous participons activement à la préservation de notre belle île. Cela permet non seulement de diminuer la quantité de déchets envoyés en décharge, mais aussi de lutter contre le gaspillage et de favoriser un mode de vie plus durable.</p>
+        <p class="p1">En adoptant de bonnes pratiques de valorisation des bio-déchets, nous garantissons un avenir plus sain et respectueux de notre environnement. Chaque geste compte : ensemble, agissons pour une Guadeloupe plus verte et plus responsable.</p>
+        <a href="{{ url_for('statistique_pts_collecte') }}" class="btn">Voir les statistiques</a>
     </div>
-    <div class="image">
+    <!-- <div class="image"> -->
         <img class="image1" src="../static/img/bouteille_sable1.jpeg" alt="Nos services">
-    </div>
+    <!-- </div> -->
 </section>
 
 <!-- Deuxième section avec image à gauche et texte à droite -->
 <section class="section-with-image-left">
     <div class="text2">
         <h1>Sensibilisation à la Gestion des Déchets</h1>
-        <p class="p1">La sensibilisation à la gestion des déchets est primordiale pour encourager les citoyens à adopter des comportements responsables et respectueux de l'environnement. En organisant des campagnes d'information et des ateliers éducatifs, nous pouvons informer la population sur l'importance du tri sélectif, du recyclage et de la réduction des déchets.</p>
-        <p class="p1">Il est crucial d'impliquer les écoles, les associations locales et les entreprises pour créer une culture collective de responsabilité environnementale. En favorisant des gestes simples, comme la réduction de l'utilisation de plastiques jetables ou la participation à des journées de nettoyage, nous pouvons ensemble contribuer à un environnement plus sain.</p>
-        <a href="#" class="btn">Participer aux actions</a>
+        <p class="p1">La sensibilisation à la valorisation des bio-déchets est essentielle pour encourager les citoyens à adopter des comportements responsables et respectueux de l'environnement. En organisant des campagnes d'information et des ateliers éducatifs, nous pouvons informer la population sur l'importance de transformer les déchets organiques en ressources, comme le compost, et sur les bénéfices d'une gestion efficace de ces matériaux.</p>
+        <p class="p1">Il est crucial d'impliquer les écoles, les associations locales et les entreprises pour créer une culture collective de valorisation des bio-déchets. En favorisant des gestes simples, comme le compostage à domicile ou la participation à des initiatives de collecte des bio-déchets, nous pouvons ensemble contribuer à un environnement plus sain et durable.</p>
+        <a href="{{ url_for('collecte_dechets') }}" class="btn">Participer aux actions</a>
     </div>
-    <div class="image">
+    <!-- <div class="image"> -->
         <img class="image2" src="../static/img/bouteille_sable2.jpg" alt="Nos produits">
-    </div>
+    <!-- </div> -->
 </section>
+<!-- Section du carrousel d'actualités -->
+<div class="section-actus">
+    <h1 class="titre-actus">Les Actualités</h1>
+    <div class="news-carousel">
+        <button class="carousel-btn prev-btn" onclick="moveSlides(-2)">&#10094;</button>
+        <div class="carousel-track-container">
+            <div class="carousel-track">
+                <div class="news-box">
+                    <img src="../static/img/actualite1.jpeg" alt="Actu 1">
+                    <p>Prochaine collecte à Basse-Terre le 29 novembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite2.jpeg" alt="Actu 2">
+                    <p>Atelier sur le recyclage le 30 novembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite3.jpeg" alt="Actu 3">
+                    <p>Campagne de nettoyage de plage le 2 Décembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite4.jpeg" alt="Actu 4">
+                    <p>Sondage sur les habitudes de consommation des Guadeloupéens lors des prochaines collectes</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite5.jpeg" alt="Actu 5">
+                    <p>Journée de sensibilisation dans les écoles le 6 Décembre</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite6.jpeg" alt="Actu 6">
+                    <p>Participez au défi zéro déchet tout au long de Décembre !</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite7.jpeg" alt="Actu 7">
+                    <p>Partenariat avec des Agriculteurs pour le Compostage</p>
+                </div>
+                <div class="news-box">
+                    <img src="../static/img/actualite8.jpeg" alt="Actu 8">
+                    <p>Journée de Nettoyage des Plages et des Rivières le 9 Décembre</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-btn next-btn" onclick="moveSlides(2)">&#10095;</button>
+    </div>
+</div>
+<script>
+    const track = document.querySelector('.carousel-track');
+    const slides = Array.from(track.children);
+    const slideWidth = slides[0].getBoundingClientRect().width + 20; // largeur d'une slide + espace
+    let currentIndex = 0;
+
+    function moveSlides(n) {
+        currentIndex = (currentIndex + n + slides.length) % slides.length;
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+    }
+
+    setInterval(() => moveSlides(2), 5000); // Défilement automatique
+</script>
+
 {% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Toutes les catégories
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+{% endblock %}
+{% block content %}
+{% if request.args.get('status') == 'insert_success' %}
+    <div class="alert alert-success">La catégorie a été insérée avec succès.</div>
+{% elif request.args.get('status') == 'delete_success' %}
+    <div class="alert alert-success">La catégorie a été supprimée avec succès.</div>
+{% elif request.args.get('status') == 'delete_error' %}
+    <div class="alert alert-error">Impossible de supprimer cette catégorie : Cette catégorie est associée avec d'autre(s) table(s).</div>
+{% endif %}
+
+<div class="entreprise">
+    <div class="insert">
+        <a href="/inserer_categorie" class="btn btn-primary">Insérer une catégorie</a>
+    </div>
+
+    {% if categories %}
+    <h1>Les catégories</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in categories %}
+            <tr>
+                <td>{{ cat.id_type }}</td>
+                <td>{{ cat.nom_type }}</td>
+                <td><a href="/supprimer_categorie/{{ cat.id_type }}" onclick="return  confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No category found.</p>
+    {% endif %}
+</div>
+{% endblock %}

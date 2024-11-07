@@ -12,6 +12,15 @@ BIOTRACK’IN | Accueil
 {% endblock %}
 
 {% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<p class="alert alert-warning">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
 <!-- Section avec l'image de fond, h1 et paragraphe -->
 <section class="hero">
     <div class="hero-content">

@@ -17,10 +17,23 @@
 {% endif %}
 
 {% if success %}
-    <div class="alert alert-success" role="alert">
-        {{ success }}
-    </div>
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
 {% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<p class="alert alert-danger">{{ message }}</p>
+{% else %}
+<p class="alert alert-success">{{ message }}</p>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
 
 <div class="gere">
     <div class="container-gere">
@@ -32,10 +45,10 @@
             <form method="post" action="{{ url_for('gerer_pts_collecte') }}">
                 {{ form.hidden_tag() }}
                 <div>
-                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
+                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
                 </div>
                 <div>
-                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
+                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
                 </div>
                 <div>
                     {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
@@ -80,18 +93,19 @@
             {% endfor %}
         </ul>
     </div>
+</div>
 
-    <script>
-        var addresses = [
-            {% for point in points_de_collecte %}
-        {
-            lat: {{ point.latitude }},   // Ajout de la latitude
-            lng: {{ point.longitude }},   // Ajout de la longitude
-            name: "{{ point.nom_pt_collecte }}",
-                detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
-        },
-        {% endfor %}
+<script>
+    var addresses = [
+        {% for point in points_de_collecte %}
+    {
+        lat: {{ point.latitude }},   // Ajout de la latitude
+        lng: {{ point.longitude }},   // Ajout de la longitude
+        name: "{{ point.nom_pt_collecte }}",
+            detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
+    },
+    {% endfor %}
       ];
-    </script>
+</script>
 
-    {% endblock %}
+{% endblock %}

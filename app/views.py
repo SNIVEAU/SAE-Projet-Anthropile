@@ -172,14 +172,14 @@ def insert_dechets():
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
-@app.route("/statistique-dechets")
-@login_required
-def statistique_dechet():
-    # get_graph_dechet()
-    # get_graph_qte_dechets_categorie()
-    # data_graph_qte_dechets_categorie()
-    # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
-    return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+# @app.route("/statistique-dechets")
+# @login_required
+# def statistique_dechet():
+#     # get_graph_dechet()
+#     # get_graph_qte_dechets_categorie()
+#     # data_graph_qte_dechets_categorie()
+#     # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+#     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
 
 @app.route("/data/dechets")
 @login_required
@@ -337,6 +337,8 @@ def modifier_pt_collecte(id):
             if 'Geocoder' in str(fait):
                 print("Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
                 return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+            flash("Point de collecte modifié avec succès", "success")            
+
             return redirect(url_for("gerer_pts_collecte"))
         except Exception as e:
             print(e)
@@ -495,4 +497,3 @@ def supprimer_cat(id):
         return redirect(url_for('toutes_categories', status='delete_success'))
     else:
         return redirect(url_for('toutes_categories', status='delete_error'))
-

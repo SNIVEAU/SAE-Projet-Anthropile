@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block styles %}
-    <link rel="stylesheet" href="static/base.css">
-    {%endblock%}
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    {% endblock %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script> 
@@ -15,14 +15,14 @@
 <body>
     <header>
         <div class="menu-toggle">
-            <img src="static/img/menu.png" alt="Menu" />
+            <img src="{{ url_for('static', filename='img/menu.png') }}" alt="Menu" />
         </div>
         <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
         <nav class="menu">
             <ul>
                 <div class="menu-header">
                     <button class="close-menu">
-                        <img src="static/img/close.png" alt="Fermer le menu" />
+                        <img src="{{ url_for('static', filename='img/close.png') }}" alt="Fermer le menu" />
                     </button>
                 </div>
                 <li><a href="{{ url_for('home') }}">Accueil</a></li>
@@ -32,32 +32,41 @@
                 <li><a href="{{ url_for('insert_dechets') }}">Inserer un déchet</a></li> 
                 <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
 
+               
+
+                <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li> 
 
             </ul>
         </nav>
+        
         <div>
             {% if current_user.is_authenticated %}
-                <span>Bienvenue, <a href= {{url_for('profil')}}>{{ current_user.nom_utilisateur }}</a> 👋!</span>
+                <span>Bienvenue, <a href="{{ url_for('profil') }}">{{ current_user.nom_utilisateur }}</a> 👋!</span>
                 <a id="logout-link" class="connexioninscription">Se déconnecter</a>
+                  <label for="remember" class="remember-label">
+                <input type="checkbox" id="remember" name="remember" />
+                Se souvenir de moi
+            </label>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
                 <a class="connexioninscription" href="{{ url_for('register') }}">S'inscrire</a>
             {% endif %}
+          
         </div>
-        </header>
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const logoutLink = document.getElementById('logout-link');
-                if (logoutLink) {
-                    logoutLink.addEventListener('click', function () {
-                        if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-                            window.location.href = "{{ url_for('logout') }}";
-                        }
-                    });
-                }
-            });
-        </script>        
+    </header>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function () {
+                    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                        window.location.href = "{{ url_for('logout') }}";
+                    }
+                });
+            }
+        });
+    </script>        
 
     <main>
         {% block content %}
@@ -65,10 +74,7 @@
     </main>
 
     <footer class="fixed-bottom">
-        <!-- <div>
-            <p>BioTrack'in</p> -->
-            <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
-        <!-- </div> -->
+        <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
         <div class="mid">
             <h3>Contacts</h3>
             <p>tel : 00 00 00 00</p>
@@ -105,11 +111,13 @@
             const menu = document.querySelector('nav.menu');
             const menuToggle = document.querySelector('.menu-toggle');
 
-            // Vérifiez si le clic a eu lieu en dehors du menu et du bouton de menu
             if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
-                menu.classList.remove('active'); // Ferme le menu
+                menu.classList.remove('active');
             }
         });
     </script>
+
+    <!-- Placer le script remember.js à la fin pour ne pas bloquer le rendu de la page -->
+    <script src="{{ url_for('static', filename='js/remember.js') }}" defer></script>
 </body>
 </html>

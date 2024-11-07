@@ -6,14 +6,6 @@ import os
 from flask import jsonify
 from .app import app
 
-# def get_id_max_dechets():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("SELECT MAX(id_Dechet) FROM DECHET")
-#     id_max,  = cursor.fetchone()
-#     cursor.close()
-#     print(id_max, "*********")
-#     return id_max
-
 class CategorieDechet:
     def __init__(self, id_type, nom_type):
         self.id_type = id_type
@@ -30,8 +22,48 @@ def get_categories():
     les_categories = []
     for id_categorie, nom_categorie in categories:
         les_categories.append(CategorieDechet(id_categorie, nom_categorie))
-    # return categories
     return les_categories
+
+def get_id_max_dechets():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_Type) FROM CATEGORIEDECHET")
+    id_max,  = cursor.fetchone()
+    cursor.close()
+    return id_max
+
+def insert_categorie(id_type, nom_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE id_Type=%s OR nom_Type=%s", (id_type, nom_type))
+    company = cursor.fetchone()
+
+    if company:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type) VALUES (%s, %s)", (id_type, nom_type))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+
+def delete_category(id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET NATURAL JOIN DECHET WHERE id_Type=%s", (id_type,))
+    dechet_asscocie_categorie = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM COLLECTER WHERE id_Type=%s", (id_type,))
+
+    categorie_dans_collecter = cursor.fetchone()
+
+
+    if dechet_asscocie_categorie or categorie_dans_collecter:
+        cursor.close()
+        return False
+    else:
+        cursor.execute("DELETE FROM CATEGORIEDECHET WHERE id_Type=%s", (id_type,))
+        mysql.connection.commit()
+        cursor.close()
+
+        return True
 
 class Dechet:
     def __init__(self, nom_dechet, id_type, quantite):
@@ -99,10 +131,21 @@ def get_point_collecte(id):
     return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
 
 def update_point_collecte(id, adresse, nom_pt_collecte, quantite_max):
+    try:
+        pos = get_pos_irl(adresse)
+        if pos is None:
+            return None
+        else:
+            latitude, longitude = pos
+            update_pos_pts_de_collecte(id, latitude, longitude)
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
     cursor = mysql.connection.cursor()
     cursor.execute("UPDATE POINT_DE_COLLECTE SET adresse = %s, nom_pt_collecte = %s, qte_max = %s WHERE id_point_collecte = %s", (adresse, nom_pt_collecte, quantite_max, id))
     mysql.connection.commit()
     cursor.close()
+    return True
 
 def delete_point_collecte(id):
     cursor = mysql.connection.cursor()
@@ -237,18 +280,56 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte,
     mysql.connection.commit()
     cursor.close()
 
-# def get_pos_irl(adresse): ICICICICIC
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("SELECT pos_x, pos_y FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
-#     pos = cursor.fetchone()
-#     cursor.close()
-#     return pos
+    # for pts in get_points_de_collecte():
+    #     print(pts.adresse)
+    #     try:
+    #         latitude, longitude = get_pos_irl(pts.adresse)
+    #         print(latitude, longitude)
+    #         update_pos_pts_de_collecte(pts.id_point_de_collecte, latitude, longitude)
+    #     except Exception as e:
+    #         print(f"Erreur lors de la recherche de l'adresse : {pts.adresse}", e)
 
-# def update_pos_pts_de_collecte(id, pos_x, pos_y):
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
-#     mysql.connection.commit()
-#     cursor.close()
+def get_pos_irl(adresse): 
+    from geopy.geocoders import Nominatim
+    from .models import get_points_de_collecte
+
+    # les_points_de_collecte = get_points_de_collecte()
+    geolocator = Nominatim(user_agent="BIOTRACK'IN/1.0")
+
+    try:
+        location = geolocator.geocode(adresse)
+        if location:
+            print(f"Adresse : {adresse}")
+            print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
+            return location.latitude, location.longitude
+        else:
+            print(f"Adresse non trouvée : {adresse}")
+            return None
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
+    
+def adresse_existante_bd(adresse):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
+
+def nom_pt_collecte_existante_bd(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
+
+def update_pos_pts_de_collecte(id, pos_x, pos_y):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
@@ -280,6 +361,13 @@ def get_nom_utilisateur(nom_utilisateur):
     existing_user = cursor.fetchone()
     cursor.close()
     return existing_user
+
+def get_nom_pts_collecte(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    existing_point = cursor.fetchone()
+    cursor.close()
+    return existing_point
 
 def get_id_utilisateur(nom_utilisateur):
     cursor = mysql.connection.cursor()

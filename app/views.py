@@ -40,8 +40,6 @@ def guest(f):
     return decorated_function
 
 
-@app.route("/", methods=["Get", "POST"])
-
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -51,7 +49,6 @@ def admin_required(f):
     return decorated_function
 
 @app.route("/")
-
 def home():
     return render_template("home.html")
 

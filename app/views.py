@@ -338,6 +338,7 @@ def modifier_pt_collecte(id):
                 print("Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
                 return render_template("modifier_pt_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
             flash("Point de collecte modifié avec succès", "success")            
+
             return redirect(url_for("gerer_pts_collecte"))
         except Exception as e:
             print(e)
@@ -462,7 +463,6 @@ def edit_profile():
 def not_admin():
     return render_template("not_admin.html")
 
-
 @app.route("/categories/")
 @login_required
 def toutes_categories():
@@ -497,7 +497,3 @@ def supprimer_cat(id):
         return redirect(url_for('toutes_categories', status='delete_success'))
     else:
         return redirect(url_for('toutes_categories', status='delete_error'))
-
-      
-
-

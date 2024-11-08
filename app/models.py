@@ -22,10 +22,6 @@ def get_categories():
     les_categories = []
     for id_categorie, nom_categorie in categories:
         les_categories.append(CategorieDechet(id_categorie, nom_categorie))
-    #for categorie in les_categories:
-    #    print(type(categorie))
-    #print(categories, les_categories)
-    #return categories
     return les_categories
 
 def get_id_max_dechets():
@@ -141,12 +137,9 @@ def get_points_de_collecte():
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
     points = cursor.fetchall()
     cursor.close()
-    print(points)
     les_points = []
     for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
-    print(les_points)
-    # return points
     return les_points
 
 def get_point_collecte(id):
@@ -157,10 +150,21 @@ def get_point_collecte(id):
     return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
 
 def update_point_collecte(id, adresse, nom_pt_collecte, quantite_max):
+    try:
+        pos = get_pos_irl(adresse)
+        if pos is None:
+            return None
+        else:
+            latitude, longitude = pos
+            update_pos_pts_de_collecte(id, latitude, longitude)
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
     cursor = mysql.connection.cursor()
     cursor.execute("UPDATE POINT_DE_COLLECTE SET adresse = %s, nom_pt_collecte = %s, qte_max = %s WHERE id_point_collecte = %s", (adresse, nom_pt_collecte, quantite_max, id))
     mysql.connection.commit()
     cursor.close()
+    return True
 
 def delete_point_collecte(id):
     cursor = mysql.connection.cursor()
@@ -177,7 +181,6 @@ def get_dechets():
     cursor.execute("SELECT * FROM DECHET")
     dechets = cursor.fetchall()
     cursor.close()
-    print(dechets)
     les_dechets = []
     for _, nom_dechet, id_type, quantite in dechets:
         les_dechets.append(Dechet(nom_dechet, id_type, quantite))
@@ -190,7 +193,6 @@ def get_graph_dechet():
     for dechet in dechets:
         nom_dechets.append(dechet.nom_dechet)
         quantites.append(dechet.quantite)
-    print(nom_dechets, quantites)
     plt.bar(nom_dechets, quantites)
     plt.xlabel("Déchets")
     plt.ylabel("Quantité")
@@ -205,7 +207,6 @@ def get_qte_dechets_categorie():
     cursor.execute("select SUM(qte) as quantite, id_Type, nom_Type from DECHET NATURAL join CATEGORIEDECHET GROUP BY id_Type")
     qte_dechets_categorie = cursor.fetchall()
     cursor.close()
-    print(qte_dechets_categorie)
     return qte_dechets_categorie
 
 def get_graph_qte_dechets_categorie():
@@ -215,7 +216,6 @@ def get_graph_qte_dechets_categorie():
     for quantite, _, nom_type in qte_dechets_categorie:
         nom_types.append(nom_type)
         quantites.append(quantite)
-    print(nom_types, quantites)
     plt.bar(nom_types, quantites)
     plt.xlabel("Catégories de déchets")
     plt.ylabel("Quantité")
@@ -299,18 +299,56 @@ def insert_pts_de_collecte(adresse, nom_pt_collecte,
     mysql.connection.commit()
     cursor.close()
 
-# def get_pos_irl(adresse): ICICICICIC
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("SELECT pos_x, pos_y FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
-#     pos = cursor.fetchone()
-#     cursor.close()
-#     return pos
+    # for pts in get_points_de_collecte():
+    #     print(pts.adresse)
+    #     try:
+    #         latitude, longitude = get_pos_irl(pts.adresse)
+    #         print(latitude, longitude)
+    #         update_pos_pts_de_collecte(pts.id_point_de_collecte, latitude, longitude)
+    #     except Exception as e:
+    #         print(f"Erreur lors de la recherche de l'adresse : {pts.adresse}", e)
 
-# def update_pos_pts_de_collecte(id, pos_x, pos_y):
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
-#     mysql.connection.commit()
-#     cursor.close()
+def get_pos_irl(adresse): 
+    from geopy.geocoders import Nominatim
+    from .models import get_points_de_collecte
+
+    # les_points_de_collecte = get_points_de_collecte()
+    geolocator = Nominatim(user_agent="BIOTRACK'IN/1.0")
+
+    try:
+        location = geolocator.geocode(adresse)
+        if location:
+            print(f"Adresse : {adresse}")
+            print(f"Latitude : {location.latitude}, Longitude : {location.longitude}")
+            return location.latitude, location.longitude
+        else:
+            print(f"Adresse non trouvée : {adresse}")
+            return None
+    except Exception as e:
+        print(f"Erreur lors de la recherche de l'adresse : {adresse}", e)
+        return e
+    
+def adresse_existante_bd(adresse):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE adresse = %s", (adresse,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
+
+def nom_pt_collecte_existante_bd(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    point = cursor.fetchone()
+    cursor.close()
+    return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5]) if point else None
+    # return point
+
+def update_pos_pts_de_collecte(id, pos_x, pos_y):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE POINT_DE_COLLECTE SET pos_x = %s, pos_y = %s WHERE id_point_collecte = %s", (pos_x, pos_y, id))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
@@ -329,7 +367,6 @@ def get_collecter_sort_by_date():
     
     listecollecter = []
     for i in collecter:
-        print(i)
         # Remplace les indices selon la position des colonnes sélectionnées
 
         listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
@@ -338,12 +375,18 @@ def get_collecter_sort_by_date():
     return listecollecter
 
 def get_nom_utilisateur(nom_utilisateur):
-    print(f"Recherche de l'utilisateur: {nom_utilisateur}")  # Debug
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT nom_Utilisateur FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))
     existing_user = cursor.fetchone()
     cursor.close()
     return existing_user
+
+def get_nom_pts_collecte(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    existing_point = cursor.fetchone()
+    cursor.close()
+    return existing_point
 
 def get_id_utilisateur(nom_utilisateur):
     cursor = mysql.connection.cursor()
@@ -372,7 +415,6 @@ def get_entreprise(): #choix de l'entreprise
     cursor.execute("SELECT * FROM ENTREPRISE")
     entreprises = cursor.fetchall()
     cursor.close()
-    print(entreprises)
     return entreprises
 
 def get_entreprise_sous_forme_classe():
@@ -383,7 +425,6 @@ def get_entreprise_sous_forme_classe():
     ents =[]
     for id_entreprise, nom_entreprise in entreprises:
         ents.append(Entreprise(id_entreprise, nom_entreprise))
-    print(ents)
     return ents
 
 def get_entreprise_par_id(id):
@@ -551,3 +592,46 @@ def get_liste_collectes(id):
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
         collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
+
+
+def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        """
+        INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte)
+        VALUES (%s, %s, %s, %s)
+        """, 
+        (id_point_collecte, id_tournee, id_type, qte_collecte)
+    )
+    mysql.connection.commit()
+    cursor.close()
+
+
+    
+def get_qte_collecte_by_categories(id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT SUM(qteCollecte) FROM COLLECTER WHERE id_Type = %s", (id_type,))
+    qte_collecte = cursor.fetchone()
+    cursor.close()
+    return qte_collecte[0]
+
+def insert_tournee(date_collecte, duree=0):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO TOURNEE(date_collecte, duree) VALUES (%s, %s)", (date_collecte, duree))
+    mysql.connection.commit()
+    cursor.close()
+
+
+def get_last_tournee():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_tournee) FROM TOURNEE")
+    id_tournee = cursor.fetchone()
+    cursor.close()
+    return id_tournee[0]
+
+def get_qte_by_pts_and_type(id_point_collecte, id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT quantite_point_collecte_filtree(%s, %s)", (id_point_collecte, id_type))
+    qte_collecte = cursor.fetchone()
+    cursor.close()
+    return qte_collecte[0] if qte_collecte else 0

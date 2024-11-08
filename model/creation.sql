@@ -23,7 +23,7 @@ CREATE TABLE UTILISATEUR (
   id_Utilisateur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Utilisateur VARCHAR(42),
   mail VARCHAR(42),
-  numtel INT,
+  numtel BIGINT,
   motdepasse VARCHAR(255),
   nom_role ENUM('Administrateur', 'Utilisateur', 'Visiteur') DEFAULT 'Utilisateur' 
 );

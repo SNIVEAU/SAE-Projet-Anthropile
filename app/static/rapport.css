@@ -1,3 +1,81 @@
+/* Centrage du h1 */
+h1 {
+    text-align: left;
+    margin: 2% 0 0 10%;
+}
+
+/* Style de la barre de recherche */
+#search-container {
+    display: flex;
+    justify-content: flex-start;
+    margin: 1.5% 0;
+    padding-left: 10%;
+}
+
+#search-input {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+#search-button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#search-button:hover {
+    background-color: #333;
+}
+
+#filter-options {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 10%;
+    margin-top: 1%;
+    margin-bottom: 1.5%;
+}
+
+#filter-options label {
+    margin-right: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Stylisation des boutons radio */
+#filter-options input[type="radio"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    background-color: #fff;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: background-color 0.1s, border 0.3s;
+}
+
+/* Lorsque le bouton est coché, il devient noir */
+#filter-options input[type="radio"]:checked {
+    background-color: #000;
+    border: 2px solid #000;
+}
+
+#filter-options input[type="radio"]:hover {
+    background-color: #dbdbdb;
+}
+
+
+
+/* Styles pour la table */
 table {
     margin: 0 auto;
     margin-bottom: 50px;
@@ -6,9 +84,7 @@ table {
     width: 80%;
     text-align: center;
 }
-h1{
-    text-align: center;
-}
+
 thead th {
     background-color: #000;
     color: #fff;

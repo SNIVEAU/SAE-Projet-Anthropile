@@ -28,8 +28,9 @@ h1 {
 }
 
 .profile-info {
-    margin-bottom: 20px;
+      margin-bottom: 20px;
 }
+
 
 .profile-info p {
     font-size: 16px;
@@ -70,4 +71,27 @@ h1 {
     .btn {
         font-size: 16px;
     }
+    margin-bottom: 10px;
+}
+
+.profile-info p strong {
+    color: #555;
+    font-weight: 600;
+}
+
+.btn-edit-profile {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-edit-profile:hover {
+    background-color: #555;
+    transition: background-color 0.3s ease;
 }

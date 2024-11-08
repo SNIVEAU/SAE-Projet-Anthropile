@@ -1,0 +1,88 @@
+/* Centrage du conteneur principal */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto;
+    padding: 40px 40px; /* Augmenter le padding en hauteur */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre h1 centré */
+h1 {
+    font-size: 2em;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Style des labels */
+label {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Style des champs de texte */
+input[type="text"] {
+    font-size: 1em;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:disabled {
+    background-color: #f1f1f1;
+}
+
+/* Style du bouton de soumission */
+button[type="submit"] {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Message d'erreur */
+.alert-error {
+    font-size: 1.1em;
+    color: #fff;
+    background-color: #e74c3c;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Responsivité pour les écrans plus petits */
+@media (max-width: 768px) {
+    form {
+        width: 90%;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+}

@@ -455,9 +455,8 @@ def edit_profile():
         current_user.nom_utilisateur = nom_utilisateur
         current_user.mail = mail
         current_user.numtel = numtel
-
         if form.motdepasse.data:
-            current_user.set_password(form.motdepasse.data)
+            current_user.password = form.motdepasse.data
             hashed_password = generate_password_hash(form.motdepasse.data)
 
             update_password(user_id,hashed_password)

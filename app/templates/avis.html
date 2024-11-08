@@ -4,8 +4,17 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='avis.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<script src="{{ url_for('static', filename='js/avis.js') }}"></script>
 {% endblock %}
 {% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<p class="alert alert-{{ category }}">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 <div class="container-avis">
     <div class="titre">
@@ -45,7 +54,9 @@
         <button type="submit">Envoyer</button>
     </form>
     {% else %}
-    <p>Connectez-vous pour ajouter un avis.</p>
+    <div class="connect">
+        <p>Connectez-vous pour nous donner votre avis.</p>
+    </div>
     {% endif %}
 
     {% for a in avis %}
@@ -66,56 +77,5 @@
     </div>
     {% endfor %}
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const stars = document.querySelectorAll('.note-selection input[type="radio"]');
-        const labels = document.querySelectorAll('.note-selection label');
-
-        // Initialize stars based on the checked radio input
-        function updateStars() {
-            stars.forEach((star, idx) => {
-                if (star.checked) {
-                    for (let i = 0; i <= idx; i++) {
-                        labels[i].querySelector('i').classList.add('fa-solid');
-                        labels[i].querySelector('i').classList.remove('fa-regular');
-                    }
-                    for (let i = idx + 1; i < labels.length; i++) {
-                        labels[i].querySelector('i').classList.remove('fa-solid');
-                        labels[i].querySelector('i').classList.add('fa-regular');
-                    }
-                }
-            });
-        }
-
-        updateStars(); // Initialize on page load
-
-        // Hover effect for highlighting stars
-        labels.forEach((label, index) => {
-            label.addEventListener('mouseover', () => {
-                // Make all stars up to the hovered one gold
-                for (let i = 0; i <= index; i++) {
-                    labels[i].querySelector('i').classList.add('fa-solid');
-                    labels[i].querySelector('i').classList.remove('fa-regular');
-                }
-                // Stars after the hovered one should be gray
-                for (let i = index + 1; i < labels.length; i++) {
-                    labels[i].querySelector('i').classList.remove('fa-solid');
-                    labels[i].querySelector('i').classList.add('fa-regular');
-                }
-            });
-
-            label.addEventListener('mouseout', updateStars);
-
-            label.addEventListener('click', () => {
-                // Set the checked state to the selected star
-                stars.forEach((star, idx) => {
-                    star.checked = idx === index;
-                });
-                updateStars(); // Update based on the new selected star
-            });
-        });
-    });
-</script>
 
 {% endblock %}

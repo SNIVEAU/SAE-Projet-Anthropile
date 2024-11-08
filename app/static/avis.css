@@ -218,3 +218,14 @@ button:hover {
 .fas, .fa-user {
     color: #337A55;
 }
+
+.connect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}

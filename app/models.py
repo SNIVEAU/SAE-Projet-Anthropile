@@ -267,15 +267,45 @@ def get_collecter():
 
 def get_collecter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COLLECTER WHERE DATE(dateCollecte) = %s", (date_collecte,))
+    query = """
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    WHERE DATE(date_collecte) = %s
+    """
+    cursor.execute(query, (date_collecte,))
     collecter = cursor.fetchall()
     cursor.close()
     listecollecter = []
+    print(collecter)
     for i in collecter:
-        listecollecter.append(collecter(i[0], i[1], i[2], i[3]))
+        print(i)
+        print(i[0], i[1], i[2], i[3])
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
     return listecollecter
 
+def get_collecter_sort_by_date():
+    cursor = mysql.connection.cursor()
+    
+    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
+    query = """
 
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
+    ORDER BY date_collecte DESC
+    """
+    
+    cursor.execute(query)
+    collecter = cursor.fetchall()
+    
+    listecollecter = []
+    for i in collecter:
+        # Remplace les indices selon la position des colonnes sélectionnées
+
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
+    
+    cursor.close()
+    return listecollecter
 
 def get_pts_de_collecte_by_adresse(adresse):
     cursor = mysql.connection.cursor()
@@ -350,29 +380,7 @@ def update_pos_pts_de_collecte(id, pos_x, pos_y):
     mysql.connection.commit()
     cursor.close()
 
-def get_collecter_sort_by_date():
-    cursor = mysql.connection.cursor()
-    
-    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
-    query = """
 
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
-    FROM COLLECTER natural join TOURNEE
-    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
-    ORDER BY date_collecte DESC
-    """
-    
-    cursor.execute(query)
-    collecter = cursor.fetchall()
-    
-    listecollecter = []
-    for i in collecter:
-        # Remplace les indices selon la position des colonnes sélectionnées
-
-        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
-    
-    cursor.close()
-    return listecollecter
 
 def get_nom_utilisateur(nom_utilisateur):
     cursor = mysql.connection.cursor()

@@ -135,12 +135,17 @@ AFTER INSERT ON COLLECTER
 FOR EACH ROW
 BEGIN 
   DECLARE dechet INT;
+  DECLARE nom_dec VARCHAR(42);
+  DECLARE id_ty INT;
+  DECLARE nom_ty VARCHAR(42);
+  DECLARE quantity DECIMAL(10,4);
+  DECLARE id_user INT;
   DECLARE _point INT;
   DECLARE fini BOOLEAN DEFAULT false;
   
   DECLARE lesDechets CURSOR FOR
-    SELECT id_Dechet, id_point_collecte
-    FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE  
+    SELECT id_Dechet, nom_Dechet, id_Type, nom_Type, qte, id_Utilisateur, id_point_collecte
+    FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN CATEGORIEDECHET NATURAL JOIN POINT_DE_COLLECTE  
     WHERE id_point_collecte = NEW.id_point_collecte AND id_Type = NEW.id_Type;
     
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = true;
@@ -148,11 +153,12 @@ BEGIN
   OPEN lesDechets;
 
   WHILE NOT fini DO
-    FETCH lesDechets INTO dechet, _point;
+    FETCH lesDechets INTO dechet, nom_dec, id_ty, nom_ty, quantity, id_user,_point;
 
     IF NOT fini THEN
       DELETE FROM DEPOSER WHERE id_Dechet = dechet AND id_point_collecte = _point;
       DELETE FROM DECHET WHERE id_Dechet = dechet;
+      INSERT INTO HISTORIQUE_DECHET(id_dechet, nom_dechet, id_type, nom_type, quantite, id_utilisateur) values (dechet, nom_dec, id_ty, nom_ty, quantity, id_user);
     END IF;
   END WHILE;
   

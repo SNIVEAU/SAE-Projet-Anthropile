@@ -13,7 +13,7 @@ from sqlalchemy import func
 from io import BytesIO
 from fpdf import FPDF
 import requests
-
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, Optional
@@ -466,6 +466,43 @@ def edit_profile():
 
     return render_template("edit_profile.html", form=form)
 
+
+from flask_wtf import FlaskForm
+from wtforms import SelectField, IntegerField, FieldList, FormField, SubmitField, DateField, TimeField
+from wtforms.validators import DataRequired, NumberRange
+
+class PlanificationTournéeForm(FlaskForm):
+    categorie = SelectField('Catégorie de déchet', coerce=int, validators=[DataRequired()])
+    quantite = IntegerField('Quantité', validators=[DataRequired(), NumberRange(min=0)])
+    date_collecte = DateField('Date de collecte', validators=[DataRequired()])
+    heure_collecte = TimeField('Heure de collecte', validators=[DataRequired()])
+    duree = IntegerField('Durée de la tournée', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Valider')
+    
+@app.route('/planification_tournee', methods=['GET', 'POST'])
+def planification_tournee():
+    pts_de_collecte = get_points_de_collecte()
+    categories_dechet = get_categories()
+    form = PlanificationTournéeForm()
+    if request.method == 'POST':
+        date_collecte = datetime.combine(form.date_collecte.data, form.heure_collecte.data)
+        insert_tournee(date_collecte, form.duree.data)
+        id_tournee = get_last_tournee()
+        for point in pts_de_collecte:
+            categorie_id = request.form.get(f'categorie_{point.id_point_de_collecte}')
+            if categorie_id:
+                qte_collecte = get_qte_by_pts_and_type(point.id_point_de_collecte, categorie_id)
+                print(f"Point de collecte: {point.nom_pt_collecte}, Catégorie: {categorie_id}")        
+                insert_collecter(point.id_point_de_collecte, id_tournee,categorie_id, qte_collecte,) 
+        return redirect(url_for('home'))
+
+    return render_template(
+        'planification_tournee.html',
+        form=form,
+        points_de_collecte=pts_de_collecte,
+        categories_dechet=categories_dechet
+    )
+  
 @app.route("/not_admin")
 def not_admin():
     return render_template("not_admin.html")
@@ -504,3 +541,14 @@ def supprimer_cat(id):
         return redirect(url_for('toutes_categories', status='delete_success'))
     else:
         return redirect(url_for('toutes_categories', status='delete_error'))
+
+      
+
+@app.route("/dechets_selon_utilisteur/<int:id>")
+@login_required
+def tous_dechets_selon_utilisateur(id):
+    return render_template(
+        "all_dechets.html",
+        dechets=get_tous_dechets_selon_utilisateur(id),
+        dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
+    )

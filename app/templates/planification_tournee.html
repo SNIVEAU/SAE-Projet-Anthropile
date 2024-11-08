@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+BIOTRACK’IN | Tournée
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='planification_tournee.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Planification de la tournée</h2>
+        <form method="post" action="{{ url_for('planification_tournee') }}">
+            {{ form.hidden_tag() }}
+
+            {% for point in points_de_collecte %}
+                <div class="form-group">
+                    <h3>{{ point.nom_pt_collecte }}</h3> <!-- Affiche le nom du point de collecte -->
+                    
+                    <label for="categorie_{{ point.id_point_de_collecte }}">Catégorie de déchet</label>
+                    <select id="categorie_{{ point.id_point_de_collecte }}" name="categorie_{{ point.id_point_de_collecte }}" class="form-control">
+                        <option value="">Sélectionner une catégorie</option>
+                        {% for categorie in categories_dechet %}
+                            <option value="{{ categorie.id_type }}">{{ categorie.nom_type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+
+            <div class="form-group">
+                <label for="duree">Durée de la tournée</label>
+                {{ form.duree(class="form-control") }} <!-- Utilisation de form.duree pour afficher le champ de durée -->
+            </div>
+
+            <div class="form-group">
+                <label for="date_collecte">Date de collecte</label>
+                {{ form.date_collecte(class="form-control") }} <!-- Utilisation de form.date_collecte pour afficher le champ de date -->
+            </div>
+            <div class="form-group">
+                <label for="heure_collecte">Heure de collecte</label>
+                {{ form.heure_collecte(class="form-control") }} <!-- Utilisation de form.heure_collecte pour afficher le champ de date -->
+            </div>
+            <button type="submit" class="btn btn-primary">Valider</button>
+        </form>
+    </div>
+{%endblock%}

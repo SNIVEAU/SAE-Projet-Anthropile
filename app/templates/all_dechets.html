@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Toutes les catégories
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="dechets">
+    {% if dechets %}
+    <h1>Les dechets</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Quantité</th>
+                <th>Status</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for dech in dechets %}
+            <tr>
+                <td>{{ dech.nom_dechet }}</td>
+                <td>{{ dech.nom_type}}</td>
+                <td>{{ dech.quantite }}</td>
+                <td>Non-traité</td>
+            </tr>
+            {% endfor %}
+            {% for dech_c in dechets_collectes %}
+            <tr>
+                <td>{{ dech_c.nom_dechet }}</td>
+                <td>{{ dech_c.nom_type}}</td>
+                <td>{{ dech_c.quantite }}</td>
+                <td>Traité</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No dechets found.</p>
+    {% endif %}
+</div>
+{% endblock %}

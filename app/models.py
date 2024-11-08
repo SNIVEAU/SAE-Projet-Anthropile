@@ -22,10 +22,6 @@ def get_categories():
     les_categories = []
     for id_categorie, nom_categorie in categories:
         les_categories.append(CategorieDechet(id_categorie, nom_categorie))
-    #for categorie in les_categories:
-    #    print(type(categorie))
-    #print(categories, les_categories)
-    #return categories
     return les_categories
 
 def get_id_max_dechets():
@@ -68,6 +64,7 @@ def delete_category(id_type):
         cursor.close()
 
         return True
+    
 
 class Dechet:
     def __init__(self, nom_dechet, id_type, quantite):
@@ -105,6 +102,24 @@ def get_id_type_dechet(nom_dechet):
     cursor.close()
     return id_type
 
+def get_tous_dechets_selon_utilisateur(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select id_Dechet, nom_Dechet, nom_Type, qte from DEPOSER natural join DECHET natural join CATEGORIEDECHET where id_Utilisateur=%s", (id,))
+    liste_dechets = cursor.fetchall()
+    les_dechets = []
+    for id_Dechet, nom_Dechet, nom_Type, qte in liste_dechets:
+        les_dechets.append({'nom_dechet': nom_Dechet, 'nom_type': nom_Type, 'quantite': qte})
+    return les_dechets
+
+def get_tous_dechets_collectes_selon_utilisateur(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select  nom_dechet, nom_type, quantite from HISTORIQUE_DECHET where id_Utilisateur=%s", (id,))
+    liste_dechets = cursor.fetchall()
+    les_dechets = []
+    for nom_dechet, nom_type, quantite in liste_dechets:
+        les_dechets.append({'nom_dechet': nom_dechet, 'nom_type': nom_type, 'quantite': quantite})
+    return les_dechets
+
 class PointDeCollecte:
     def __init__(self, id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max):
         self.id_point_de_collecte = id_point_de_collecte
@@ -122,12 +137,9 @@ def get_points_de_collecte():
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
     points = cursor.fetchall()
     cursor.close()
-    print(points)
     les_points = []
     for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
-    print(les_points)
-    # return points
     return les_points
 
 def get_point_collecte(id):
@@ -169,7 +181,6 @@ def get_dechets():
     cursor.execute("SELECT * FROM DECHET")
     dechets = cursor.fetchall()
     cursor.close()
-    print(dechets)
     les_dechets = []
     for _, nom_dechet, id_type, quantite in dechets:
         les_dechets.append(Dechet(nom_dechet, id_type, quantite))
@@ -182,7 +193,6 @@ def get_graph_dechet():
     for dechet in dechets:
         nom_dechets.append(dechet.nom_dechet)
         quantites.append(dechet.quantite)
-    print(nom_dechets, quantites)
     plt.bar(nom_dechets, quantites)
     plt.xlabel("Déchets")
     plt.ylabel("Quantité")
@@ -197,7 +207,6 @@ def get_qte_dechets_categorie():
     cursor.execute("select SUM(qte) as quantite, id_Type, nom_Type from DECHET NATURAL join CATEGORIEDECHET GROUP BY id_Type")
     qte_dechets_categorie = cursor.fetchall()
     cursor.close()
-    print(qte_dechets_categorie)
     return qte_dechets_categorie
 
 def get_graph_qte_dechets_categorie():
@@ -207,7 +216,6 @@ def get_graph_qte_dechets_categorie():
     for quantite, _, nom_type in qte_dechets_categorie:
         nom_types.append(nom_type)
         quantites.append(quantite)
-    print(nom_types, quantites)
     plt.bar(nom_types, quantites)
     plt.xlabel("Catégories de déchets")
     plt.ylabel("Quantité")
@@ -259,15 +267,45 @@ def get_collecter():
 
 def get_collecter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COLLECTER WHERE DATE(dateCollecte) = %s", (date_collecte,))
+    query = """
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    WHERE DATE(date_collecte) = %s
+    """
+    cursor.execute(query, (date_collecte,))
     collecter = cursor.fetchall()
     cursor.close()
     listecollecter = []
+    print(collecter)
     for i in collecter:
-        listecollecter.append(collecter(i[0], i[1], i[2], i[3]))
+        print(i)
+        print(i[0], i[1], i[2], i[3])
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
     return listecollecter
 
+def get_collecter_sort_by_date():
+    cursor = mysql.connection.cursor()
+    
+    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
+    query = """
 
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
+    FROM COLLECTER natural join TOURNEE
+    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
+    ORDER BY date_collecte DESC
+    """
+    
+    cursor.execute(query)
+    collecter = cursor.fetchall()
+    
+    listecollecter = []
+    for i in collecter:
+        # Remplace les indices selon la position des colonnes sélectionnées
+
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
+    
+    cursor.close()
+    return listecollecter
 
 def get_pts_de_collecte_by_adresse(adresse):
     cursor = mysql.connection.cursor()
@@ -342,33 +380,9 @@ def update_pos_pts_de_collecte(id, pos_x, pos_y):
     mysql.connection.commit()
     cursor.close()
 
-def get_collecter_sort_by_date():
-    cursor = mysql.connection.cursor()
-    
-    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
-    query = """
 
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
-    FROM COLLECTER natural join TOURNEE
-    GROUP BY DATE(date_collecte), id_point_collecte, id_Type
-    ORDER BY date_collecte DESC
-    """
-    
-    cursor.execute(query)
-    collecter = cursor.fetchall()
-    
-    listecollecter = []
-    for i in collecter:
-        print(i)
-        # Remplace les indices selon la position des colonnes sélectionnées
-
-        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
-    
-    cursor.close()
-    return listecollecter
 
 def get_nom_utilisateur(nom_utilisateur):
-    print(f"Recherche de l'utilisateur: {nom_utilisateur}")  # Debug
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT nom_Utilisateur FROM UTILISATEUR WHERE nom_Utilisateur = %s", (nom_utilisateur,))
     existing_user = cursor.fetchone()
@@ -409,7 +423,6 @@ def get_entreprise(): #choix de l'entreprise
     cursor.execute("SELECT * FROM ENTREPRISE")
     entreprises = cursor.fetchall()
     cursor.close()
-    print(entreprises)
     return entreprises
 
 def get_entreprise_sous_forme_classe():
@@ -420,7 +433,6 @@ def get_entreprise_sous_forme_classe():
     ents =[]
     for id_entreprise, nom_entreprise in entreprises:
         ents.append(Entreprise(id_entreprise, nom_entreprise))
-    print(ents)
     return ents
 
 def get_entreprise_par_id(id):
@@ -589,3 +601,45 @@ def get_liste_collectes(id):
         collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
 
+
+def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        """
+        INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte)
+        VALUES (%s, %s, %s, %s)
+        """, 
+        (id_point_collecte, id_tournee, id_type, qte_collecte)
+    )
+    mysql.connection.commit()
+    cursor.close()
+
+
+    
+def get_qte_collecte_by_categories(id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT SUM(qteCollecte) FROM COLLECTER WHERE id_Type = %s", (id_type,))
+    qte_collecte = cursor.fetchone()
+    cursor.close()
+    return qte_collecte[0]
+
+def insert_tournee(date_collecte, duree=0):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO TOURNEE(date_collecte, duree) VALUES (%s, %s)", (date_collecte, duree))
+    mysql.connection.commit()
+    cursor.close()
+
+
+def get_last_tournee():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_tournee) FROM TOURNEE")
+    id_tournee = cursor.fetchone()
+    cursor.close()
+    return id_tournee[0]
+
+def get_qte_by_pts_and_type(id_point_collecte, id_type):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT quantite_point_collecte_filtree(%s, %s)", (id_point_collecte, id_type))
+    qte_collecte = cursor.fetchone()
+    cursor.close()
+    return qte_collecte[0] if qte_collecte else 0

@@ -466,3 +466,11 @@ def supprimer_cat(id):
 
       
 
+@app.route("/dechets_selon_utilisteur/<int:id>")
+@login_required
+def tous_dechets_selon_utilisateur(id):
+    return render_template(
+        "all_dechets.html",
+        dechets=get_tous_dechets_selon_utilisateur(id),
+        dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
+    )

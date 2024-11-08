@@ -68,6 +68,7 @@ def delete_category(id_type):
         cursor.close()
 
         return True
+    
 
 class Dechet:
     def __init__(self, nom_dechet, id_type, quantite):
@@ -104,6 +105,24 @@ def get_id_type_dechet(nom_dechet):
     id_type = cursor.fetchone()
     cursor.close()
     return id_type
+
+def get_tous_dechets_selon_utilisateur(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select id_Dechet, nom_Dechet, nom_Type, qte from DEPOSER natural join DECHET natural join CATEGORIEDECHET where id_Utilisateur=%s", (id,))
+    liste_dechets = cursor.fetchall()
+    les_dechets = []
+    for id_Dechet, nom_Dechet, nom_Type, qte in liste_dechets:
+        les_dechets.append({'nom_dechet': nom_Dechet, 'nom_type': nom_Type, 'quantite': qte})
+    return les_dechets
+
+def get_tous_dechets_collectes_selon_utilisateur(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select  nom_dechet, nom_type, quantite from HISTORIQUE_DECHET where id_Utilisateur=%s", (id,))
+    liste_dechets = cursor.fetchall()
+    les_dechets = []
+    for nom_dechet, nom_type, quantite in liste_dechets:
+        les_dechets.append({'nom_dechet': nom_dechet, 'nom_type': nom_type, 'quantite': quantite})
+    return les_dechets
 
 class PointDeCollecte:
     def __init__(self, id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max):
@@ -532,4 +551,3 @@ def get_liste_collectes(id):
     for date_collecte, nom_Type, qtecollecte, duree in liste_collectes:
         collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
-

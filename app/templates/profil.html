@@ -4,8 +4,9 @@
 {% endblock %}
 {%block styles%}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    {%endblock%}
+    <link rel="stylesheet" href="{{ url_for('static', filename='profil.css') }}">
+
+{%endblock%}
 {% block content %}
     <div class="profile-container">
         <h1>Bienvenue, {{ user.nom_utilisateur }}!</h1>
@@ -17,8 +18,8 @@
             <p><strong>Rôle :</strong> {{ user.nom_role }}</p>
             <p><strong>Date d'inscription :</strong> {{ user.date_inscription if user.date_inscription else 'Non renseignée' }}</p>
         </div>
-
-        <a href="{{ url_for('edit_profile') }}" class="btn-edit-profile">Modifier le profil</a>
+        <a href="/dechets_selon_utilisteur/{{ user.id }}" class="btn">Voir mes déchets</a>
+        <a href="{{ url_for('edit_profile') }}" class="btn">Modifier le profil</a>
     </div>
 
 {%endblock%}

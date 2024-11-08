@@ -2,10 +2,10 @@
 {% block title %}
     BIOTRACK’IN | Login
 {% endblock %}
-{%block styles%}
+{% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-{%endblock%}
+{% endblock %}
 {% block content %}
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -35,7 +35,7 @@
                     <div>{{ error }}</div>
                 {% endfor %}
             </div>
-            <div>
+            
             <div>
                 <label for="motdepasse">{{ form.motdepasse.label }}</label>
                 {{ form.motdepasse(placeholder="Entrez votre mot de passe") }}
@@ -44,9 +44,11 @@
                 {% endfor %}
             </div>
             
-            <button type="submit">{{ form.submit.label }}</button>
-        </form>
+            
 
+            <button type="submit">{{ form.submit.label }}</button> <!-- Assure-toi que ce bouton est bien là -->
+        </form>
+        
         <p>Vous n'avez pas de compte? <a href="{{ url_for('register') }}">Créez-en un ici!</a></p>
     </div>
 {% endblock %}

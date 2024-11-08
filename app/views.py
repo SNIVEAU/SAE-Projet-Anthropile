@@ -2,7 +2,7 @@ from functools import wraps
 from .app import *
 from flask import render_template, url_for, redirect, send_file, request, jsonify, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
+from wtforms import BooleanField, StringField, IntegerField, SubmitField, HiddenField, DecimalField, SelectField, RadioField,PasswordField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired,Email,Length,Regexp
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +13,7 @@ from sqlalchemy import func
 from io import BytesIO
 from fpdf import FPDF
 import requests
-
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, Optional
@@ -39,6 +39,7 @@ def guest(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -57,8 +58,8 @@ class LoginForm(FlaskForm):
     nom_utilisateur = StringField("Nom d'utilisateur", validators=[DataRequired()])
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired()])
     next = HiddenField()
-
     submit = SubmitField("Se connecter")
+    
 @app.route('/login', methods=['GET', 'POST'])
 @guest
 def login():
@@ -71,13 +72,15 @@ def login():
         if user_data:
             user = Utilisateur(*user_data)
             if check_password_hash(user.motdepasse, form.motdepasse.data):
-                login_user(user)  # Connexion avec Flask-Login
+               
+                login_user(user)  # Utilise l'option remember de Flask-Login
                 next = form.next.data or url_for("home")
                 return redirect(next)
         
         return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
 
     return render_template('login.html', form=form)
+
 
    
 
@@ -132,11 +135,15 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/logout')
-@login_required  # Protège cette route
+@app.route('/logout', methods=['POST', 'GET'])
+@login_required
 def logout():
     logout_user()  # Déconnexion avec Flask-Login
-    return redirect(url_for('home'))
+    # Optionnellement, supprimer le cookie "remember_me" ici
+    resp = redirect(url_for('home'))
+    #resp.delete_cookie('remember_me')
+    return resp
+
 
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
@@ -449,9 +456,8 @@ def edit_profile():
         current_user.nom_utilisateur = nom_utilisateur
         current_user.mail = mail
         current_user.numtel = numtel
-
         if form.motdepasse.data:
-            current_user.set_password(form.motdepasse.data)
+            current_user.password = form.motdepasse.data
             hashed_password = generate_password_hash(form.motdepasse.data)
 
             update_password(user_id,hashed_password)
@@ -460,6 +466,43 @@ def edit_profile():
 
     return render_template("edit_profile.html", form=form)
 
+
+from flask_wtf import FlaskForm
+from wtforms import SelectField, IntegerField, FieldList, FormField, SubmitField, DateField, TimeField
+from wtforms.validators import DataRequired, NumberRange
+
+class PlanificationTournéeForm(FlaskForm):
+    categorie = SelectField('Catégorie de déchet', coerce=int, validators=[DataRequired()])
+    quantite = IntegerField('Quantité', validators=[DataRequired(), NumberRange(min=0)])
+    date_collecte = DateField('Date de collecte', validators=[DataRequired()])
+    heure_collecte = TimeField('Heure de collecte', validators=[DataRequired()])
+    duree = IntegerField('Durée de la tournée', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Valider')
+    
+@app.route('/planification_tournee', methods=['GET', 'POST'])
+def planification_tournee():
+    pts_de_collecte = get_points_de_collecte()
+    categories_dechet = get_categories()
+    form = PlanificationTournéeForm()
+    if request.method == 'POST':
+        date_collecte = datetime.combine(form.date_collecte.data, form.heure_collecte.data)
+        insert_tournee(date_collecte, form.duree.data)
+        id_tournee = get_last_tournee()
+        for point in pts_de_collecte:
+            categorie_id = request.form.get(f'categorie_{point.id_point_de_collecte}')
+            if categorie_id:
+                qte_collecte = get_qte_by_pts_and_type(point.id_point_de_collecte, categorie_id)
+                print(f"Point de collecte: {point.nom_pt_collecte}, Catégorie: {categorie_id}")        
+                insert_collecter(point.id_point_de_collecte, id_tournee,categorie_id, qte_collecte,) 
+        return redirect(url_for('home'))
+
+    return render_template(
+        'planification_tournee.html',
+        form=form,
+        points_de_collecte=pts_de_collecte,
+        categories_dechet=categories_dechet
+    )
+  
 @app.route("/not_admin")
 def not_admin():
     return render_template("not_admin.html")
@@ -516,3 +559,15 @@ def add_avis():
     else:
         flash("Votre avis ne peut pas être vide.", "error")
     return redirect(url_for('avis'))
+      
+
+@app.route("/dechets_selon_utilisteur/<int:id>")
+@login_required
+def tous_dechets_selon_utilisateur(id):
+    return render_template(
+        "all_dechets.html",
+        dechets=get_tous_dechets_selon_utilisateur(id),
+        dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
+    )
+
+  

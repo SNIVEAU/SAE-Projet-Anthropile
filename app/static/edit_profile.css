@@ -12,7 +12,7 @@ body {
     background-color: #f8f9fa;
 }
 
-.profile-container {
+.edit-profile-container {
     background-color: white;
     max-width: 500px;
     margin: 50px auto;
@@ -27,71 +27,61 @@ h1 {
     margin-bottom: 30px;
 }
 
-.profile-info {
-      margin-bottom: 20px;
+.form-group {
+    margin-bottom: 20px;
 }
 
-
-.profile-info p {
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
     font-size: 16px;
-    color: #555;
-    margin: 10px 0;
-}
-
-.profile-info strong {
     color: #333;
 }
 
-.btn {
-    display: block;
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #5cb85c;
+    outline: none;
+}
+
+select.form-control {
+    background-color: #f8f9fa;
+}
+
+.btn-submit {
     width: 100%;
     padding: 12px;
     background-color: #5cb85c;
     color: white;
-    text-align: center;
     border: none;
     border-radius: 6px;
     font-size: 16px;
-    text-decoration: none;
+    cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
 
-.btn:hover {
+.btn-submit:hover {
     background-color: #4cae4c;
-    cursor: pointer;
     transform: scale(1.03);
 }
 
 @media (max-width: 600px) {
-    .profile-container {
+    .edit-profile-container {
         padding: 20px;
         margin: 20px auto;
     }
 
-    .btn {
+    .btn-submit {
         font-size: 16px;
     }
-    margin-bottom: 10px;
-}
-
-.profile-info p strong {
-    color: #555;
-    font-weight: 600;
-}
-
-.btn-edit-profile {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #333;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.btn-edit-profile:hover {
-    background-color: #555;
-    transition: background-color 0.3s ease;
 }

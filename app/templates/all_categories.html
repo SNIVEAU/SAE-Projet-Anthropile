@@ -16,13 +16,23 @@
     <div class="alert alert-error">Impossible de supprimer cette catégorie : Cette catégorie est associée avec d'autre(s) table(s).</div>
 {% endif %}
 
+<div class="page-header">
+    <h1>Gestion des catégories de déchets</h1>
+    <p>Bienvenue sur la page de gestion des catégories. Ici, vous pouvez ajouter et supprimer différentes catégories de déchets.</p>
+</div>
+
 <div class="entreprise">
     <div class="insert">
-        <a href="/inserer_categorie" class="btn btn-primary">Insérer une catégorie</a>
+        <a href="/inserer_categorie" class="btn-insert">Insérer une catégorie</a>
     </div>
 
     {% if categories %}
-    <h1>Les catégories</h1>
+    <h2>Les catégories</h2>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Rechercher une catégorie">
+        <button id="search-button" class="btn-search">Rechercher</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/search_category.js') }}"></script>
     <table>
         <thead>
             <tr>

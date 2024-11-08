@@ -1,0 +1,231 @@
+/* Style général de la page */
+main {
+    padding: 30px;
+}
+
+.container-avis {
+    max-width: 900px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    border-radius: 5px;
+}
+
+.titre {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.avis-list {
+    margin-top: 20px;
+}
+
+.avis-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.avis-header {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.utilisateur {
+    font-size: 1.1em;
+}
+
+.date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.note {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.avis-content {
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+.avis-content p {
+    margin: 0;
+}
+
+/* Icônes des étoiles */
+i {
+    font-size: 1.5em;
+    margin-right: 5px;
+    color: #f39c12; /* Couleur des étoiles pleines */
+}
+
+i.fa-star {
+    color: #f39c12; /* Couleur des étoiles pleines */
+}
+
+i.fa-star-half-alt {
+    color: #f39c12; /* Couleur des étoiles moyennes */
+}
+
+i.fa-star-o {
+    color: #ccc; /* Couleur des étoiles vides */
+}
+
+.stars .fa {
+    font-size: 0.8em;
+}
+
+/* Formulaire */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    resize: none;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+    width: 100px;
+    font-size: medium;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Gestion des étoiles dans le formulaire */
+.note-selection {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Style des étoiles vides (non sélectionnées) */
+.note-selection input[type="radio"] {
+    display: none; /* Cache les boutons radio */
+}
+
+.note-selection label {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+/* Couleur des icônes des étoiles */
+.note-selection label i {
+    color: #ccc; /* Par défaut, les étoiles non sélectionnées sont grises */
+    transition: color 0.3s ease;
+}
+
+/* Couleur des étoiles remplies (pleines) */
+.note-selection label i.fa-solid {
+    color: #f39c12; /* Or pour les étoiles sélectionnées */
+}
+
+/* Hover effect: all stars up to the hovered one turn gold */
+.note-selection label:hover i,
+.note-selection label:hover ~ label i {
+    color: #f39c12; /* Or pour toutes les étoiles jusqu'à celle survolée */
+}
+
+/* Les étoiles après celle survolée restent grises */
+.note-selection label i.fa-regular {
+    color: #ccc; /* Couleur des étoiles vides */
+}
+
+.note-selection label i.fa-solid {
+    color: #f39c12; /* Couleur des étoiles pleines */
+}
+
+/* Gestion de l'alignement des étoiles */
+.note-selection label i {
+    transition: color 0.3s ease;
+}
+
+/* Style des éléments d'avis */
+.avis-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.avis-header {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.utilisateur {
+    font-size: 1.1em;
+}
+
+.date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.note {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+/* Couleur des étoiles dans l'avis */
+.avis-note i {
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+.avis-note i.fa-star {
+    color: #f39c12;
+}
+
+.avis-note i.fa-star-o {
+    color: #ccc;
+}
+
+.fas, .fa-user {
+    color: #337A55;
+}
+
+.connect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}

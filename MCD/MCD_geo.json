@@ -1,0 +1,41 @@
+{
+  "width": 642,
+  "height": 424,
+  "cx": [
+    [ "TOURNEE", 55 ],
+    [ "COLLECTER", 177 ],
+    [ "POINT_DE_COLLECTE", 325 ],
+    [ "CATEGORIEDECHET", 177 ],
+    [ "DEPOSER", 325 ],
+    [ "UTILISATEUR", 448 ],
+    [ "TRAVAILLER", 579 ],
+    [ "CORRESPONDRE", 177 ],
+    [ "DECHET", 325 ],
+    [ "ENTREPRISE", 579 ]
+  ],
+  "cy": [
+    [ "TOURNEE", 77 ],
+    [ "COLLECTER", 77 ],
+    [ "POINT_DE_COLLECTE", 77 ],
+    [ "CATEGORIEDECHET", 238 ],
+    [ "DEPOSER", 238 ],
+    [ "UTILISATEUR", 238 ],
+    [ "TRAVAILLER", 238 ],
+    [ "CORRESPONDRE", 373 ],
+    [ "DECHET", 373 ],
+    [ "ENTREPRISE", 373 ]
+  ],
+  "shift": [
+    [ "COLLECTER,POINT_DE_COLLECTE,0", 0 ],
+    [ "COLLECTER,CATEGORIEDECHET,0", 0 ],
+    [ "COLLECTER,TOURNEE,0", 0 ],
+    [ "DEPOSER,DECHET,0", 0 ],
+    [ "DEPOSER,UTILISATEUR,0", 0 ],
+    [ "DEPOSER,POINT_DE_COLLECTE,0", 0 ],
+    [ "TRAVAILLER,UTILISATEUR,0", 0 ],
+    [ "TRAVAILLER,ENTREPRISE,0", 0 ],
+    [ "CORRESPONDRE,DECHET,0", 0 ],
+    [ "CORRESPONDRE,CATEGORIEDECHET,0", 0 ]
+  ],
+  "ratio": []
+}

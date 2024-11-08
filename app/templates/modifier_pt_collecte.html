@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='gerer_pts_collecte.css') }}">
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}
+
+{% block title %}Gérer les points de collectes{% endblock %}
+
+{% block content %}
+<h1>Gestion des Points de Collecte</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<p class="alert alert-danger">{{ message }}</p>
+{% else %}
+<p class="alert alert-success">{{ message }}</p>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<div class="gere">
+    <div class="container-gere">
+        <div id="mapid"></div>
+        <div class="form">
+            <h2>Ajouter un Points de Collecte</h2>
+
+            <!-- Formulaire pour ajouter un nouveau point de collecte -->
+            <form method="post" action="{{ url_for('modifier_pt_collecte', id=form.id_point_de_collecte.data) }}">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
+                </div>
+                <div>
+                    {{ form.adresse.label }} {{ form.adresse(size=20) }}
+                </div>
+                <div>
+                    {{ form.quantite_max.label }} {{ form.quantite_max(size=10) }}
+                </div>
+                <div class="les-btn">
+                    <button type="submit" class="btn-insert">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var addresses = [
+        {% for point in points_de_collecte %}
+    {
+        lat: {{ point.latitude }},   // Ajout de la latitude
+        lng: {{ point.longitude }},   // Ajout de la longitude
+        name: "{{ point.nom_pt_collecte }}",
+            detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
+    },
+    {% endfor %}
+      ];
+</script>
+
+{% endblock %}

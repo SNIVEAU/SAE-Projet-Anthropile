@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Rapport
+{% endblock %}
+{%block styles%}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='details.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+{%endblock%}
+{% block content %}
+<div class = details>
+    {% if point %}
+        <h1>Détails du Point de Collecte</h1>
+        <div>
+            <p><strong>Nom:</strong> {{ point.nom_pt_collecte }}</p> 
+            <p><strong>Adresse:</strong> {{ point.adresse }}</p> 
+            <p><strong>Quantité Max:</strong> {{ point.quantite_max }} kg</p> 
+            <p><strong>Quantité Courante:</strong> {{ quantite_courant }} kg</p> 
+
+        </div>
+    {% else %}
+        <p>Aucun point de collecte trouvé.</p>
+    {% endif %}
+
+    <h1>Les collectes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date de collecte</th>
+                <th>Type</th>
+                <th>Quantité collectée (kg)</th>
+                <th>Durée (minutes)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for collecte in collectes %}
+            <tr>
+                                
+                <td>{{ collecte.date_collecte }}</td>
+                <td>{{ collecte.nom_Type }}</td>
+                <td>{{ collecte.qtecollecte }}</td>
+                <td>{{ collecte.duree }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

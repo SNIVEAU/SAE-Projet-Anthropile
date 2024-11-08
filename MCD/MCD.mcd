@@ -1,0 +1,17 @@
+TOURNEE : id_Tournee, date_collecte[DATETIME], duree[INT]
+COLLECTER, 0N POINT_DE_COLLECTE, 0N CATEGORIEDECHET, 0N TOURNEE :qte_collecte
+POINT_DE_COLLECTE: id_point_collecte, adresse, nom_pt_collecte, pos_x, pos_y, qte_max
+:
+:
+
+:
+CATEGORIEDECHET: id_Type,nom_Type
+DEPOSER, 0N DECHET, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
+UTILISATEUR:id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, nom_role
+TRAVAILLER, 01 UTILISATEUR, 0N ENTREPRISE
+
+:
+CORRESPONDRE, 11 DECHET, 0N CATEGORIEDECHET
+DECHET : id_Dechet, nom_Dechet, qte
+:
+ENTREPRISE: id_Entreprise, nom_Entreprise

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}
+    BIOTRACK’IN | Rapport
+{% endblock %}
+{%block styles%}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+{%endblock%}
+{% block content %}
+    <h1>Rapports</h1>
+    
+    <!-- Barre de recherche -->
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Rechercher un rapport">
+        <button id="search-button">Rechercher</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/search_bar.js') }}"></script>
+
+    
+    <div id="filter-options">
+        <label><input type="radio" name="filter" value="day" checked> Par Jour</label>
+        <label><input type="radio" name="filter" value="month"> Par Mois</label>
+        <label><input type="radio" name="filter" value="year"> Par Année</label>
+    </div>
+
+    
+
+    <!-- Table des rapports -->
+    <table id="report-table">
+        <thead>
+            <tr>
+                <th>Rapport</th>
+                <th>Date de Collecte</th>
+                <th>Téléchargement</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for traitement in collecter %}
+            <tr>
+                <td>Rapport Journalier</td>
+                <td>{{ traitement.dateCollecte }}</td>
+                <td>
+                    <a href="/download_pdf/{{traitement.dateCollecte}}">Télécharger PDF</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

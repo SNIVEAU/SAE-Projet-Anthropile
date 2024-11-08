@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}
+    BIOTRACK’IN | Toutes les entreprises
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="entreprise-container">
+    <div class="entreprise">
+        <!-- Messages de statut pour différentes actions -->
+        {% if request.args.get('status') == 'insert_success' %}
+            <div class="alert alert-success">L'entreprise a été insérée avec succès.</div>
+        {% elif request.args.get('status') == 'modify_success' %}
+            <div class="alert alert-success">L'entreprise a été modifiée avec succès.</div>
+        {% elif request.args.get('status') == 'delete_success' %}
+            <div class="alert alert-success">L'entreprise a été supprimée avec succès.</div>
+        {% elif request.args.get('status') == 'delete_error' %}
+            <div class="alert alert-error">Impossible de supprimer cette entreprise : il y a un/des utilisateurs associé(s).</div>
+        {% endif %}
+
+        <!-- Titre principal de la page -->
+        <div class="page-header">
+            <h1>Gestion des entreprises</h1>
+            <p>Bienvenue sur la page de gestion des entreprises. Ici, vous pouvez ajouter, rechercher, modifier et supprimer les entreprises associées à Biotrack'in.</p>
+        </div>
+
+        <!-- Bouton pour insérer une nouvelle entreprise -->
+        <div class="insert">
+            <a href="/inserer_ent" class="btn btn-insert">Insérer une entreprise</a>
+        </div>
+
+        <!-- Affichage des entreprises ou message si aucune n'est disponible -->
+        {% if entreprises %}
+            <h2>Liste des entreprises</h2>
+            <div id="search-container">
+                <input type="text" id="search-input" placeholder="Rechercher une entreprise">
+                <button id="search-button" class="btn-search">Rechercher</button>
+            </div>
+            <table id="company-table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ent in entreprises %}
+                    <tr>
+                        <td>{{ ent.id_entreprise }}</td>
+                        <td>{{ ent.nom_entreprise }}</td>
+                        <td>
+                            <a href="/supprimer_entreprise/{{ ent.id_entreprise }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</a>
+                        </td>
+                        <td>
+                            <a href="/modifier_entreprise/{{ ent.id_entreprise }}">Modifier</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-companies">
+                <p>Aucune entreprise trouvée. Cliquez sur le bouton ci-dessus pour ajouter une nouvelle entreprise.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Inclusion du script JavaScript pour la recherche d'entreprise -->
+<script src="{{ url_for('static', filename='js/search_company.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,65 @@
+/* Conteneur global pour les graphiques */
+.contenu-graph {
+    display: flex; /* Utilise flexbox pour aligner les éléments côte à côte */
+    justify-content: space-between; /* Espace égal entre les graphiques */
+    gap: 20px; /* Espacement entre les graphiques */
+    flex-wrap: wrap; /* Permet aux éléments de se réorganiser sur plusieurs lignes si l'espace est limité (utile sur mobile) */
+    margin: 20px;
+}
+
+/* Style pour chaque graphique */
+.graph {
+    flex: 1; /* Chaque graphique occupe une portion égale de l'espace disponible */
+    min-width: 550px; /* Limite la largeur minimale pour les petits écrans */
+    padding: 10px;
+    background-color: #ffffff; /* Fond blanc pour chaque graphique */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère autour du graphique */
+}
+
+/* Titre des graphiques */
+.graph h2 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+canvas {
+    max-width: 800px;
+    max-height: 400px;
+}
+
+#mapid {
+    height: 626px;
+    width: 100%;
+}
+
+/* Responsivité pour les petits écrans */
+@media (max-width: 768px) {
+    .contenu-graph {
+        flex-direction: column; /* Sur petits écrans, les graphiques s'affichent l'un au-dessus de l'autre */
+        gap: 10px; /* Réduit l'écart entre les graphiques */
+    }
+    .graph {
+        min-width: 100px; /* Les graphiques occupent toute la largeur disponible sur mobile */
+    }
+}
+
+
+/* Styles optionnels pour le bouton dans la popup */
+.leaflet-popup-content button {
+    margin-top: 8px;
+    padding: 5px 10px;
+    background-color: #fff;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+    border-color: #4CAF50;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.leaflet-popup-content button:hover {
+    color: #fff;
+    background-color: #4CAF50;
+}

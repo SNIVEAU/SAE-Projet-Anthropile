@@ -1,0 +1,289 @@
+/* Titre principal */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Conteneur principal */
+.gere {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Conteneur pour la carte et le formulaire */
+.container-gere {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+}
+
+/* Carte */
+#mapid {
+    width: 100%;
+    max-width: 600px;
+    height: 500px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Formulaire */
+.form {
+    flex: 1;
+    min-width: 280px;
+    max-width: 560px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form form div {
+    margin-bottom: 15px;
+}
+
+.form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form input[type="text"],
+.form input[type="number"],
+.form select,
+.form button {
+    width: 97%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form button:hover {
+    background-color: #45a049;
+}
+
+
+/* Liste des points de collecte */
+.pts {
+    width: 100%;
+    max-width: 1160px;
+    min-width: 580px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.pts h2 {
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.pts ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.pts ul li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pts ul ul {
+    min-width: 500px;
+    max-width: 500px;
+}
+
+.pts ul ul li, .pts ul ul p {
+    padding: 0;
+    margin: 0;
+}
+
+.pts ul li a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pts ul li a[onclick*="confirmEdit"] {
+    color: #007bff;
+}
+
+.pts ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Lien pour supprimer */
+.pts ul li a[onclick*="confirmDelete"] {
+    color: #e3342f;
+}
+
+.pts ul li button {
+    background: none;
+    color: #e3342f;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Popup de confirmation pour la suppression */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+}
+
+.popup-content h3 {
+    margin: 0;
+    color: #333;
+}
+
+.popup-content p {
+    margin: 15px 0;
+}
+
+.popup-content button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.popup-content .confirm {
+    background-color: #e3342f;
+    color: #fff;
+}
+
+.popup-content .cancel {
+    background-color: #ddd;
+    color: #333;
+}
+
+/* Bouton pour voir le détail dans la carte */
+.leaflet-popup-content-wrapper {
+    text-align: center;
+}
+
+.leaflet-popup-content button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.leaflet-popup-content button:hover {
+    background-color: #45a049;
+}
+
+
+/* Message d'erreur */
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+/* Message de succès */
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.alert {
+    margin: 0 auto;
+    max-width: 1180px;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 90%;
+}
+
+.btn-insert {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.btn-insert:hover {
+    background-color: #45a049;
+}
+
+.btn-insert:hover {
+    background-color: #45a049;
+}
+
+.les-btn {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    margin-top: 20px;
+}

@@ -1,0 +1,114 @@
+/* Centrage du conteneur principal */
+.entreprise-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Centrage du contenu principal */
+.entreprise {
+    text-align: center;
+    width: 80%; /* Limiter la largeur du contenu */
+    margin: 0 auto;
+}
+
+/* Titre h1 centré */
+h1 {
+    font-size: 2em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    margin-right: 10rem;
+    text-align: center;
+}
+
+/* Titre h2 aligné à gauche */
+h2 {
+    font-size: 1.5em;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    margin-left: 10rem;
+    text-align: left; /* Aligner le titre h2 à gauche */
+}
+
+/* Paragraphe centré */
+p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Style pour le bouton "Insérer une entreprise" */
+.btn-insert {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #5cb85c;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-insert:hover {
+    background-color: #3d8b3d;
+    color: #fff;
+}
+
+/* Centrage du container de recherche */
+#search-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+#search-input {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ddd;
+}
+
+#search-button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+}
+
+#search-button:hover {
+    background-color: #000;
+}
+
+/* Style pour l'image et le texte d'absence de données */
+.no-companies {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.no-companies p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* Ajustements spécifiques pour les écrans mobiles */
+@media (max-width: 768px) {
+    /* Réinitialisation du margin-right de h1 et du margin-left de h2 */
+    h1 {
+        margin-right: 4rem;
+    }
+
+    h2 {
+        margin-left: 4rem;
+    }
+}

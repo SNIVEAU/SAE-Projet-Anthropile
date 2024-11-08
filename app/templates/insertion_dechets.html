@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='insertion_dechets.css') }}">
+<script src="{{ url_for('static', filename='js/insertion_dechets.js') }}"></script>
+{% endblock %}
+
+{% block title %}Insertion des déchets{% endblock %}
+
+{% block content %}
+<h1 class="insert-title">Insertion des déchets</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<p class="alert alert-danger">{{ message }}</p>
+{% else %}
+<p class="alert alert-success">{{ message }}</p>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<form class="form-horizontal" role="form" method="POST" action="{{ url_for('insert_dechets') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        <label for="nom" class="col-sm-2 control-label">{{ form.nom.label }}</label>
+        <div>
+            {{ form.nom(class_="form-control", placeholder="Nom du déchet") }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="type" class="col-sm-2 control-label">{{ form.type.label }}</label>
+        <div>
+            {{ form.type(class_="form-control") }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="quantite" class="col-sm-2 control-label">{{ form.quantite.label }}</label>
+        <div>
+            {{ form.quantite(class_="form-control", placeholder="Volume des déchets") }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_point_collecte" class="col-sm-2 control-label">{{ form.id_point_collecte.label }}</label>
+        <div>
+            {{ form.id_point_collecte(class_="form-control", placeholder="Point de collecte") }}
+        </div>
+    </div>
+    <div class="map-container">
+        <div id="mapid"></div>
+    </div>
+    <div class="form-group">
+        {% if error %}
+            <p class="erreur"><strong>Erreur : </strong>{{ error }}</p>
+        {% endif %}
+        <div class="les-btn">
+            {{ form.submit(class_="btn-insert") }}
+        </div>
+    </div>
+</form>
+
+<script>
+    var addresses = [
+        {% for point in points_de_collecte %}
+        { 
+            address: "{{ point.adresse }}", 
+            name: "{{ point.nom_pt_collecte }}", 
+            id: "{{ point.id_point_de_collecte }}", 
+            lat: {{ point.latitude }},   // Ajout de la latitude
+            lng: {{ point.longitude }}   // Ajout de la longitude
+        }{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    ];
+</script>
+
+{% endblock %}

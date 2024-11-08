@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='graph.css') }}">
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}
+
+{% block title %}Carte OpenStreetMap avec adresses de collecte{% endblock %}
+
+{% block content %}
+<div id="mapid"></div>
+
+<script>
+      var addresses = [
+        {% for point in points_de_collecte %}
+          { 
+            lat: {{ point.latitude }},   // Ajout de la latitude
+            lng: {{ point.longitude }},   // Ajout de la longitude
+            name: "{{ point.nom_pt_collecte }}", 
+            detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}" 
+          },
+        {% endfor %}
+      ];
+</script>
+{% endblock %}

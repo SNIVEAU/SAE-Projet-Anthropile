@@ -1,0 +1,45 @@
+@media (max-width: 768px) {
+    header {
+        justify-content: space-between;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Cache le menu de navigation par défaut */
+    nav.menu ul {
+        display: none;
+    }
+
+    /* Affiche le menu par-dessus tout */
+    nav.menu.active ul {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%; /* Utilise la pleine largeur sur mobile */
+        background-color: white;
+        padding: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999; /* Très élevé pour être par-dessus tout */
+    }
+
+    nav.menu.active .close-menu {
+        display: block;
+    }
+
+    nav.menu.active ul li {
+        margin: 5px 0;
+        text-align: left;
+        font-size: 14px;
+        padding: 5px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    nav.menu.active ul li:hover {
+        background-color: #f0f0f0;
+    }
+}

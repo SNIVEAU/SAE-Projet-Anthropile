@@ -99,6 +99,14 @@ BIOTRACK’IN | Accueil
         <button class="carousel-btn next-btn" onclick="moveSlides(2)">&#10095;</button>
     </div>
 </div>
+<section>
+    <div class="text1">
+        <h1>Consultez les avis de nos utilisateurs</h1>
+        <p class="description-avis">Découvrez ce que nos utilisateurs pensent de nos initiatives et actions environnementales en Guadeloupe. Consultez leurs retours et laissez-vous inspirer par leur engagement.</p>
+        <a href="{{ url_for('avis') }}" class="btn">Voir les avis</a>
+    </div>
+    <img class="image1" src="{{ url_for('static', filename='img/avis.jpg') }}" alt="Nos services">
+</section>
 <script>
     const track = document.querySelector('.carousel-track');
     const slides = Array.from(track.children);

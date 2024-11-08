@@ -601,6 +601,40 @@ def get_liste_collectes(id):
         collectes.append({'date_collecte': date_collecte, 'nom_Type': nom_Type, 'qtecollecte' :qtecollecte, 'duree': duree})
     return collectes
 
+class Avis:
+    def __init__(self, nom_utilisateur, avis, note, date_avis):
+        self.nom_utilisateur = nom_utilisateur
+        self.avis = avis
+        self.note = note
+        self.date_avis = date_avis
+
+    def __repr__(self):
+        return self.nom_utilisateur + " : " + self.avis
+
+def get_avis():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR ORDER BY date_Avis DESC")
+    avis = cursor.fetchall()
+    cursor.close()
+    les_avis = []
+    for nom_utilisateur, avis, note, date_avis in avis:
+        les_avis.append(Avis(nom_utilisateur, avis, note, date_avis))
+    return les_avis
+
+def get_global_note():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT AVG(note) FROM AVIS")
+    note = cursor.fetchone()
+    cursor.close()
+    if note[0] is None:
+        return 5
+    return note[0]
+
+def insert_avis(id_utilisateur, avis, note):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO AVIS(id_Utilisateur, avis, note) VALUES (%s, %s, %s)", (id_utilisateur, avis, note))
+    mysql.connection.commit()
+    cursor.close()
 
 def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte):
     cursor = mysql.connection.cursor()
@@ -643,3 +677,4 @@ def get_qte_by_pts_and_type(id_point_collecte, id_type):
     qte_collecte = cursor.fetchone()
     cursor.close()
     return qte_collecte[0] if qte_collecte else 0
+

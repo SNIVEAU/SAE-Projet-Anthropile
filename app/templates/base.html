@@ -41,11 +41,11 @@
         
         <div>
             {% if current_user.is_authenticated %}
-                <span>Bienvenue, <a href="{{ url_for('profil') }}">{{ current_user.nom_utilisateur }}</a> 👋!</span>
+                <span>Bienvenue, <a href="{{ url_for('profil') }}" id="user-name">{{ current_user.nom_utilisateur }}</a> 👋!</span>                
                 <a id="logout-link" class="connexioninscription">Se déconnecter</a>
-                  <label for="remember" class="remember-label">
-                <input type="checkbox" id="remember" name="remember" />
-                Se souvenir de moi
+                <label for="remember" class="remember-label">
+                <input type="checkbox" id="remember" name="remember" checked />
+                    Se souvenir de moi
             </label>
             {% else %}
                 <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>

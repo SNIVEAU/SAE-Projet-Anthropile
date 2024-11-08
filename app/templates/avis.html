@@ -11,6 +11,7 @@
     <div class="titre">
         <h1>Vos avis</h1>
             <div class="avis-note">
+                Note globale : 
                 {% set full_stars = note_globale|round(0) %}
                 {% set half_star = note_globale - full_stars %}
                 
@@ -25,10 +26,32 @@
                 {% endfor %}
         </div>
     </div>
+
+    {% if current_user.is_authenticated %}
+    <form action="{{ url_for('add_avis') }}" method="POST">
+        <!-- Sélection de la note -->
+        <div class="note-selection">
+            <h3>Donner nous votre avis</h3>
+            <div class="stars">
+                {% for i in range(1, 6) %}
+                    <input type="radio" id="star{{ i }}" name="note" value="{{ i }}" {% if i == note_globale %}checked{% endif %}>
+                    <label for="star{{ i }}">
+                        <i class="fa fa-star {% if i <= note_globale %}fa-solid{% else %}fa-regular{% endif %}"></i>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <textarea name="avis" placeholder="Écrivez votre avis ici..." required></textarea>
+        <button type="submit">Envoyer</button>
+    </form>
+    {% else %}
+    <p>Connectez-vous pour ajouter un avis.</p>
+    {% endif %}
+
     {% for a in avis %}
     <div class="avis-item">
         <div class="avis-header">
-            <span class="utilisateur">{{ a.nom_utilisateur }}</span>
+            <span class="utilisateur"><i class="fas fa-user"></i> {{ a.nom_utilisateur }}</span>
         </div>
         <div class="note">
             <span class="date">Avis laissé le {{ a.date_avis }}</span>
@@ -43,4 +66,56 @@
     </div>
     {% endfor %}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const stars = document.querySelectorAll('.note-selection input[type="radio"]');
+        const labels = document.querySelectorAll('.note-selection label');
+
+        // Initialize stars based on the checked radio input
+        function updateStars() {
+            stars.forEach((star, idx) => {
+                if (star.checked) {
+                    for (let i = 0; i <= idx; i++) {
+                        labels[i].querySelector('i').classList.add('fa-solid');
+                        labels[i].querySelector('i').classList.remove('fa-regular');
+                    }
+                    for (let i = idx + 1; i < labels.length; i++) {
+                        labels[i].querySelector('i').classList.remove('fa-solid');
+                        labels[i].querySelector('i').classList.add('fa-regular');
+                    }
+                }
+            });
+        }
+
+        updateStars(); // Initialize on page load
+
+        // Hover effect for highlighting stars
+        labels.forEach((label, index) => {
+            label.addEventListener('mouseover', () => {
+                // Make all stars up to the hovered one gold
+                for (let i = 0; i <= index; i++) {
+                    labels[i].querySelector('i').classList.add('fa-solid');
+                    labels[i].querySelector('i').classList.remove('fa-regular');
+                }
+                // Stars after the hovered one should be gray
+                for (let i = index + 1; i < labels.length; i++) {
+                    labels[i].querySelector('i').classList.remove('fa-solid');
+                    labels[i].querySelector('i').classList.add('fa-regular');
+                }
+            });
+
+            label.addEventListener('mouseout', updateStars);
+
+            label.addEventListener('click', () => {
+                // Set the checked state to the selected star
+                stars.forEach((star, idx) => {
+                    star.checked = idx === index;
+                });
+                updateStars(); // Update based on the new selected star
+            });
+        });
+    });
+</script>
+
 {% endblock %}

@@ -601,7 +601,7 @@ class Avis:
 
 def get_avis():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR")
+    cursor.execute("SELECT nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR ORDER BY date_Avis DESC")
     avis = cursor.fetchall()
     cursor.close()
     les_avis = []
@@ -614,4 +614,12 @@ def get_global_note():
     cursor.execute("SELECT AVG(note) FROM AVIS")
     note = cursor.fetchone()
     cursor.close()
+    if note[0] is None:
+        return 5
     return note[0]
+
+def insert_avis(id_utilisateur, avis, note):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO AVIS(id_Utilisateur, avis, note) VALUES (%s, %s, %s)", (id_utilisateur, avis, note))
+    mysql.connection.commit()
+    cursor.close()

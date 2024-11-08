@@ -144,7 +144,9 @@ def logout():
     #resp.delete_cookie('remember_me')
     return resp
 
-
+@app.route('/is_logged_in', methods=['GET'])
+def is_logged_in():
+    return jsonify(is_logged_in=current_user.is_authenticated)
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
     id_user = HiddenField("ID de l'utilisateur")

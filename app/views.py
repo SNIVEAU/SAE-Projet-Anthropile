@@ -171,7 +171,8 @@ def insert_dechets():
         id_dechet = dechet.insert_dechet()
         insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
         # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
-        return redirect(url_for("home"))
+        flash("Déchet ajouté avec succès", "success")
+        return redirect(url_for("insert_dechets"))
     return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
 
 @app.route("/collecte-dechets")
@@ -541,6 +542,23 @@ def supprimer_cat(id):
     else:
         return redirect(url_for('toutes_categories', status='delete_error'))
 
+@app.route("/avis")
+def avis():
+    return render_template("avis.html", avis=get_avis(), note_globale=get_global_note())
+
+@app.route("/inserer_avis", methods=['GET', 'POST'])
+@login_required
+def add_avis():
+    avis_text = request.form.get("avis")
+    note = request.form.get("note")
+    if note is None:
+        note = 5
+    if avis_text:
+        insert_avis(current_user.id , avis_text, note)
+        flash("Avis ajouté avec succès", "success")
+    else:
+        flash("Votre avis ne peut pas être vide.", "error")
+    return redirect(url_for('avis'))
       
 
 @app.route("/dechets_selon_utilisteur/<int:id>")
@@ -551,3 +569,5 @@ def tous_dechets_selon_utilisateur(id):
         dechets=get_tous_dechets_selon_utilisateur(id),
         dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
     )
+
+  

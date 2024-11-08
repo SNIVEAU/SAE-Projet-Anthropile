@@ -51,7 +51,6 @@ BIOTRACK’IN | Accueil
         <p class="p1">Il est crucial d'impliquer les écoles, les associations locales et les entreprises pour créer une culture collective de valorisation des bio-déchets. En favorisant des gestes simples, comme le compostage à domicile ou la participation à des initiatives de collecte des bio-déchets, nous pouvons ensemble contribuer à un environnement plus sain et durable.</p>
         <a href="{{ url_for('collecte_dechets') }}" class="btn">Participer aux actions</a>
     </div>
-    <!-- <div class="image"> -->
         <img class="image2" src="../static/img/bouteille_sable2.jpg" alt="Nos produits">
     <!-- </div> -->
 </section>
@@ -99,18 +98,6 @@ BIOTRACK’IN | Accueil
         <button class="carousel-btn next-btn" onclick="moveSlides(2)">&#10095;</button>
     </div>
 </div>
-<script>
-    const track = document.querySelector('.carousel-track');
-    const slides = Array.from(track.children);
-    const slideWidth = slides[0].getBoundingClientRect().width + 20; // largeur d'une slide + espace
-    let currentIndex = 0;
-
-    function moveSlides(n) {
-        currentIndex = (currentIndex + n + slides.length) % slides.length;
-        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-    }
-
-    setInterval(() => moveSlides(2), 5000); // Défilement automatique
-</script>
+<script src="{{ url_for('static', filename='js/caroussel.js') }}"></script>
 
 {% endblock %}

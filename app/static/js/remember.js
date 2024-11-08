@@ -1,4 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function () {
+            if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                window.location.href = "{{ url_for('logout') }}";
+            }
+        });
+    }
+});
+
+// Ouvrir/fermer le menu au clic
+document.querySelector('.menu-toggle').addEventListener('click', function() {
+    const menu = document.querySelector('nav.menu');
+    menu.classList.toggle('active');
+});
+
+// Fermer le menu si on clique sur la croix
+document.querySelector('.close-menu').addEventListener('click', function() {
+    const menu = document.querySelector('nav.menu');
+    menu.classList.remove('active');
+});
+
+// Fermer le menu si on clique en dehors
+document.addEventListener('click', function(event) {
+    const menu = document.querySelector('nav.menu');
+    const menuToggle = document.querySelector('.menu-toggle');
+
+    if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+        menu.classList.remove('active');
+    }
+});
+document.addEventListener('DOMContentLoaded', function () {
     const rememberCheckbox = document.getElementById('remember');
 
     // Restaurez l'état de 'activate' depuis le localStorage si disponible

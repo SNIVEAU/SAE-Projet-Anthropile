@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS UTILISATEUR;
 DROP TABLE IF EXISTS ENTREPRISE;
 DROP TABLE IF EXISTS CATEGORIEDECHET;
 DROP TABLE IF EXISTS TOURNEE;
+DROP TABLE IF EXISTS HISTORIQUE_DECHET;
 
 CREATE TABLE CATEGORIEDECHET (
   id_Type INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +25,7 @@ CREATE TABLE UTILISATEUR (
   mail VARCHAR(42),
   numtel BIGINT,
   motdepasse VARCHAR(255),
-  nom_role ENUM('Administrateur', 'Utilisateur') DEFAULT 'Utilisateur' 
+  nom_role ENUM('Administrateur', 'Utilisateur', 'Visiteur') DEFAULT 'Utilisateur' 
 );
 
 CREATE TABLE TRAVAILLER (
@@ -78,4 +79,13 @@ CREATE TABLE COLLECTER (
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Tournee) REFERENCES TOURNEE (id_Tournee),
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
+);
+
+CREATE TABLE HISTORIQUE_DECHET (
+  id_dechet int,
+  nom_dechet varchar(42),
+  id_type int,
+  nom_type varchar(42),
+  quantite decimal(10,4), 
+  id_utilisateur int
 );

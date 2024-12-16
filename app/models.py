@@ -258,6 +258,9 @@ class Collecter:
         cursor.execute("INSERT INTO COLLECTER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
+    
+    def __str__(self):
+        return str(self.id_point_collecte) + "  " + str(self.id_Type) + self.dateCollecte
 def get_collecter():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM COLLECTER")
@@ -286,7 +289,6 @@ def get_collecter_by_date(date_collecte):
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
     
-    # Sélectionne les colonnes explicitement et formate 'dateCollecte'
     query = """
 
     SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
@@ -300,12 +302,21 @@ def get_collecter_sort_by_date():
     
     listecollecter = []
     for i in collecter:
-        # Remplace les indices selon la position des colonnes sélectionnées
 
         listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
     
     cursor.close()
     return listecollecter
+
+def remove_doublon_date_collecter(listecollecte):
+    res = []
+    hashdate = set()
+    for collecte in listecollecte :
+        if collecte.dateCollecte not in  hashdate:
+            res.append(collecte)
+            hashdate.add(collecte.dateCollecte)
+
+    return res
 
 def get_pts_de_collecte_by_adresse(adresse):
     cursor = mysql.connection.cursor()

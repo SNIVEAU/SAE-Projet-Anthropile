@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS AVIS;
+DROP TABLE IF EXISTS APPARTENIR;
 DROP TABLE IF EXISTS DEPOSER;
 DROP TABLE IF EXISTS COLLECTER;
 DROP TABLE IF EXISTS DECHET;
@@ -98,3 +99,12 @@ CREATE TABLE HISTORIQUE_DECHET (
   quantite decimal(10,4), 
   id_utilisateur int
 );
+
+CREATE TABLE APPARTENIR (
+  id_point_de_collecte INT,
+  id_utilisateur INT,
+  PRIMARY KEY (id_point_de_collecte, id_utilisateur),
+  FOREIGN KEY (id_point_de_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
+  FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR (id_Utilisateur)
+);
+

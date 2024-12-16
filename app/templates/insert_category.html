@@ -4,7 +4,6 @@
 {% endblock %}
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='insert_categorie.css') }}">
 {% endblock %}
 
@@ -15,10 +14,10 @@
 
 <h1>Insérer catégorie</h1>
 <form action="{{ url_for('inserer_categorie_dechet') }}" method="POST">
-    <label for="'id_type">ID :</label>
+    <label class="insert_cat" for="'id_type">ID :</label>
     <input type="text" id="id_type" name="id_type" value="{{ id_categorie_max}}" disabled>
 
-    <label for="nom_type">Nom : </label>
+    <label class="insert_cat" for="nom_type">Nom : </label>
     <input type="text" id="nom_type" name="nom_type" values="" placeholder="Entrez le nom de la catégorie" required>
     <button type="submit">Insérer</button>
 </form>

@@ -21,7 +21,7 @@ h1 {
 }
 
 /* Style des labels */
-label {
+.insert_ent {
     font-size: 1.1em;
     margin-bottom: 5px;
     color: #555;

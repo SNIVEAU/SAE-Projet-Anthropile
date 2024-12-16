@@ -19,6 +19,9 @@ class Utilisateur(UserMixin):
         self.numtel = numtel
         self.motdepasse = motdepasse
         self.nom_role = nom_role
+    
+    def is_admin(self):
+        return self.nom_role == "Administrateur"
 
 @login_manager.user_loader
 def load_user(user_name):

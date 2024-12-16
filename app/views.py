@@ -197,7 +197,7 @@ def statistique_dechets():
     return data_graph_qte_dechets_categorie()
 
 @app.route("/statistique-pts-collecte")
-# @login_required
+@login_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
 
@@ -257,7 +257,7 @@ def download_pdf(date_collecte):
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
 @app.route("/details/<id>")
-@login_required
+#@login_required
 def detaille(id):
     points_de_collecte = get_points_de_collecte()
     liste_collectes = get_liste_collectes(int(id))

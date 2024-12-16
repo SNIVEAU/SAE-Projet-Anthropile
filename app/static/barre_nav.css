@@ -1,0 +1,23 @@
+ul li ul.dropdown li {
+    display: block;
+    padding: 10px;
+    outline: 10px black;
+}
+
+ul li ul.dropdown {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+ul li:hover ul.dropdown {
+    display: block;
+    background-color: white;
+    width: auto;
+    opacity: 1;
+    pointer-events: auto;
+}
+

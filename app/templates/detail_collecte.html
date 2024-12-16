@@ -22,6 +22,7 @@
         <p>Aucun point de collecte trouvé.</p>
     {% endif %}
 
+    {% if current_user.is_authenticated and current_user.is_admin() %}
     <h1>Les collectes</h1>
     <table>
         <thead>
@@ -44,5 +45,6 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 </div>
 {% endblock %}

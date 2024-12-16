@@ -210,6 +210,7 @@ def data_graph_pts_collecte():
 @login_required
 def rapport():
     collecter = get_collecter_sort_by_date()
+    collecter = remove_doublon_date_collecter(collecter)
     return render_template("rapport.html", collecter=collecter[:10])
 
 

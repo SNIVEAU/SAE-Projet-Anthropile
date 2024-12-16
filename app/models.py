@@ -330,6 +330,25 @@ def get_pts_de_collecte_by_adresse(adresse):
     cursor.close()
     return listepoints
 
+def ajoute_pts_de_collecte_specifique(id_pts_de_collecte, id_utilisateur):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO APPARTENIR (id_Point_Collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
+    mysql.connection.commit()
+    cursor.close()
+
+def get_max_id_pts_de_collecte():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_Point_Collecte) FROM POINT_DE_COLLECTE")
+    id_max = cursor.fetchone()
+    cursor.close()
+    return id_max[0]
+
+def get_max_id_user():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT MAX(id_Utilisateur) FROM UTILISATEUR")
+    id_max = cursor.fetchone()
+    cursor.close()
+    return id_max[0]
 
 def insert_pts_de_collecte(adresse, nom_pt_collecte, 
                            qte_max=500, #Quantité modifiable par défaut
@@ -413,6 +432,43 @@ def get_id_utilisateur(nom_utilisateur):
     existing_user = cursor.fetchone()
     cursor.close()
     return existing_user[0]
+def get_points_de_collecte_by_user(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+                   '''SELECT 
+    P.id_point_collecte, 
+    P.adresse, 
+    P.nom_pt_collecte, 
+    P.pos_x, 
+    P.pos_y, 
+    P.qte_max,
+    A.id_utilisateur
+FROM 
+    APPARTENIR A
+JOIN 
+    POINT_DE_COLLECTE P 
+ON 
+    A.id_point_de_collecte = P.id_point_collecte
+WHERE 
+    A.id_utilisateur = %s;'''
+, (id,))
+    points = cursor.fetchall()
+    print(points)
+    cursor.close()
+    les_points = []
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude,quantite_max,_ in points:
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
+    print(les_points)
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
+    points = cursor.fetchall()
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+        if not id_point_de_collecte in [point.id_point_de_collecte for point in les_points]:
+            les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
+    
+    cursor.close()
+    print(les_points)
+    return les_points
 
 class Entreprise:
     def __init__(self, id_entreprise, nom_entreprise):
@@ -582,6 +638,7 @@ def get_quantite_courante(id):
     return quantite_courante[0]
 
 def get_pts_collecte_and_id():
+
     pts_de_collecte = get_points_de_collecte()
     choices = []
     for point in pts_de_collecte:

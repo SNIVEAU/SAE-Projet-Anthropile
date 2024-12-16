@@ -482,6 +482,8 @@ class PlanificationTournéeForm(FlaskForm):
     submit = SubmitField('Valider')
     
 @app.route('/planification_tournee', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def planification_tournee():
     pts_de_collecte = get_points_de_collecte()
     categories_dechet = get_categories()

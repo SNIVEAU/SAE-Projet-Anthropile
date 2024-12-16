@@ -144,7 +144,9 @@ def logout():
     #resp.delete_cookie('remember_me')
     return resp
 
-
+@app.route('/is_logged_in', methods=['GET'])
+def is_logged_in():
+    return jsonify(is_logged_in=current_user.is_authenticated)
 class DechetsForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
     id_user = HiddenField("ID de l'utilisateur")
@@ -480,6 +482,8 @@ class PlanificationTournéeForm(FlaskForm):
     submit = SubmitField('Valider')
     
 @app.route('/planification_tournee', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def planification_tournee():
     pts_de_collecte = get_points_de_collecte()
     categories_dechet = get_categories()

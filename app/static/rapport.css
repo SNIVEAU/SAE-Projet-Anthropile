@@ -1,7 +1,7 @@
 /* Centrage du h1 */
 h1 {
-    text-align: left;
-    margin: 2% 0 0 10%;
+    text-align: center;
+    /* margin: 2% 0 0 10%; */
 }
 
 /* Style de la barre de recherche */

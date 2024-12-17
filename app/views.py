@@ -121,6 +121,7 @@ def register():
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
                     insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data, 50, pos[0],pos[1])
+                    ajoute_pts_de_collecte_specifique(get_max_id_pts_de_collecte(),get_max_id_user())
             else:
                 flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
         except Exception as e:
@@ -157,25 +158,36 @@ class DechetsForm(FlaskForm):
     # type = RadioField("Type de déchet", choices=get_categories)
     # type = QuerySelectField("Type de déchet", query_factory=get_categories, allow_blank=False, get_label="Nom_Type", validators=[DataRequired()])
     quantite = DecimalField("Volume du déchet", validators=[DataRequired()])
-    id_point_collecte = SelectField("Point de collecte", choices=get_pts_collecte_and_id, validators=[DataRequired()])
+    id_point_collecte = SelectField("Point de collecte", validators=[DataRequired()])
     submit = SubmitField("Ajouter")
 
 @app.route("/insert-dechets", methods=["GET", "POST"])
 @login_required
 def insert_dechets():
     form = DechetsForm()
+
+    user_points_de_collecte = get_points_de_collecte_by_user(current_user.id)
+    print(user_points_de_collecte)
+    form.id_point_collecte.choices = [(str(point.id_point_de_collecte), point.nom_pt_collecte) for point in user_points_de_collecte]
+
     if form.validate_on_submit():
         print(form.id_user.data, "''''''''''''''''''''")
         print(form.id_point_collecte.data, "-----------------")
-        print(form.id_point_collecte.data)
-        print(type(form.id_point_collecte))
+        print(type(form.id_point_collecte.data))
+        
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
         id_dechet = dechet.insert_dechet()
+        
         insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
-        # insert_dechet(form.nom.data, form.type.data, form.quantite.data)
+        
         flash("Déchet ajouté avec succès", "success")
         return redirect(url_for("insert_dechets"))
-    return render_template("insertion_dechets.html", form=form, points_de_collecte=get_points_de_collecte())
+
+    return render_template(
+        "insertion_dechets.html",
+        form=form,
+        points_de_collecte=user_points_de_collecte,
+    )
 
 @app.route("/collecte-dechets")
 # @login_required
@@ -197,7 +209,7 @@ def statistique_dechets():
     return data_graph_qte_dechets_categorie()
 
 @app.route("/statistique-pts-collecte")
-# @login_required
+@login_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
 
@@ -210,6 +222,7 @@ def data_graph_pts_collecte():
 @login_required
 def rapport():
     collecter = get_collecter_sort_by_date()
+    collecter = remove_doublon_date_collecter(collecter)
     return render_template("rapport.html", collecter=collecter[:10])
 
 
@@ -257,7 +270,7 @@ def download_pdf(date_collecte):
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
 @app.route("/details/<id>")
-@login_required
+#@login_required
 def detaille(id):
     points_de_collecte = get_points_de_collecte()
     liste_collectes = get_liste_collectes(int(id))

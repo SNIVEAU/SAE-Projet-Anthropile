@@ -4,7 +4,6 @@
 {% endblock %}
 {%block styles%}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='insert_company.css') }}">
 {% endblock %}
 {% block content %}
@@ -14,12 +13,13 @@
 
 <h1>Insérer entreprise</h1>
 <form action="{{ url_for('inserer_entreprise') }}" method="POST">
-    <label for="id_entreprise">ID :</label>
+    <label class="insert_ent" for="id_entreprise">ID :</label>
     <input type="text" id="id_entreprise" name="id_entreprise" value="{{ id_entreprise }}" disabled>
 
-    <label for="nom_entreprise">Nom :</label>
+    <label class="insert_ent" for="nom_entreprise">Nom :</label>
     <input type="text" id="nom_entreprise" name="nom_entreprise" value="" placeholder="Entrez le nom de l'entreprise" required>
 
     <button type="submit">Insérer</button>
 </form>
+<script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

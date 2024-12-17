@@ -26,25 +26,25 @@
 <form class="form-horizontal" role="form" method="POST" action="{{ url_for('insert_dechets') }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
-        <label for="nom" class="col-sm-2 control-label">{{ form.nom.label }}</label>
+        <label class="insert_dechets" for="nom" class="col-sm-2 control-label">{{ form.nom.label }}</label>
         <div>
             {{ form.nom(class_="form-control", placeholder="Nom du déchet") }}
         </div>
     </div>
     <div class="form-group">
-        <label for="type" class="col-sm-2 control-label">{{ form.type.label }}</label>
+        <label class="insert_dechets" for="type" class="col-sm-2 control-label">{{ form.type.label }}</label>
         <div>
             {{ form.type(class_="form-control") }}
         </div>
     </div>
     <div class="form-group">
-        <label for="quantite" class="col-sm-2 control-label">{{ form.quantite.label }}</label>
+        <label class="insert_dechets" for="quantite" class="col-sm-2 control-label">{{ form.quantite.label }}</label>
         <div>
             {{ form.quantite(class_="form-control", placeholder="Volume des déchets") }}
         </div>
     </div>
     <div class="form-group">
-        <label for="id_point_collecte" class="col-sm-2 control-label">{{ form.id_point_collecte.label }}</label>
+        <label class="insert_dechets" for="id_point_collecte" class="col-sm-2 control-label">{{ form.id_point_collecte.label }}</label>
         <div>
             {{ form.id_point_collecte(class_="form-control", placeholder="Point de collecte") }}
         </div>
@@ -75,5 +75,5 @@
         {% endfor %}
     ];
 </script>
-
+<script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

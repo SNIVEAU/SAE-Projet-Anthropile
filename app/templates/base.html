@@ -26,14 +26,23 @@
                     </button>
                 </div>
                 <li><a href="{{ url_for('home') }}">Accueil</a></li>
+                {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
-                <li><a href="{{ url_for('collecte_dechets') }}">Point de collecte</a></li>
-                <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
                 <li><a href="{{ url_for('insert_dechets') }}">Inserer un déchet</a></li> 
-                <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
-                <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li> 
-                <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collectes</a></li>
-                <li><a href="{{ url_for('planification_tournee') }}">Tournées</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('collecte_dechets') }}">Carte</a></li>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <li>
+                    <a href="#" class="dropdown-toggle">TEST ▾</a>                    
+                    <ul class="dropdown">
+                        <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
+                        <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li>
+                        <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
+                        <li><a href="{{ url_for('planification_tournee') }}">Tournées</a></li>
+                        <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
+                    </ul>
+                </li>
+                {% endif %}
             </ul>
         </nav>
         

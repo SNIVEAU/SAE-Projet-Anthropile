@@ -9,6 +9,7 @@ BIOTRACK’IN | Accueil
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -120,5 +121,5 @@ BIOTRACK’IN | Accueil
 
     setInterval(() => moveSlides(2), 5000); // Défilement automatique
 </script>
-
+<script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

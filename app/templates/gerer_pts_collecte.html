@@ -3,7 +3,8 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='gerer_pts_collecte.css') }}">
-<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pts_collecte.js') }}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Ajoutez cette ligne pour utiliser Font Awesome -->
 {% endblock %}
 
 {% block title %}Gestion des Points de Collecte{% endblock %}
@@ -47,6 +48,20 @@
                 <div>
                     {{ form.nom_pt_collecte.label }} {{ form.nom_pt_collecte(size=20) }}
                 </div>
+                <div class="coord">
+                    <div>
+                        {{ form.latitude.label }} 
+                        {{ form.latitude(size=20, disabled=True) }}
+                    </div>
+                    <div>
+                        {{ form.longitude.label }} 
+                        {{ form.longitude(size=20, disabled=True) }}
+                    </div>
+                    <!-- Icône pour effacer la latitude et la longitude -->
+                    <button type="button" class="clear-icon" onclick="clearCoordinate('longitude')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>              
                 <div>
                     {{ form.adresse.label }} {{ form.adresse(size=20) }}
                 </div>
@@ -102,10 +117,10 @@
         lat: {{ point.latitude }},   // Ajout de la latitude
         lng: {{ point.longitude }},   // Ajout de la longitude
         name: "{{ point.nom_pt_collecte }}",
-            detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
+        detailUrl: "{{ url_for('detaille', id=point.id_point_de_collecte) }}"
     },
     {% endfor %}
-      ];
+    ];
 </script>
 
 {% endblock %}

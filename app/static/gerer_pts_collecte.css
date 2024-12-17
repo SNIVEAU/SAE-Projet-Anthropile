@@ -45,6 +45,7 @@ h2 {
     flex: 1;
     min-width: 280px;
     max-width: 560px;
+    max-height: 460px;
     padding: 20px;
     background-color: #ffffff;
     border: 2px solid #ddd;
@@ -59,6 +60,7 @@ h2 {
 
 .form form div {
     margin-bottom: 15px;
+    align-items: center;
 }
 
 .form label {
@@ -70,29 +72,30 @@ h2 {
 
 .form input[type="text"],
 .form input[type="number"],
-.form select,
-.form button {
-    width: 97%;
+.form select {
+    width: 100%; 
+    max-width: 100%;
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
     font-size: 16px;
+    box-sizing: border-box; 
 }
 
-.form button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.coord {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; 
 }
 
-.form button:hover {
-    background-color: #45a049;
+.coord input {
+    background-color: #f0f0f0; 
+    color: #a0a0a0; 
+    cursor: not-allowed;
+    width: 48%; 
+    box-sizing: border-box;
 }
 
-
-/* Liste des points de collecte */
 .pts {
     width: 100%;
     max-width: 1160px;
@@ -151,7 +154,6 @@ h2 {
     text-decoration: underline;
 }
 
-/* Lien pour supprimer */
 .pts ul li a[onclick*="confirmDelete"] {
     color: #e3342f;
 }
@@ -164,7 +166,6 @@ h2 {
     font-weight: bold;
 }
 
-/* Popup de confirmation pour la suppression */
 .popup {
     position: fixed;
     top: 0;
@@ -213,7 +214,6 @@ h2 {
     color: #333;
 }
 
-/* Bouton pour voir le détail dans la carte */
 .leaflet-popup-content-wrapper {
     text-align: center;
 }
@@ -243,7 +243,6 @@ h2 {
 }
 
 /* Message de succès */
-
 .alert-success {
     color: #155724;
     background-color: #d4edda;
@@ -286,4 +285,27 @@ h2 {
     justify-content: center;
     margin: auto;
     margin-top: 20px;
+}
+
+.clear-icon {
+    border: 1px solid #dc3545; 
+    border-radius: 10%;
+    width: 40px; 
+    height: 40px; 
+    margin-top: 10px;
+    background-color: transparent;
+    border: none; 
+    color: #dc3545; 
+    font-size: 20px; 
+    cursor: pointer; 
+    transition: color 0.3s ease; 
+}
+
+.clear-icon:hover {
+    color: #dc143c; 
+    background-color: #f8d7da; 
+}
+
+.clear-icon:active {
+    transform: scale(0.95); 
 }

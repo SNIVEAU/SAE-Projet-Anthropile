@@ -282,6 +282,8 @@ def detaille(id):
 class PtsDeCollecteForm(FlaskForm):
     # id_dechet = HiddenField("ID du déchet")
     id_point_de_collecte = HiddenField("ID du point de collecte")
+    latitude = DecimalField("Latitude")
+    longitude = DecimalField("Longitude")
     adresse = StringField("Adresse du point de collecte", validators=[DataRequired()])
     nom_pt_collecte = StringField("Nom du point de collecte", validators=[DataRequired()])
     quantite_max = DecimalField("Quantité maximale de déchets", validators=[DataRequired()])
@@ -300,7 +302,10 @@ def gerer_pts_collecte():
             if nom_pt_collecte_existante_bd(form.adresse.data):
                 print("Un point de collecte avec ce nom existe déjà")
                 return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
-            pos = get_pos_irl(form.adresse.data)
+            if form.latitude.data == None or form.longitude.data == None:
+                pos = get_pos_irl(form.adresse.data)
+            else:
+                pos = (form.latitude.data, form.longitude.data)
             if pos is None:
                 print("Adresse non trouvée")
                 return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")

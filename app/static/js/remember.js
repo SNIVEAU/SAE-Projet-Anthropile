@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const rememberCheckbox = document.getElementById('remember');
     let activate = localStorage.getItem('rememberMe') === 'true';
-    
+
     if (rememberCheckbox) {
         rememberCheckbox.checked = activate;
-        
+
         rememberCheckbox.addEventListener('change', function () {
             activate = rememberCheckbox.checked;
             localStorage.setItem('rememberMe', activate);
@@ -18,12 +18,24 @@ document.addEventListener('DOMContentLoaded', function () {
     function isconnected() { return connected; }
     function isactivated() { return activate; }
 
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => { isNavigatingAway = true; });
+    document.querySelectorAll('a, button').forEach(element => {
+        element.addEventListener('click', () => { isNavigatingAway = true; });
     });
 
-    window.addEventListener("beforeunload", function () {
-        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) return;
+    window.addEventListener('beforeunload', function () {
+        const navigationType = performance.getEntriesByType("navigation")[0]?.type;
+
+        if (navigationType === "reload") return;
+
+        if (!isNavigatingAway && !isactivated() && isconnected()) {
+            fetch('/logout', { method: 'POST', keepalive: true });
+        }
+    });
+
+    window.addEventListener('unload', function () {
+        const navigationType = performance.getEntriesByType("navigation")[0]?.type;
+
+        if (navigationType === "reload") return;
 
         if (!isNavigatingAway && !isactivated() && isconnected()) {
             fetch('/logout', { method: 'POST', keepalive: true });

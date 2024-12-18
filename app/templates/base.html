@@ -17,14 +17,13 @@
         <div class="menu-toggle">
             <img src="{{ url_for('static', filename='img/menu.png') }}" alt="Menu" />
         </div>
-        <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">
+        <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">        
+        <span class="sur-mobile">Bienvenue {{ current_user.nom_utilisateur }}👋 <a style="color :green" class="sur-mobile" href="{{ url_for('profil') }}" id="user-name">Profil</a></span>
         <nav class="menu">
             <ul>
-                <div class="menu-header">
-                    <button class="close-menu">
-                        <img src="{{ url_for('static', filename='img/close.png') }}" alt="Fermer le menu" />
-                    </button>
-                </div>
+                <button class="close-menu">
+                    <img src="{{ url_for('static', filename='img/close.png') }}" alt="Fermer le menu" />
+                </button>
                 <li><a href="{{ url_for('home') }}">Accueil</a></li>
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
@@ -33,33 +32,35 @@
                 <li><a href="{{ url_for('collecte_dechets') }}">Carte</a></li>
                 {% if current_user.is_authenticated and current_user.is_admin() %}
                 <li>
-                    <a href="#" class="dropdown-toggle">TEST ▾</a>                    
+                    <a href="#" class="dropdown-toggle">Gestion ▾</a>                    
                     <ul class="dropdown">
                         <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
                         <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li>
                         <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
                         <li><a href="{{ url_for('planification_tournee') }}">Tournées</a></li>
-                        <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
                     </ul>
                 </li>
+                <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
                 {% endif %}
+                <li style="padding: 0;" class="connecte-deconnecte">
+                    <div style="padding: 0;" class="connecte-deconnecte">
+                        {% if current_user.is_authenticated %}
+                            <li class="sur-pc" >Bienvenue {{ current_user.nom_utilisateur }} 👋 <a id="salutation" class="logo-profil" href="{{ url_for('profil') }}" id="user-name">Profil</a></li>
+                            <li><a id="logout-link" class="connexioninscription no-underline">Se déconnecter</a></li>
+                            <li>
+                                <label for="remember" class="remember-label">
+                                    <input type="checkbox" id="remember" name="remember" checked />
+                                    Se souvenir de moi          
+                                    </label>
+                            </li>
+                        {% else %}
+                            <li><a class="connexioninscription no-underline" href="{{ url_for('login') }}">Se connecter</a></li>
+                            <li><a class="connexioninscription no-underline" href="{{ url_for('register') }}">S'inscrire</a></li>
+                        {% endif %}
+                    </div>
+                </li>
             </ul>
         </nav>
-        
-        <div>
-            {% if current_user.is_authenticated %}
-                <span>Bienvenue, <a href="{{ url_for('profil') }}" id="user-name">{{ current_user.nom_utilisateur }}</a> 👋!</span>                
-                <a id="logout-link" class="connexioninscription">Se déconnecter</a>
-                <label for="remember" class="remember-label">
-                <input type="checkbox" id="remember" name="remember" checked />
-                    Se souvenir de moi
-            </label>
-            {% else %}
-                <a class="connexioninscription" href="{{ url_for('login') }}">Se connecter</a>
-                <a class="connexioninscription" href="{{ url_for('register') }}">S'inscrire</a>
-            {% endif %}
-          
-        </div>
     </header>
     
     <script>

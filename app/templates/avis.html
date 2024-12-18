@@ -19,20 +19,20 @@
 <div class="container-avis">
     <div class="titre">
         <h1>Vos avis</h1>
-            <div class="avis-note">
-                Note globale : 
-                {% set full_stars = note_globale|round(0) %}
-                {% set half_star = note_globale - full_stars %}
-                
-                {% for i in range(1, 6) %}
-                    {% if i <= full_stars %}
-                        <i class="fa fa-solid fa-star"></i> <!-- Étoile pleine -->
-                    {% elif i == full_stars + 1 and half_star > 0 %}
-                        <i class="fa fa-solid fa-star-half-alt"></i> <!-- Étoile moitié -->
-                    {% else %}
-                        <i class="fa fa-regular fa-star"></i> <!-- Étoile vide -->
-                    {% endif %}
-                {% endfor %}
+        <div class="avis-note">
+            Note globale : 
+            {% set full_stars = note_globale|round(0) %}
+            {% set half_star = note_globale - full_stars %}
+            
+            {% for i in range(1, 6) %}
+                {% if i <= full_stars %}
+                    <i class="fa fa-solid fa-star"></i> <!-- Étoile pleine -->
+                {% elif i == full_stars + 1 and half_star > 0 %}
+                    <i class="fa fa-solid fa-star-half-alt"></i> <!-- Étoile moitié -->
+                {% else %}
+                    <i class="fa fa-regular fa-star"></i> <!-- Étoile vide -->
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 
@@ -44,7 +44,7 @@
             <div class="stars">
                 {% for i in range(1, 6) %}
                     <input type="radio" id="star{{ i }}" name="note" value="{{ i }}" {% if i == note_globale %}checked{% endif %}>
-                    <label for="star{{ i }}">
+                    <label style="margin: 10px 0;" for="star{{ i }}">
                         <i class="fa fa-star {% if i <= note_globale %}fa-solid{% else %}fa-regular{% endif %}"></i>
                     </label>
                 {% endfor %}
@@ -58,24 +58,45 @@
         <p>Connectez-vous pour nous donner votre avis.</p>
     </div>
     {% endif %}
-
-    {% for a in avis %}
-    <div class="avis-item">
-        <div class="avis-header">
-            <span class="utilisateur"><i class="fas fa-user"></i> {{ a.nom_utilisateur }}</span>
-        </div>
-        <div class="note">
-            <span class="date">Avis laissé le {{ a.date_avis }}</span>
+    
+    <div class="container-avis">
+        {% for a in avis %}
+        <div class="avis-item {% if current_user.is_admin() %}admin{% endif %}" data-avis-id="{{ a.id_avis }}">
+            <div class="avis-header">
+                <span class="utilisateur"><i class="fas fa-user"></i> {{ a.nom_utilisateur }}</span>
+                <span class="date">Posté le {{ a.date_avis }}</span>
+            </div>
             <div class="avis-note">
                 {% for i in range(1, 6) %}
-                <i class="fa {% if i <= a.note %}fa-solid fa-star{% else %}fa-regular fa-star{% endif %}"></i>                {% endfor %}
-            </div>            
+                <i class="fa {% if i <= a.note %}fa-solid fa-star{% else %}fa-regular fa-star{% endif %}"></i>
+                {% endfor %}
+            </div>
+            <p class="avis-content">{{ a.avis }}</p>
+            
+            {% if current_user.is_admin() %}
+            <button class="delete-btn" data-avis-id="{{ a.id_avis }}" value="{{ a.id_avis }}">Supprimer</button>
+            {% endif %}
         </div>
-        <div class="avis-content">
-            <p>{{ a.avis }}</p>
-        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    
+    <!-- Popup de confirmation uniquement pour admin -->
+    {% if current_user.is_admin() %}
+    <div id="popup" class="popup hidden">
+        <p>Voulez-vous vraiment supprimer cet avis ?</p>
+        <form id="delete-form" method="POST" action="/delete_avis/">
+            <input type="hidden" id="avis-id" name="avis_id" value="">
+            <div class="popup-buttons">
+                <button id="cancel" type="button">Annuler</button>
+                <button type="submit" id="confirm-delete">Confirmer</button>
+            </div>
+        </form>
+    </div>    
+    {% endif %}
+
 </div>
+
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+<script src="{{ url_for('static', filename='js/delete_avis.js') }}"></script>
+
 {% endblock %}

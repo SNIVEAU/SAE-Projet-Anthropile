@@ -575,8 +575,31 @@ def add_avis():
         flash("Avis ajouté avec succès", "success")
     else:
         flash("Votre avis ne peut pas être vide.", "error")
+
     return redirect(url_for('avis'))
-      
+
+
+@app.route('/delete_avis/<int:avis_id>', methods=['POST', 'GET'])
+def delete_avis(avis_id):
+    print(1)
+    if not current_user.is_admin():
+        print(2)
+        flash("Vous devez être administrateur pour supprimer un avis.", "danger")
+        return redirect(url_for('avis'))  # Remplace 'avis' par la page où les avis sont affichés
+    
+    if avis_id:
+        print(3)
+        delete_avis_id(avis_id)
+        print(4)
+        flash("Avis supprimé avec succès", "success")
+    else:
+        print(5)
+        flash("Avis non trouvé.", "danger")
+    
+    return redirect(url_for('avis'))  # Redirige vers la page des avis
+
+
+
 
 @app.route("/dechets_selon_utilisteur/<int:id>")
 @login_required

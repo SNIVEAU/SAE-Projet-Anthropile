@@ -94,9 +94,9 @@ h2 {
 
 /* Liste des points de collecte */
 .pts {
-    width: 100%;
+    width: 80%;
     max-width: 1160px;
-    min-width: 580px;
+    min-width: 740px;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;

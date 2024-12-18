@@ -670,7 +670,8 @@ def get_liste_collectes(id):
     return collectes
 
 class Avis:
-    def __init__(self, nom_utilisateur, avis, note, date_avis):
+    def __init__(self, id_avis, nom_utilisateur, avis, note, date_avis):
+        self.id_avis = id_avis
         self.nom_utilisateur = nom_utilisateur
         self.avis = avis
         self.note = note
@@ -681,12 +682,12 @@ class Avis:
 
 def get_avis():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR ORDER BY date_Avis DESC")
+    cursor.execute("SELECT id_Avis, nom_Utilisateur, avis, note, DATE_FORMAT(date_Avis, '%d/%m/%Y') FROM AVIS NATURAL JOIN UTILISATEUR ORDER BY date_Avis DESC")
     avis = cursor.fetchall()
     cursor.close()
     les_avis = []
-    for nom_utilisateur, avis, note, date_avis in avis:
-        les_avis.append(Avis(nom_utilisateur, avis, note, date_avis))
+    for id_avis, nom_utilisateur, avis, note, date_avis in avis:
+        les_avis.append(Avis(id_avis, nom_utilisateur, avis, note, date_avis))
     return les_avis
 
 def get_global_note():
@@ -703,6 +704,36 @@ def insert_avis(id_utilisateur, avis, note):
     cursor.execute("INSERT INTO AVIS(id_Utilisateur, avis, note) VALUES (%s, %s, %s)", (id_utilisateur, avis, note))
     mysql.connection.commit()
     cursor.close()
+
+def get_id_avis(nom_utilisateur, avis, date_avis):
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT id_Avis FROM AVIS
+        WHERE nom_Utilisateur = %s AND avis = %s AND date_Avis = STR_TO_DATE(%s, '%d/%m/%Y')
+    """, (nom_utilisateur, avis, date_avis))
+    result = cursor.fetchone()
+    cursor.close()
+
+    if result:
+        return result[0]  # Retourne l'ID de l'avis
+    return None  # Si aucun avis trouvé, retourne None
+
+def delete_avis_id(ids):
+    if not ids:
+        return 0
+    try:
+        cursor = mysql.connection.cursor()
+        # format_strings = ', '.join(['%s'] * len(ids))  # Crée une chaîne de format pour la requête
+        query = f"DELETE FROM AVIS WHERE id_Avis IN ({ids})"
+        cursor.execute(query)
+        mysql.connection.commit()
+        deleted_count = cursor.rowcount
+        cursor.close()
+        return deleted_count
+    except Exception as e:
+        print(f"Erreur lors de la suppression des avis : {e}")
+        return 0
+
 
 def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte):
     cursor = mysql.connection.cursor()

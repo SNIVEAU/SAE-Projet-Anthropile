@@ -44,6 +44,7 @@ h1 {
 
 .utilisateur {
     font-size: 1.1em;
+    margin-bottom: 10px;
 }
 
 .date {
@@ -228,4 +229,78 @@ button:hover {
     border-radius: 5px;
     margin-bottom: 10px;
     font-size: 16px;
+}
+
+.hidden {
+    display: none;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    height: 100px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.popup-buttons{
+    margin-top: 25px;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup button {
+    margin: 10px;
+}
+
+.delete-btn{
+    all: unset;
+    color: rgb(180, 4, 4);
+}
+
+.delete-btn:hover{
+    all: unset;
+    text-decoration: underline;
+    color: rgb(158, 0, 0);
+    cursor: pointer;
+}
+
+/*boutons pop up*/
+
+/* Bouton Annuler */
+#cancel {
+    all: unset;
+    color: rgb(180, 4, 4);
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+#cancel:hover {
+    text-decoration: underline;
+    color: rgb(158, 0, 0);
+}
+
+/* Bouton Confirmer */
+#confirm-delete {
+    all: unset;
+    margin-left: 120px;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: rgb(34, 139, 34);
+}
+
+#confirm-delete:hover {
+    background-color: rgb(30, 120, 30);
+    color: #f5f5f5;
 }

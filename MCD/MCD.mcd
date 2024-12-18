@@ -1,17 +1,35 @@
-TOURNEE : id_Tournee, date_collecte[DATETIME], duree[INT]
-COLLECTER, 0N POINT_DE_COLLECTE, 0N CATEGORIEDECHET, 0N TOURNEE :qte_collecte
-POINT_DE_COLLECTE: id_point_collecte, adresse, nom_pt_collecte, pos_x, pos_y, qte_max
+:
+ENTREPRISE : id_Entreprise, nom_Entreprise
+TRAVAILLER, 0N UTILISATEUR, 0N ENTREPRISE
+AVIS : id_Avis, avis, note, date_Avis
 :
 :
+:
+HISTORIQUE_DECHET : id_dechet, nom_dechet, id_type, nom_type, quantite, id_utilisateur
 
-:
-CATEGORIEDECHET: id_Type,nom_Type
+DECHET : id_Dechet, nom_Dechet, qte, id_Type
 DEPOSER, 0N DECHET, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
-UTILISATEUR:id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, nom_role
-TRAVAILLER, 01 UTILISATEUR, 0N ENTREPRISE
+UTILISATEUR : id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, nom_role
+DONNER, 0N UTILISATEUR, 1N AVIS
+:
+:
+:
+:
 
+CORRESPONDRE, 1N DECHET, 0N CATEGORIEDECHET
+POINT_DE_COLLECTE : id_point_collecte, adresse, nom_pt_collecte, pos_x, pos_y, qte_max
+APPARTENIR, 0N UTILISATEUR, 0N POINT_DE_COLLECTE
 :
-CORRESPONDRE, 11 DECHET, 0N CATEGORIEDECHET
-DECHET : id_Dechet, nom_Dechet, qte
 :
-ENTREPRISE: id_Entreprise, nom_Entreprise
+:
+:
+:
+
+CATEGORIEDECHET : id_Type, nom_Type
+COLLECTER, 0N POINT_DE_COLLECTE, 0N TOURNEE, 0N CATEGORIEDECHET : qtecollecte
+TOURNEE : id_Tournee, date_collecte, duree
+:
+:
+:
+:
+:

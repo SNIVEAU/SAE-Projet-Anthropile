@@ -94,9 +94,12 @@ def register():
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
         existing_point = get_nom_pts_collecte(form.nom_utilisateur.data)
-        if existing_user or existing_point:
+        if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
+        if existing_point:
+            # Si le point de collecte existe déjà, retourner un message d'erreur
+            return render_template('register.html', error="Un point de collecte existe déjà à cet endroit", form=form)
         try:
             pos = get_pos_irl(form.adresse.data)
             print(pos)

@@ -255,7 +255,7 @@ class Collecter:
     
     def insert_collecter(self):
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO COLLECTER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
+        cursor.execute("INSERT INTO COLLECTER(id_point_collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
     
@@ -332,13 +332,13 @@ def get_pts_de_collecte_by_adresse(adresse):
 
 def ajoute_pts_de_collecte_specifique(id_pts_de_collecte, id_utilisateur):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO APPARTENIR (id_Point_Collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
+    cursor.execute("INSERT INTO APPARTENIR (id_point_collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
     mysql.connection.commit()
     cursor.close()
 
 def get_max_id_pts_de_collecte():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT MAX(id_Point_Collecte) FROM POINT_DE_COLLECTE")
+    cursor.execute("SELECT MAX(id_point_collecte) FROM POINT_DE_COLLECTE")
     id_max = cursor.fetchone()
     cursor.close()
     return id_max[0]

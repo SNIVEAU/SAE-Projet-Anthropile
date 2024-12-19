@@ -22,10 +22,10 @@ h1 {
 
 label {
     display: block;
-    margin-bottom: 4px;
-    font-size: 16px;
+    margin-bottom: 8px;
+    font-size: 14px;
     font-weight: bold;
-    color: #ffffff;
+    color: #555;
 }
 
 label:hover{

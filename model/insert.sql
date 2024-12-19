@@ -46,7 +46,7 @@ INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 2', 2, 20);
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 3', 3, 30);
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 4', 3, 30);
 
-INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 5', 1, 500);
+INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 5', 1, 40);
 INSERT INTO DECHET (nom_Dechet, id_Type, qte) VALUES ('Déchet 6', 2, 50);
 
 INSERT INTO TOURNEE (date_collecte, duree) VALUES ('2024-10-25 08:00:00', 120);

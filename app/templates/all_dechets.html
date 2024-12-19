@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}
-    BIOTRACK’IN | Toutes les catégories
-{% endblock %}
+{% block title %}Déchets{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
@@ -42,7 +40,7 @@
         </tbody>
     </table>
     {% else %}
-        <p>No dechets found.</p>
+        <h1>Vous n'avez pas encore de déchets</h1>
     {% endif %}
 </div>
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>

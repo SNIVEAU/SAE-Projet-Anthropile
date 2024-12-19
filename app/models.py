@@ -90,10 +90,15 @@ class Dechet:
         return id_max
 
 def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
-    cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
-    mysql.connection.commit()
-    cursor.close()
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
+        mysql.connection.commit()
+        cursor.close()
+        return None
+    except Exception as e:
+        print(f"Erreur lors de l'insertion du déchet : {e}")
+        return e
 
 def get_id_type_dechet(nom_dechet):
     cursor = mysql.connection.cursor()

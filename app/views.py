@@ -481,7 +481,8 @@ def edit_profile():
         mail = form.mail.data
         numtel = form.numtel.data
         
-        update_user(user_id, nom_utilisateur, mail, numtel)
+        if not update_user(user_id, nom_utilisateur, mail, numtel):
+            return render_template("edit_profile.html", form=form, error="Une erreur s'est produite lors de la modification de l'utilisateur")
 
         current_user.nom_utilisateur = nom_utilisateur
         current_user.mail = mail
@@ -494,7 +495,7 @@ def edit_profile():
 
         return redirect(url_for('profil'))
 
-    return render_template("edit_profile.html", form=form)
+    return render_template("edit_profile.html", form=form, error="")
 
 
 from flask_wtf import FlaskForm

@@ -621,12 +621,14 @@ def update_user(user_id, nom_utilisateur, mail, numtel):
         SET nom_utilisateur = %s, mail = %s, numtel = %s
         WHERE id_utilisateur = %s
     """
-    
-    cursor.execute(query, (nom_utilisateur, mail, numtel, user_id))
-    
-    mysql.connection.commit()
-    
-    cursor.close()
+    try:
+        cursor.execute(query, (nom_utilisateur, mail, numtel, user_id))
+        mysql.connection.commit()
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Erreur lors de la mise à jour de l'utilisateur : {e}")
+        return False
 
 
 

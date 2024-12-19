@@ -92,11 +92,17 @@ class Dechet:
     
 def est_possable(id_point_collecte, qte):
     cursor = mysql.connection.cursor()
-    cursor.execute(" select id_point_collecte, qte_max, SUM(qte) as qte_actuel from POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET WHERE id_point_collecte = %s GROUP BY id_point_collecte;", (id_point_collecte,))
-    qte_max = cursor.fetchone()
-    print(qte_max)
+    cursor.execute("select id_point_collecte, qte_max, SUM(qte) as qte_actuel from POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET WHERE id_point_collecte = %s GROUP BY id_point_collecte", (id_point_collecte,))
+    res = cursor.fetchone()
     cursor.close()
-    if qte_max[2] + qte > qte_max[1]:
+    if res is None:
+        cursor = mysql.connection.cursor()
+        cursor.execute("select qte_max from POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id_point_collecte,))
+        qte_max = cursor.fetchone()
+        if qte > qte_max[0]:
+            return False
+        return True
+    if res[2] + qte > res[1]:
         return False
     return True
 

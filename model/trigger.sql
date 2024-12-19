@@ -178,27 +178,23 @@ BEGIN
     DECLARE max_qte DECIMAL(10,4);
     DECLARE percentage DECIMAL(10,4);
     
-    -- Calcul de la quantité totale de déchets pour le point de collecte, incluant la nouvelle ligne insérée
-    SELECT IFNULL(SUM(d.qte), 0) + (SELECT qte FROM DECHET WHERE id_Dechet = NEW.id_Dechet) 
+    SELECT IFNULL(SUM(d.qte), 0)
     INTO total_qte
     FROM DEPOSER dp
     JOIN DECHET d ON dp.id_Dechet = d.id_Dechet
     WHERE dp.id_point_collecte = NEW.id_point_collecte
     GROUP BY id_point_collecte;
 
-    -- Récupérer la quantité maximale pour le point de collecte
     SELECT qte_max INTO max_qte
     FROM POINT_DE_COLLECTE
     WHERE id_point_collecte = NEW.id_point_collecte;
 
-    -- Calcul du pourcentage de la capacité occupée
     IF max_qte > 0 THEN
         SET percentage = (total_qte / max_qte) * 100;
     ELSE
         SET percentage = 0;
     END IF;
 
-    -- Si le pourcentage est supérieur à 50%, on déclenche l'alerte
     IF percentage > 50 THEN
         INSERT INTO ALERTE (message, lu, date_alerte)
         VALUES (CONCAT('Le point de collecte "', 

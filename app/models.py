@@ -824,5 +824,4 @@ def get_all_alertes():
     alertes_list = []
     for alerte in alertes:
         alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
-    
     return alertes_list

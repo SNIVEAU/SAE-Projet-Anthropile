@@ -21,5 +21,29 @@
         <canvas id="dechetChart" width="400" height="200"></canvas>
     </div>
 </div>
+<div>
+    <h2>Points de collecte à collecter rapidement</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Point de collecte</th>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Quantité Max</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for point in pts_remplis %}
+            <tr>
+                <td>{{ loop.index }}</td> <!-- Optionnel : Numéro de ligne -->
+                <td>{{ point.nom_pt_collecte }}</td>
+                <td>{{ point.adresse }}</td>
+                <td>{{ point.quantite_max }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

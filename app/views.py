@@ -231,7 +231,8 @@ def statistique_dechets():
 @app.route("/statistique-pts-collecte")
 @login_required
 def statistique_pts_collecte():
-    return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
+    print(get_pts_remplis()[0].adresse)
+    return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 
 @app.route("/data/graph-pts-collecte")
 # @login_required

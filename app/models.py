@@ -147,6 +147,39 @@ def get_points_de_collecte():
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     return les_points
 
+def get_pts_remplis():
+    cursor = mysql.connection.cursor()
+    query = """
+
+SELECT 
+    id_point_collecte, 
+    adresse, 
+    nom_pt_collecte, 
+    pos_x, 
+    pos_y, 
+    qte_max
+FROM 
+    DEPOSER NATURAL JOIN POINT_DE_COLLECTE 
+WHERE 
+    qte_max * 0.8 < (
+        SELECT SUM(qte) 
+        FROM DEPOSER NATURAL JOIN DECHET 
+        WHERE id_point_collecte = POINT_DE_COLLECTE.id_point_collecte
+    )
+GROUP BY 
+    id_point_collecte;
+
+    """
+    cursor.execute(query)
+    points = cursor.fetchall()
+    cursor.close()
+    les_points = []
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
+    return les_points
+    
+
 def get_point_collecte(id):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))

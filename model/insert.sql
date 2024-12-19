@@ -17,9 +17,9 @@ ALTER TABLE DEPOSER AUTO_INCREMENT = 1;
 ALTER TABLE COLLECTER AUTO_INCREMENT = 1;
 ALTER TABLE AVIS AUTO_INCREMENT = 1;
 
-INSERT INTO CATEGORIEDECHET (nom_Type) VALUES ('Déchet organique');
-INSERT INTO CATEGORIEDECHET (nom_Type) VALUES ('Déchet recyclable');
-INSERT INTO CATEGORIEDECHET (nom_Type) VALUES ('Déchet non recyclable');
+INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet organique', 1);
+INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet recyclable', 3);
+INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet non recyclable', 4);
 
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise A');
 INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise B');

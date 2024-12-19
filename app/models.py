@@ -7,9 +7,10 @@ from flask import jsonify
 from .app import app
 
 class CategorieDechet:
-    def __init__(self, id_type, nom_type):
+    def __init__(self, id_type, nom_type, priorite):
         self.id_type = id_type
         self.nom_type = nom_type
+        self.priorite = priorite
 
     def __repr__(self):
         return self.nom_type
@@ -20,8 +21,8 @@ def get_categories():
     categories = cursor.fetchall()
     cursor.close()
     les_categories = []
-    for id_categorie, nom_categorie in categories:
-        les_categories.append(CategorieDechet(id_categorie, nom_categorie))
+    for id_categorie, nom_categorie, priorite in categories:
+        les_categories.append(CategorieDechet(id_categorie, nom_categorie, priorite))
     return les_categories
 
 def get_id_max_dechets():
@@ -31,7 +32,7 @@ def get_id_max_dechets():
     cursor.close()
     return id_max
 
-def insert_categorie(id_type, nom_type):
+def insert_categorie(id_type, nom_type, priorite):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE id_Type=%s OR nom_Type=%s", (id_type, nom_type))
     company = cursor.fetchone()
@@ -40,7 +41,7 @@ def insert_categorie(id_type, nom_type):
         cursor.close()
         return False
     else:
-        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type) VALUES (%s, %s)", (id_type, nom_type))
+        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type, priorite) VALUES (%s, %s, %s)", (id_type, nom_type, priorite))
         mysql.connection.commit()
         cursor.close()
         return True
@@ -88,12 +89,27 @@ class Dechet:
         id_max,  = cursor.fetchone()
         cursor.close()
         return id_max
+    
+def est_possable(id_point_collecte, qte):
+    cursor = mysql.connection.cursor()
+    cursor.execute(" select id_point_collecte, qte_max, SUM(qte) as qte_actuel from POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET WHERE id_point_collecte = %s GROUP BY id_point_collecte;", (id_point_collecte,))
+    qte_max = cursor.fetchone()
+    print(qte_max)
+    cursor.close()
+    if qte_max[2] + qte > qte_max[1]:
+        return False
+    return True
 
 def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
-    cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
-    mysql.connection.commit()
-    cursor.close()
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO DEPOSER(id_Dechet, id_Utilisateur, id_point_collecte) VALUES (%s, %s, %s)", (id_dechet, id_utilisateur, id_point_collecte))
+        mysql.connection.commit()
+        cursor.close()
+        return None
+    except Exception as e:
+        print(f"Erreur lors de l'insertion du déchet : {e}")
+        return e
 
 def get_id_type_dechet(nom_dechet):
     cursor = mysql.connection.cursor()
@@ -141,6 +157,39 @@ def get_points_de_collecte():
     for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     return les_points
+
+def get_pts_remplis():
+    cursor = mysql.connection.cursor()
+    query = """
+
+SELECT 
+    id_point_collecte, 
+    adresse, 
+    nom_pt_collecte, 
+    pos_x, 
+    pos_y, 
+    qte_max
+FROM 
+    DEPOSER NATURAL JOIN POINT_DE_COLLECTE 
+WHERE 
+    qte_max * 0.8 < (
+        SELECT SUM(qte) 
+        FROM DEPOSER NATURAL JOIN DECHET 
+        WHERE id_point_collecte = POINT_DE_COLLECTE.id_point_collecte
+    )
+GROUP BY 
+    id_point_collecte;
+
+    """
+    cursor.execute(query)
+    points = cursor.fetchall()
+    cursor.close()
+    les_points = []
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
+    return les_points
+    
 
 def get_point_collecte(id):
     cursor = mysql.connection.cursor()
@@ -255,7 +304,7 @@ class Collecter:
     
     def insert_collecter(self):
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO COLLECTER(id_Point_Collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
+        cursor.execute("INSERT INTO COLLECTER(id_point_collecte, id_Type, dateCollecte, qteCollecte) VALUES (%s, %s, %s, %s)", (self.id_point_collecte, self.id_Type, self.dateCollecte, self.qtecollecte))
         mysql.connection.commit()
         cursor.close()
     
@@ -332,13 +381,13 @@ def get_pts_de_collecte_by_adresse(adresse):
 
 def ajoute_pts_de_collecte_specifique(id_pts_de_collecte, id_utilisateur):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO APPARTENIR (id_Point_Collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
+    cursor.execute("INSERT INTO APPARTENIR (id_point_de_collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
     mysql.connection.commit()
     cursor.close()
 
 def get_max_id_pts_de_collecte():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT MAX(id_Point_Collecte) FROM POINT_DE_COLLECTE")
+    cursor.execute("SELECT MAX(id_point_collecte) FROM POINT_DE_COLLECTE")
     id_max = cursor.fetchone()
     cursor.close()
     return id_max[0]

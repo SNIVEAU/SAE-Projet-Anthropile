@@ -777,3 +777,52 @@ def get_qte_by_pts_and_type(id_point_collecte, id_type):
     cursor.close()
     return qte_collecte[0] if qte_collecte else 0
 
+
+class Alerte:
+    def __init__(self, id_alerte, message, date_alerte, lu=False):
+        self.id_alerte = id_alerte
+        self.message = message
+        self.date_alerte = date_alerte
+        self.lu = lu
+    
+    def insert_alerte(self):
+        cursor = mysql.connection.cursor()
+        query = "INSERT INTO ALERTE (message, date_alerte) VALUES (%s, %s)"
+        cursor.execute(query, (self.message, self.date_alerte))
+        mysql.connection.commit()
+        cursor.close()
+    
+    def mark_as_read(self):
+        cursor = mysql.connection.cursor()
+        query = "UPDATE ALERTE SET lu = TRUE WHERE id_alerte = %s"
+        cursor.execute(query, (self.id_alerte,))
+        mysql.connection.commit()
+        cursor.close()
+    
+    def __str__(self):
+        return f"Alerte #{self.id_alerte}: {self.message} (Date: {self.date_alerte})"
+
+def get_alertes_non_lues():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM ALERTE WHERE lu = FALSE"
+    cursor.execute(query)
+    alertes = cursor.fetchall()
+    cursor.close()
+    alertes_list = []
+    for alerte in alertes:
+        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
+    
+    return alertes_list
+
+def get_all_alertes():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM ALERTE"
+    cursor.execute(query)
+    alertes = cursor.fetchall()
+    cursor.close()
+    
+    alertes_list = []
+    for alerte in alertes:
+        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
+    
+    return alertes_list

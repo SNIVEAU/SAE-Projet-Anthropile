@@ -606,9 +606,6 @@ def delete_avis(avis_id):
     
     return redirect(url_for('avis'))  # Redirige vers la page des avis
 
-
-
-
 @app.route("/dechets_selon_utilisteur/<int:id>")
 @login_required
 def tous_dechets_selon_utilisateur(id):
@@ -619,3 +616,19 @@ def tous_dechets_selon_utilisateur(id):
     )
 
   
+@app.route('/')
+@login_required
+@admin_required
+def index():
+    # Récupérer les alertes non lues
+    alertes = get_alertes_non_lues()  # Récupère les alertes non lues
+    return render_template('home.html', alertes=alertes)
+
+@app.route('/marquer_lu/<int:id_alerte>')
+@login_required
+@admin_required
+def marquer_lu(id_alerte):
+    alerte = Alerte.query.get(id_alerte)
+    if alerte:
+        alerte.mark_as_read()
+    return redirect(url_for('home'))

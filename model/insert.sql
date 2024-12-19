@@ -74,5 +74,3 @@ INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALU
 INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (3, 3, 3, 40.0);
 INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (2, 4, 1, 22.5);
 INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte) VALUES (1, 5, 2, 18.0);
-
-

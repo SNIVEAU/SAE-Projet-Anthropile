@@ -33,7 +33,7 @@ h2 {
 }
 
 /* Paragraphe centré */
-p {
+.page-header {
     font-size: 1.2em;
     color: #555;
     margin-bottom: 30px;
@@ -100,6 +100,7 @@ p {
     font-size: 18px;
     color: #666;
 }
+
 
 /* Ajustements spécifiques pour les écrans mobiles */
 @media (max-width: 768px) {

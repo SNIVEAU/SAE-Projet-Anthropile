@@ -19,7 +19,7 @@ BIOTRACK’IN | Tournée
 
             {% for point in points_de_collecte %}
                 <div class="form-group">
-                    <h3>{{ point.nom_pt_collecte }}</h3> <!-- Affiche le nom du point de collecte -->
+                    <h3 class="nom_pt_collecte">{{ point.nom_pt_collecte }}</h3> <!-- Affiche le nom du point de collecte -->
                     
                     <label class="tournee" for="categorie_{{ point.id_point_de_collecte }}">Catégorie de déchet</label>
                     <select id="categorie_{{ point.id_point_de_collecte }}" name="categorie_{{ point.id_point_de_collecte }}" class="form-control">

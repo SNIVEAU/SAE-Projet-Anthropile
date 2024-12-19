@@ -10,7 +10,7 @@ BEGIN
   DECLARE quantite_totale_actuelle INT;
   DECLARE qte_Ajoutee INT;
 
-  DECLARE mes VARCHAR(200) DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
+  DECLARE mes VARCHAR(200) DEFAULT 'La quantité de déchet dépasse la capacité maximale du point de collecte';
 
   SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE
@@ -36,7 +36,7 @@ BEGIN
 
   DECLARE qte_Ajoutee INT;
 
-  DECLARE mes VARCHAR(200)  DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
+  DECLARE mes VARCHAR(200)  DEFAULT 'La quantité de déchet dépasse la capacité maximale du point de collecte';
 
   SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE

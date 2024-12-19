@@ -2,7 +2,7 @@
 --VÉRIFIÉ
 -- Trigger pour vérifier que la quantité d'une collecte ne dépasse pas la quantité entière
 DELIMITER |
-CREATE OR REPLACE TRIGGER check_qte_deposee
+CREATE OR REPLACE TRIGGER check_qte_deposee_insert
 BEFORE INSERT ON DEPOSER
 FOR EACH ROW 
 BEGIN 
@@ -27,7 +27,7 @@ END |
 DELIMITER ;
 
 DELIMITER |
-CREATE OR REPLACE TRIGGER check_qte_deposee
+CREATE OR REPLACE TRIGGER check_qte_deposee_update
 BEFORE UPDATE ON DEPOSER
 FOR EACH ROW 
 BEGIN 

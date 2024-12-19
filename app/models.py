@@ -340,7 +340,7 @@ def get_collecter_sort_by_date():
     
     query = """
 
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%d/%m/%Y') AS date_only,qtecollecte
     FROM COLLECTER natural join TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
     ORDER BY date_collecte DESC

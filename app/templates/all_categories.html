@@ -38,6 +38,7 @@
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
+                <th>Priorité</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -46,6 +47,7 @@
             <tr>
                 <td>{{ cat.id_type }}</td>
                 <td>{{ cat.nom_type }}</td>
+                <td>{{ cat.priorite }}</td>
                 <td><a href="/supprimer_categorie/{{ cat.id_type }}" onclick="return  confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</td>
             </tr>
             {% endfor %}

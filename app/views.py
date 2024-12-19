@@ -556,9 +556,10 @@ def inserer_categorie_dechet():
         id_type = get_id_max_dechets() + 1
 
         nom_type = request.form.get("nom_type")
+        priorite = request.form.get("priorite")
         
         # Call insert_entreprise only once and store the result
-        success = insert_categorie(id_type, nom_type)
+        success = insert_categorie(id_type, nom_type, priorite)
         
         if success:
             return redirect(url_for('toutes_categories', status='insert_success'))

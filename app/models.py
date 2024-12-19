@@ -7,9 +7,10 @@ from flask import jsonify
 from .app import app
 
 class CategorieDechet:
-    def __init__(self, id_type, nom_type):
+    def __init__(self, id_type, nom_type, priorite):
         self.id_type = id_type
         self.nom_type = nom_type
+        self.priorite = priorite
 
     def __repr__(self):
         return self.nom_type
@@ -20,8 +21,8 @@ def get_categories():
     categories = cursor.fetchall()
     cursor.close()
     les_categories = []
-    for id_categorie, nom_categorie in categories:
-        les_categories.append(CategorieDechet(id_categorie, nom_categorie))
+    for id_categorie, nom_categorie, priorite in categories:
+        les_categories.append(CategorieDechet(id_categorie, nom_categorie, priorite))
     return les_categories
 
 def get_id_max_dechets():
@@ -31,7 +32,7 @@ def get_id_max_dechets():
     cursor.close()
     return id_max
 
-def insert_categorie(id_type, nom_type):
+def insert_categorie(id_type, nom_type, priorite):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE id_Type=%s OR nom_Type=%s", (id_type, nom_type))
     company = cursor.fetchone()
@@ -40,7 +41,7 @@ def insert_categorie(id_type, nom_type):
         cursor.close()
         return False
     else:
-        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type) VALUES (%s, %s)", (id_type, nom_type))
+        cursor.execute("INSERT INTO CATEGORIEDECHET (id_Type, nom_Type, priorite) VALUES (%s, %s, %s)", (id_type, nom_type, priorite))
         mysql.connection.commit()
         cursor.close()
         return True

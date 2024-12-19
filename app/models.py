@@ -380,7 +380,7 @@ def get_pts_de_collecte_by_adresse(adresse):
 
 def ajoute_pts_de_collecte_specifique(id_pts_de_collecte, id_utilisateur):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO APPARTENIR (id_point_collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
+    cursor.execute("INSERT INTO APPARTENIR (id_point_de_collecte, id_Utilisateur) VALUES (%s, %s)", (id_pts_de_collecte, id_utilisateur))
     mysql.connection.commit()
     cursor.close()
 

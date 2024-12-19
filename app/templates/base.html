@@ -17,8 +17,14 @@
         <div class="menu-toggle">
             <img src="{{ url_for('static', filename='img/menu.png') }}" alt="Menu" />
         </div>
-        <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">        
-        <span class="sur-mobile">Bienvenue {{ current_user.nom_utilisateur }}👋 <a style="color :green" class="sur-mobile" href="{{ url_for('profil') }}" id="user-name">Profil</a></span>
+        <a href="{{ url_for('home') }}">
+            <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo de mon site">        
+        </a>
+        <span class="sur-mobile">Bienvenue {{ current_user.nom_utilisateur }}👋 
+            {% if current_user.is_authenticated %}
+                <a style="color :green" class="sur-mobile" href="{{ url_for('profil') }}" id="user-name">Profil</a>
+            {% endif %}
+        </span>
         <nav class="menu">
             <ul>
                 <button class="close-menu">

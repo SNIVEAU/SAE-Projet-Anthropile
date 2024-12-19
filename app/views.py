@@ -177,30 +177,20 @@ def insert_dechets():
         print(form.id_user.data, "''''''''''''''''''''")
         print(form.id_point_collecte.data, "-----------------")
         print(type(form.id_point_collecte.data))
-        
-        dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
-        print("*" * 50)
-        id_dechet = dechet.insert_dechet()
-        print(id_dechet, "ID DECHET")
 
-        # try:
-        #     insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
-        #     flash("Déchet ajouté avec succès", "success")
-        #     return redirect(url_for("insert_dechets"))
-        # except Exception as e:
-        #     flash(e, "error")
-        #     return redirect(url_for("insert_dechets"))
+        print(est_possable(form.id_point_collecte.data, form.quantite.data))
+        if not est_possable(form.id_point_collecte.data, form.quantite.data):
+            flash("La quantité de déchet dépasse la capacité maximale du point de collecte", "error")
+            return redirect(url_for("insert_dechets"))
+        dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
+        id_dechet = dechet.insert_dechet()
         
-        print("c" * 50)
         result = insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
-        print('f' * 50)
         if result is None:
             flash("Déchet ajouté avec succès", "success")
             return redirect(url_for("insert_dechets"))
         else:
-            print("h" * 50)
             flash(str(result), "error")
-            print("i" * 50)
             return redirect(url_for("insert_dechets"))
 
     return render_template(

@@ -88,6 +88,16 @@ class Dechet:
         id_max,  = cursor.fetchone()
         cursor.close()
         return id_max
+    
+def est_possable(id_point_collecte, qte):
+    cursor = mysql.connection.cursor()
+    cursor.execute(" select id_point_collecte, qte_max, SUM(qte) as qte_actuel from POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET WHERE id_point_collecte = %s GROUP BY id_point_collecte;", (id_point_collecte,))
+    qte_max = cursor.fetchone()
+    print(qte_max)
+    cursor.close()
+    if qte_max[2] + qte > qte_max[1]:
+        return False
+    return True
 
 def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
     try:

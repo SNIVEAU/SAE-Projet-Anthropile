@@ -389,6 +389,7 @@ def modifier_pt_collecte(id):
 @admin_required
 def supprimer_pt_collecte(id):
     try:
+        delete_pts_collecte_Appartenir(id)
         delete_point_collecte(id)
         flash("Point de collecte supprimé avec succès", "success")
         return redirect(url_for("gerer_pts_collecte"))

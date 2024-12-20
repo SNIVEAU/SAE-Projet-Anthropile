@@ -239,6 +239,12 @@ def delete_point_collecte(id):
     mysql.connection.commit()
     cursor.close()
 
+def delete_pts_collecte_Appartenir(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM APPARTENIR WHERE id_point_de_collecte = %s", (id,))
+    mysql.connection.commit()
+    cursor.close()
+
 # def 
 # -- to install ???
 # -- matplotlib pandas

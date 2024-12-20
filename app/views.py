@@ -589,19 +589,13 @@ def add_avis():
 
 @app.route('/delete_avis/<int:avis_id>', methods=['POST', 'GET'])
 def delete_avis(avis_id):
-    print(1)
     if not current_user.is_admin():
-        print(2)
         flash("Vous devez être administrateur pour supprimer un avis.", "danger")
         return redirect(url_for('avis'))  # Remplace 'avis' par la page où les avis sont affichés
-    
     if avis_id:
-        print(3)
         delete_avis_id(avis_id)
-        print(4)
         flash("Avis supprimé avec succès", "success")
     else:
-        print(5)
         flash("Avis non trouvé.", "danger")
     
     return redirect(url_for('avis'))  # Redirige vers la page des avis
@@ -615,20 +609,29 @@ def tous_dechets_selon_utilisateur(id):
         dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
     )
 
-  
-@app.route('/')
+@app.route("/notifications")
 @login_required
 @admin_required
-def index():
-    # Récupérer les alertes non lues
-    alertes = get_alertes_non_lues()  # Récupère les alertes non lues
-    return render_template('home.html', alertes=alertes)
+def notifications():
+    return render_template('notifications.html', notifications=get_all_alertes())
 
-@app.route('/marquer_lu/<int:id_alerte>')
-@login_required
-@admin_required
-def marquer_lu(id_alerte):
-    alerte = Alerte.query.get(id_alerte)
-    if alerte:
-        alerte.mark_as_read()
-    return redirect(url_for('home'))
+
+
+@app.route('/marquer_lu/<int:notification_id>', methods=['POST'])
+def marquer_lu(notification_id):
+    try:
+        mark_as_read(notification_id)
+        flash("Notification marquée comme lue avec succès.", "success")
+
+        return redirect(url_for('notifications'))
+    except Exception as e:
+        flash(f"Erreur lors de la mise à jour de la notification: {str(e)}", "danger")
+        return redirect(url_for('notificatons'))
+
+
+@app.context_processor
+def inject_notifications_non_lues():
+    alertes_non_lues = len(get_alertes_non_lues())
+    return dict(notifications_non_lues=alertes_non_lues)
+
+

@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("delete-form").action = "/delete_avis/" + avisIdToDelete;
             // Soumet le formulaire
             document.getElementById("delete-form").submit();
-            console.log("111111111")
         }
     });
 
@@ -30,6 +29,5 @@ document.addEventListener("DOMContentLoaded", function () {
     cancelButton.addEventListener("click", function () {
         avisIdToDelete = null;
         popup.classList.add("hidden");  // Cache la popup si l'annulation est cliquée
-        console.log("MMMMMMMMMMMMMM")
     });
 });

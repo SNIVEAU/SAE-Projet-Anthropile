@@ -779,7 +779,7 @@ def get_qte_by_pts_and_type(id_point_collecte, id_type):
 
 
 class Alerte:
-    def __init__(self, id_alerte, message, date_alerte, lu=False):
+    def __init__(self, id_alerte, lu, message, date_alerte):
         self.id_alerte = id_alerte
         self.message = message
         self.date_alerte = date_alerte
@@ -792,15 +792,22 @@ class Alerte:
         mysql.connection.commit()
         cursor.close()
     
-    def mark_as_read(self):
+    def mark_as_read_bd(self):
         cursor = mysql.connection.cursor()
-        query = "UPDATE ALERTE SET lu = TRUE WHERE id_alerte = %s"
+        query = "UPDATE ALERTE SET lu = TRUE WHERE id_Alerte = %s"
         cursor.execute(query, (self.id_alerte,))
         mysql.connection.commit()
         cursor.close()
     
     def __str__(self):
         return f"Alerte #{self.id_alerte}: {self.message} (Date: {self.date_alerte})"
+    
+def mark_as_read(id_notif):
+    cursor = mysql.connection.cursor()
+    query = "UPDATE ALERTE SET lu = TRUE WHERE id_Alerte = %s"
+    cursor.execute(query, (id_notif,))
+    mysql.connection.commit()
+    cursor.close()
 
 def get_alertes_non_lues():
     cursor = mysql.connection.cursor()
@@ -816,7 +823,7 @@ def get_alertes_non_lues():
 
 def get_all_alertes():
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM ALERTE"
+    query = "SELECT id_Alerte, lu, message, DATE_FORMAT(date_alerte, '%d/%m/%Y') FROM ALERTE ORDER BY lu"
     cursor.execute(query)
     alertes = cursor.fetchall()
     cursor.close()

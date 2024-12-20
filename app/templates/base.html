@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    {% block styles %}
     {% endblock %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" />
@@ -56,12 +56,55 @@
                         {% else %}
                             <li><a class="connexioninscription no-underline" href="{{ url_for('login') }}">Se connecter</a></li>
                             <li><a class="connexioninscription no-underline" href="{{ url_for('register') }}">S'inscrire</a></li>
-                            <li><a class="notif" href="#">Notifications</a></li>
                         {% endif %}
                     </div>
                 </li>
             </ul>
         </nav>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function updateNotificationBadge() {
+                    fetch("/api/notifications_non_lues")
+                        .then(response => response.json())
+                        .then(data => {
+                            const badge = document.querySelector(".cloche .badge");
+                            
+                            if (data.count > 0) {
+                                if (!badge) {
+                                    const newBadge = document.createElement("div");
+                                    newBadge.classList.add("badge");
+                                    newBadge.textContent = data.count > 99 ? "+99" : data.count;
+                                    document.querySelector(".cloche").appendChild(newBadge);
+                                } else {
+                                    badge.textContent = data.count > 99 ? "+99" : data.count;
+                                    badge.style.display = "block";
+                                }
+                            } else if (badge) {
+                                badge.style.display = "none";
+                            }
+                        })
+                        .catch(error => console.error("Erreur lors de la mise à jour des notifications:", error));
+                }
+        
+                // Rafraîchir toutes les 30 secondes
+                setInterval(updateNotificationBadge, 30000);
+        
+                // Chargement initial des notifications
+                updateNotificationBadge();
+            });
+        </script>
+        
+        <a class="cloche" href="{{ url_for('notifications') }}">
+            <img src="{{ url_for('static', filename='img/cloche.png') }}" alt="">
+            {% if notifications|selectattr('lu', 'equalto', False)|list|length > 0 %}
+                <div class="badge">
+                    {{ notifications|selectattr('lu', 'equalto', False)|list|length > 99 and '+99' or notifications|selectattr('lu', 'equalto', False)|list|length }}
+                </div>
+            {% endif %}
+        </a>
+        
+        {% endif %}
     </header>
     
     <script>

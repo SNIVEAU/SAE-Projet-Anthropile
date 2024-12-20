@@ -1,0 +1,68 @@
+/* Conteneur principal */
+.notifications-container {
+    max-width: 900px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 25px;
+    border-radius: 5px;
+    list-style: none;
+}
+
+.notifications-container li {
+    list-style: none;
+}
+
+.notifications-container ul {
+    padding: 0;
+}
+
+/* Titre des notifications */
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+/* Liste des notifications */
+.notifications-list {
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+}
+
+/* Style de chaque notification */
+.notification {
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    transition: transform 0.3s ease-in-out, opacity 0.5s ease; /* Transition pour l'animation */
+}
+
+.unread {
+    background-color: #fff3f3;
+    border: 1px solid #ddd;
+}
+
+.read {
+    background-color: #e9ffea;
+    border: 1px solid #ddd;
+}
+
+/* Bouton pour marquer comme lu */
+.button {
+    padding: 5px 8px;
+    background-color: #147a00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: small;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #054b03;
+}

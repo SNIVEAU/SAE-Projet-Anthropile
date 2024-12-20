@@ -405,3 +405,31 @@ ul li {
     display: none;
 }
 
+.cloche {
+    position: relative;
+    display: inline-block;
+}
+
+.cloche img {
+    width: 28px; /* Taille de l'icône */
+    height: auto;
+}
+
+.cloche .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 1.5px 1.5px;
+    border-radius: 50%;
+    min-width: 18px;
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+

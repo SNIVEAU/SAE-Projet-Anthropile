@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='notifications.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+{% endblock %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<p class="alert alert-warning">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+    <div class="notifications-container">
+        <h1>Notifications</h1>
+
+        {% if notifications %}
+            <ul>
+                {% for notification in notifications %}
+                    <li class="notification {% if notification.lu %} read {% else %}unread{% endif %}" notif-id="{{ notification.id_alerte }}">
+                        <p>{{ notification.message }}</p>
+                        <p><small>Reçu le {{ notification.date_alerte }}</small></p>
+                        {% if not notification.lu %}
+                            <button class="button" id_notif="{{ notification.id_alerte }}">Marquer comme lue</button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucune notification pour le moment.</p>
+        {% endif %}
+    </div>
+    
+<script src="{{ url_for('static', filename='js/mark_as_read.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+{% endblock %}
+

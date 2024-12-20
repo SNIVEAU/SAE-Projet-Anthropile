@@ -165,3 +165,43 @@ BEGIN
   CLOSE lesDechets;
 END |
 DELIMITER ;
+
+-- trigger : verifie le seuil d'un point de collecte pour afficher une alerte 
+
+DELIMITER |
+
+CREATE OR REPLACE TRIGGER check_capacity_50_percent
+AFTER INSERT ON DEPOSER
+FOR EACH ROW
+BEGIN
+    DECLARE total_qte DECIMAL(10,4);
+    DECLARE max_qte DECIMAL(10,4);
+    DECLARE percentage DECIMAL(10,4);
+    
+    SELECT IFNULL(SUM(d.qte), 0)
+    INTO total_qte
+    FROM DEPOSER dp
+    JOIN DECHET d ON dp.id_Dechet = d.id_Dechet
+    WHERE dp.id_point_collecte = NEW.id_point_collecte
+    GROUP BY id_point_collecte;
+
+    SELECT qte_max INTO max_qte
+    FROM POINT_DE_COLLECTE
+    WHERE id_point_collecte = NEW.id_point_collecte;
+
+    IF max_qte > 0 THEN
+        SET percentage = (total_qte / max_qte) * 100;
+    ELSE
+        SET percentage = 0;
+    END IF;
+
+    IF percentage > 50 THEN
+        INSERT INTO ALERTE (message, lu, date_alerte)
+        VALUES (CONCAT('Le point de collecte "', 
+                       (SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE id_point_collecte = NEW.id_point_collecte), 
+                       '" a dépassé 50% de sa capacité maximale (', FORMAT(percentage, 2), '%).'),
+                FALSE, NOW());
+    END IF;
+END |
+
+DELIMITER ;

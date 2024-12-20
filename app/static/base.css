@@ -417,13 +417,13 @@ ul li {
 
 .cloche .badge {
     position: absolute;
-    top: -5px; /* Ajustez la position verticale */
-    right: -5px; /* Ajustez la position horizontale */
+    top: -8px;
+    right: -8px;
     background-color: red;
     color: white;
     font-size: 12px;
     font-weight: bold;
-    padding: 2px 6px;
+    padding: 1.5px 1.5px;
     border-radius: 50%;
     min-width: 18px;
     min-height: 18px;

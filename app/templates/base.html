@@ -68,39 +68,7 @@
             </ul>
         </nav>
         {% if current_user.is_authenticated and current_user.is_admin() %}
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                function updateNotificationBadge() {
-                    fetch("/api/notifications_non_lues")
-                        .then(response => response.json())
-                        .then(data => {
-                            const badge = document.querySelector(".cloche .badge");
-                            
-                            if (data.count > 0) {
-                                if (!badge) {
-                                    const newBadge = document.createElement("div");
-                                    newBadge.classList.add("badge");
-                                    newBadge.textContent = data.count > 99 ? "+99" : data.count;
-                                    document.querySelector(".cloche").appendChild(newBadge);
-                                } else {
-                                    badge.textContent = data.count > 99 ? "+99" : data.count;
-                                    badge.style.display = "block";
-                                }
-                            } else if (badge) {
-                                badge.style.display = "none";
-                            }
-                        })
-                        .catch(error => console.error("Erreur lors de la mise à jour des notifications:", error));
-                }
-        
-                // Rafraîchir toutes les 30 secondes
-                setInterval(updateNotificationBadge, 30000);
-        
-                // Chargement initial des notifications
-                updateNotificationBadge();
-            });
-        </script>
-        
+
         <a class="cloche" href="{{ url_for('notifications') }}">
             <img src="{{ url_for('static', filename='img/cloche.png') }}" alt="">
             {% if notifications|selectattr('lu', 'equalto', False)|list|length > 0 %}
@@ -152,19 +120,16 @@
     </footer>
 
     <script>
-        // Ouvrir/fermer le menu au clic
         document.querySelector('.menu-toggle').addEventListener('click', function() {
             const menu = document.querySelector('nav.menu');
             menu.classList.toggle('active');
         });
 
-        // Fermer le menu si on clique sur la croix
         document.querySelector('.close-menu').addEventListener('click', function() {
             const menu = document.querySelector('nav.menu');
             menu.classList.remove('active');
         });
 
-        // Fermer le menu si on clique en dehors
         document.addEventListener('click', function(event) {
             const menu = document.querySelector('nav.menu');
             const menuToggle = document.querySelector('.menu-toggle');
@@ -175,9 +140,9 @@
         });
     </script>
 
-    <!-- Placer le script remember.js à la fin pour ne pas bloquer le rendu de la page -->
     <script src="{{ url_for('static', filename='js/remember.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/deplacement_form.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/num_notif.js') }}" defer></script>
 
 
 </body>

@@ -2,7 +2,7 @@
 --VÉRIFIÉ
 -- Trigger pour vérifier que la quantité d'une collecte ne dépasse pas la quantité entière
 DELIMITER |
-CREATE OR REPLACE TRIGGER check_qte_deposee
+CREATE OR REPLACE TRIGGER check_qte_deposee_insert
 BEFORE INSERT ON DEPOSER
 FOR EACH ROW 
 BEGIN 
@@ -10,7 +10,7 @@ BEGIN
   DECLARE quantite_totale_actuelle INT;
   DECLARE qte_Ajoutee INT;
 
-  DECLARE mes VARCHAR(200) DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
+  DECLARE mes VARCHAR(200) DEFAULT 'La quantité de déchet dépasse la capacité maximale du point de collecte';
 
   SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE
@@ -27,7 +27,7 @@ END |
 DELIMITER ;
 
 DELIMITER |
-CREATE OR REPLACE TRIGGER check_qte_deposee
+CREATE OR REPLACE TRIGGER check_qte_deposee_update
 BEFORE UPDATE ON DEPOSER
 FOR EACH ROW 
 BEGIN 
@@ -36,7 +36,7 @@ BEGIN
 
   DECLARE qte_Ajoutee INT;
 
-  DECLARE mes VARCHAR(200)  DEFAULT 'Le déposé est impossible car la quantité maximale est dépassée !!';
+  DECLARE mes VARCHAR(200)  DEFAULT 'La quantité de déchet dépasse la capacité maximale du point de collecte';
 
   SELECT qte_max, IFNULL(SUM(qte),0) INTO max_qte, quantite_totale_actuelle
   FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE

@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}
-    BIOTRACK’IN | Login
-{% endblock %}
+{% block title %}Login{% endblock %}
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
@@ -28,17 +26,17 @@
         <form method="POST" action="{{ url_for('login') }}">
             {{ form.hidden_tag() }}  <!-- Cette ligne est importante pour CSRF protection -->
             
-            <div>
+            <div class = "form-group">
                 <label for="nom_utilisateur">{{ form.nom_utilisateur.label }}</label>
-                {{ form.nom_utilisateur(placeholder="Entrez votre nom d'utilisateur") }}
+                {{ form.nom_utilisateur(class="form-control",placeholder="Entrez votre nom d'utilisateur") }}
                 {% for error in form.nom_utilisateur.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
             </div>
             
-            <div>
+            <div class = "form-group">
                 <label for="motdepasse">{{ form.motdepasse.label }}</label>
-                {{ form.motdepasse(placeholder="Entrez votre mot de passe") }}
+                {{ form.motdepasse(class="form-control",placeholder="Entrez votre mot de passe") }}
                 {% for error in form.motdepasse.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -46,10 +44,12 @@
             
             
 
-            <button type="submit">{{ form.submit.label }}</button> <!-- Assure-toi que ce bouton est bien là -->
+            <button  class = "form-group" type="submit">{{ form.submit.label }}</button> <!-- Assure-toi que ce bouton est bien là -->
         </form>
         
         <p>Vous n'avez pas de compte? <a href="{{ url_for('register') }}">Créez-en un ici!</a></p>
     </div>
     <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+
+
 {% endblock %}

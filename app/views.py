@@ -177,14 +177,21 @@ def insert_dechets():
         print(form.id_user.data, "''''''''''''''''''''")
         print(form.id_point_collecte.data, "-----------------")
         print(type(form.id_point_collecte.data))
-        
+
+        print(est_possable(form.id_point_collecte.data, form.quantite.data))
+        if not est_possable(form.id_point_collecte.data, form.quantite.data):
+            flash("La quantité de déchet dépasse la capacité maximale du point de collecte", "error")
+            return redirect(url_for("insert_dechets"))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
         id_dechet = dechet.insert_dechet()
         
-        insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
-        
-        flash("Déchet ajouté avec succès", "success")
-        return redirect(url_for("insert_dechets"))
+        result = insert_dechet_utilisateur(id_dechet, current_user.id, int(form.id_point_collecte.data))
+        if result is None:
+            flash("Déchet ajouté avec succès", "success")
+            return redirect(url_for("insert_dechets"))
+        else:
+            flash(str(result), "error")
+            return redirect(url_for("insert_dechets"))
 
     return render_template(
         "insertion_dechets.html",
@@ -214,7 +221,7 @@ def statistique_dechets():
 @app.route("/statistique-pts-collecte")
 @login_required
 def statistique_pts_collecte():
-    return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte())
+    return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 
 @app.route("/data/graph-pts-collecte")
 # @login_required
@@ -474,7 +481,8 @@ def edit_profile():
         mail = form.mail.data
         numtel = form.numtel.data
         
-        update_user(user_id, nom_utilisateur, mail, numtel)
+        if not update_user(user_id, nom_utilisateur, mail, numtel):
+            return render_template("edit_profile.html", form=form, error="Une erreur s'est produite lors de la modification de l'utilisateur")
 
         current_user.nom_utilisateur = nom_utilisateur
         current_user.mail = mail
@@ -487,7 +495,7 @@ def edit_profile():
 
         return redirect(url_for('profil'))
 
-    return render_template("edit_profile.html", form=form)
+    return render_template("edit_profile.html", form=form, error="")
 
 
 from flask_wtf import FlaskForm
@@ -548,9 +556,10 @@ def inserer_categorie_dechet():
         id_type = get_id_max_dechets() + 1
 
         nom_type = request.form.get("nom_type")
+        priorite = request.form.get("priorite")
         
         # Call insert_entreprise only once and store the result
-        success = insert_categorie(id_type, nom_type)
+        success = insert_categorie(id_type, nom_type, priorite)
         
         if success:
             return redirect(url_for('toutes_categories', status='insert_success'))

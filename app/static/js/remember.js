@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const userNameElement = document.getElementById('user-name');
-    let connected = userNameElement ? true : false;
+    let connected = Boolean(userNameElement);
     let isNavigatingAway = false;
 
     function isconnected() { return connected; }
@@ -22,23 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
         element.addEventListener('click', () => { isNavigatingAway = true; });
     });
 
-    window.addEventListener('beforeunload', function () {
+    window.addEventListener('beforeunload', function (event) {
         const navigationType = performance.getEntriesByType("navigation")[0]?.type;
 
         if (navigationType === "reload") return;
 
         if (!isNavigatingAway && !isactivated() && isconnected()) {
-            fetch('/logout', { method: 'POST', keepalive: true });
-        }
-    });
-
-    window.addEventListener('unload', function () {
-        const navigationType = performance.getEntriesByType("navigation")[0]?.type;
-
-        if (navigationType === "reload") return;
-
-        if (!isNavigatingAway && !isactivated() && isconnected()) {
-            fetch('/logout', { method: 'POST', keepalive: true });
+            navigator.sendBeacon('/logout');
         }
     });
 });

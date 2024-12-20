@@ -106,6 +106,18 @@ def est_possable(id_point_collecte, qte):
         return False
     return True
 
+def get_espace_restant(id_point_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select qte_max, SUM(qte) as qte_actuel from POINT_DE_COLLECTE NATURAL JOIN DEPOSER NATURAL JOIN DECHET WHERE id_point_collecte = %s GROUP BY id_point_collecte", (id_point_collecte,))
+    res = cursor.fetchone()
+    cursor.close()
+    if res is None:
+        cursor = mysql.connection.cursor()
+        cursor.execute("select qte_max from POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id_point_collecte,))
+        qte_max = cursor.fetchone()
+        return qte_max[0]
+    return res[0] - res[1]
+
 def insert_dechet_utilisateur(id_dechet, id_utilisateur, id_point_collecte):
     try:
         cursor = mysql.connection.cursor()
@@ -346,7 +358,7 @@ def get_collecter_sort_by_date():
     
     query = """
 
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%d/%m/%Y') AS date_only,qtecollecte
+    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
     FROM COLLECTER natural join TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
     ORDER BY date_collecte DESC

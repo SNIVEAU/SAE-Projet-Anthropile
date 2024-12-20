@@ -180,7 +180,8 @@ def insert_dechets():
 
         print(est_possable(form.id_point_collecte.data, form.quantite.data))
         if not est_possable(form.id_point_collecte.data, form.quantite.data):
-            flash("La quantité de déchet dépasse la capacité maximale du point de collecte", "error")
+            espace_restant = get_espace_restant(form.id_point_collecte.data)
+            flash("La quantité de déchet dépasse la capacité maximale du point de collecte. \nL'espace restant dans ce point de collecte est de " + str(espace_restant) + "kg. ", "error")
             return redirect(url_for("insert_dechets"))
         dechet = Dechet(form.nom.data, form.type.data, form.quantite.data)
         id_dechet = dechet.insert_dechet()

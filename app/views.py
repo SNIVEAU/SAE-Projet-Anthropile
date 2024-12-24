@@ -110,7 +110,6 @@ def register():
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
-        # Hacher le mot de passe avant de l'insérer dans la base de données
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
@@ -119,7 +118,6 @@ def register():
         if not form.entreprise.data == 'Aucune':
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
             insert_travailler(idUtilisateur, form.entreprise.data)
-        # or ('Geocoder' in str(pos) or 'Max retries' in str(pos) or '443' in str(pos) or 'timeout' in str(pos))
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
@@ -143,7 +141,6 @@ def register():
 @login_required
 def logout():
     logout_user()  # Déconnexion avec Flask-Login
-    # Optionnellement, supprimer le cookie "remember_me" ici
     resp = redirect(url_for('home'))
     #resp.delete_cookie('remember_me')
     return resp
@@ -205,14 +202,7 @@ def insert_dechets():
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
-# @app.route("/statistique-dechets")
-# @login_required
-# def statistique_dechet():
-#     # get_graph_dechet()
-#     # get_graph_qte_dechets_categorie()
-#     # data_graph_qte_dechets_categorie()
-#     # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
-#     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+
 
 @app.route("/data/dechets")
 # @login_required
@@ -251,10 +241,8 @@ def download_pdf(date_collecte):
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
 
-    # Titre du PDF
     pdf.cell(200, 10, f"Rapport de collecte pour le {date_collecte}", ln=True, align='C')
 
-    # Ajouter les en-têtes de table
     pdf.ln(10)
     pdf.set_font('Arial', 'B', 10)
     pdf.cell(40, 10, 'Point de Collecte', 1)
@@ -266,18 +254,16 @@ def download_pdf(date_collecte):
     # Ajouter les données dans le PDF
     pdf.set_font('Arial', '', 10)
     for collecter in collecter_list:
-        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  # id_point_collecte
-        pdf.cell(40, 10, str(collecter.id_Type), 1)  # id_Type
-        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  # dateCollecte
-        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  # qtecollecte
+        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  
+        pdf.cell(40, 10, str(collecter.id_Type), 1)  
+        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  
+        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  
         pdf.ln()
 
-    # Sauvegarder le PDF dans un buffer en mémoire
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
-    # Envoyer le fichier PDF au client
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
 @app.route("/details/<id>")
@@ -441,7 +427,6 @@ def inserer_entreprise():
 
         nom_entreprise = request.form.get("nom_entreprise")
         
-        # Call insert_entreprise only once and store the result
         success = insert_entreprise(id_ent, nom_entreprise)
         
         if success:
@@ -560,7 +545,6 @@ def inserer_categorie_dechet():
         nom_type = request.form.get("nom_type")
         priorite = request.form.get("priorite")
         
-        # Call insert_entreprise only once and store the result
         success = insert_categorie(id_type, nom_type, priorite)
         
         if success:

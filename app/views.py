@@ -219,6 +219,11 @@ def statistique_pts_collecte():
 def data_graph_pts_collecte():
     return data_graph_qte_dechets_cat_pts_collecte()
 
+@app.route("/data/graph-pts-collecte/<int:id>")
+# @login_required
+def data_graph_pts_collecte_id(id):
+    return data_graph_qte_dechets_cat_pts_collecte_id(id)
+
 @app.route("/rapport")
 @login_required
 def rapport():

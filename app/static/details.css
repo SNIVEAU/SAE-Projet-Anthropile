@@ -19,10 +19,20 @@ body {
     margin: 50px auto;
     padding: 40px;
     transition: transform 0.3s; 
+    height: min-content;
 }
 
-.details:hover {
+.details:first-of-type:hover {
     transform: scale(1.02); 
+}
+
+main {
+    display: flex;
+    align-items: center;
+}
+
+table {
+    margin-bottom: 0px;
 }
 
 h1 {
@@ -67,3 +77,39 @@ h1 {
     }
 }
 
+.buttonContainer {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+}
+
+#graphButton {
+    align-self: flex-end;
+    padding: 10px;
+    background-color: #d4edda;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/*
+#graphContainer {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease-out, max-height 0.5s ease-out;
+}
+
+#graphContainer.active {
+    opacity: 1;
+    max-height: 500px; 
+}
+*/
+
+@media (max-width: 1545px) {
+    main {
+        flex-direction: column;
+    }
+}

@@ -705,6 +705,29 @@ def data_graph_qte_dechets_cat_pts_collecte():
 
     return jsonify(data)
 
+def data_graph_qte_dechets_cat_pts_collecte_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT nom_pt_collecte, nom_Type, SUM(qte) as quantite
+        FROM POINT_DE_COLLECTE
+        NATURAL JOIN CATEGORIEDECHET
+        NATURAL JOIN DECHET
+        NATURAL JOIN DEPOSER
+        WHERE id_point_collecte = %s
+        GROUP BY nom_pt_collecte, nom_Type
+        ORDER BY nom_pt_collecte;
+    """, (id,))
+    results = cursor.fetchall()
+    cursor.close()
+
+    data = {}
+    for nom_pt_collecte, nom_type, quantite in results:
+        if nom_pt_collecte not in data:
+            data[nom_pt_collecte] = []
+        data[nom_pt_collecte].append({'categorie': nom_type, 'quantite': quantite})
+
+    return jsonify(data)
+
 def get_quantite_courante(id):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT IFNULL(SUM(qte),0) FROM DEPOSER NATURAL JOIN DECHET NATURAL JOIN POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))

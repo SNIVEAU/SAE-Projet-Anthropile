@@ -907,3 +907,16 @@ def get_all_alertes():
     for alerte in alertes:
         alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
     return alertes_list
+
+
+def get_utilisateurs():
+    cursor = mysql.connection.cursor()
+    query = "SELECT nom_Utilisateur, mail, numtel, nom_role FROM UTILISATEUR"
+    cursor.execute(query)
+    utilisateurs = cursor.fetchall()
+    cursor.close()
+
+    utilisateurs_list = []
+    for nom_Utilisateur, mail, numtel, nom_role in utilisateurs:
+        utilisateurs_list.append({'nom_Utilisateur': nom_Utilisateur, 'mail' : mail, 'numtel' : numtel, 'nom_role' : nom_role})
+    return utilisateurs_list

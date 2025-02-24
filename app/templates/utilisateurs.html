@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %} Utilisateurs {% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='all_companies.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Liste des utilisateurs</h1>
+    </div>
+    {% if utilisateurs %}
+        <table id="company-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Mail</th>
+                    <th>Num tel</th>
+                    <th>Nom rôle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for users in utilisateurs %}
+                <tr>
+                    <td>{{ users.nom_Utilisateur }}</td>
+                    <td>{{ users.mail }}</td>
+                    <td>{{ users.numtel }}</td>
+                    <td>{{ users.nom_role }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

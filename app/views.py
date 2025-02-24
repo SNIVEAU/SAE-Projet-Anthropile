@@ -630,3 +630,10 @@ def inject_notifications_non_lues():
     return dict(notifications_non_lues=alertes_non_lues)
 
 
+@app.route('/utilisateurs')
+@login_required
+def tous_utilisateurs():
+    return render_template(
+        "utilisateurs.html",
+        utilisateurs = get_utilisateurs()
+    )

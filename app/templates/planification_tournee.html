@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block title %}Tournée{% endblock %}
 
 {% block styles %}
@@ -14,36 +13,65 @@
         <h2>Planification de la tournée</h2>
         <form method="post" action="{{ url_for('planification_tournee') }}">
             {{ form.hidden_tag() }}
-
-            {% for point in points_de_collecte %}
-                <div class="form-group">
-                    <h3 class="nom_pt_collecte">{{ point.nom_pt_collecte }}</h3> <!-- Affiche le nom du point de collecte -->
-                    
-                    <label class="tournee" for="categorie_{{ point.id_point_de_collecte }}">Catégorie de déchet</label>
-                    <select id="categorie_{{ point.id_point_de_collecte }}" name="categorie_{{ point.id_point_de_collecte }}" class="form-control">
-                        <option value="">Sélectionner une catégorie</option>
-                        {% for categorie in categories_dechet %}
-                            <option value="{{ categorie.id_type }}">{{ categorie.nom_type }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            {% endfor %}
-
+            
+            <div class="form-group">
+                <label class ="tournee point_de_collecte">Ajouter un point de collecte</label>
+                <select id="point_de_collecte" class="form-control" title="Sélectionner un point de collecte">
+                    <option value="">Sélectionner un point</option>
+                    {% for point in all_points_de_collecte %}
+                        <option value="{{ point.id_point_de_collecte }}">{{ point.nom_pt_collecte }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" id="ajouter_point" class="btn btn-secondaire">+</button>
+            </div>
+            
+            <div id="points_selectionnes"></div>
+            
             <div class="form-group">
                 <label class="tournee" for="duree">Durée de la tournée</label>
-                {{ form.duree(class="form-control") }} <!-- Utilisation de form.duree pour afficher le champ de durée -->
+                {{ form.duree(class="form-control") }}
             </div>
 
             <div class="form-group">
                 <label class="tournee" for="date_collecte">Date de collecte</label>
-                {{ form.date_collecte(class="form-control") }} <!-- Utilisation de form.date_collecte pour afficher le champ de date -->
+                {{ form.date_collecte(class="form-control") }}
             </div>
             <div class="form-group">
                 <label class="tournee" for="heure_collecte">Heure de collecte</label>
-                {{ form.heure_collecte(class="form-control") }} <!-- Utilisation de form.heure_collecte pour afficher le champ de date -->
+                {{ form.heure_collecte(class="form-control") }}
             </div>
             <button type="submit" class="btn btn-primary">Valider</button>
         </form>
     </div>
-    <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
-{%endblock%}
+    
+    <script>
+        document.getElementById("ajouter_point").addEventListener("click", function() {
+            let select = document.getElementById("point_de_collecte");
+            let selectedValue = select.value;
+            let selectedText = select.options[select.selectedIndex].text;
+            if (selectedValue && !document.getElementById(`point_${selectedValue}`)) {
+                let container = document.getElementById("points_selectionnes");
+                let div = document.createElement("div");
+                console.log(selectedValue);
+                console.log(selectedText);
+                div.id = `point_${selectedValue}`;
+                div.innerHTML = `<div class='form-group tournee'>
+                                <input class = 'tournee' type='hidden' name='selected_points' value='${selectedValue}'>
+                                <label class= 'tournee' for='categorie_${selectedValue}'>${selectedText}</label>
+                                <select name='categorie_${selectedValue}' class='form-control'>
+                                    <option value=''>Sélectionner une catégorie</option>
+                                    {% for categorie in categories_dechet %}
+                                        <option value='{{ categorie.id_type }}'>{{ categorie.nom_type }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type='button' class='btn btn-secondaire supprimer_point'>X</button>
+                            </div>`;
+                container.appendChild(div);
+
+                div.querySelector(".supprimer_point").addEventListener("click", function() {
+                    div.remove();
+                });
+            }
+        });
+    </script>
+{% endblock %}

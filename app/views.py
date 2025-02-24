@@ -516,27 +516,35 @@ class PlanificationTournéeForm(FlaskForm):
 @login_required
 @admin_required
 def planification_tournee():
-    pts_de_collecte = get_points_de_collecte()
+    all_pts_de_collecte = get_points_de_collecte()  # Tous les points de collecte disponibles
     categories_dechet = get_categories()
     form = PlanificationTournéeForm()
+    
+    selected_points = []
+    
     if request.method == 'POST':
         date_collecte = datetime.combine(form.date_collecte.data, form.heure_collecte.data)
         insert_tournee(date_collecte, form.duree.data)
         id_tournee = get_last_tournee()
-        for point in pts_de_collecte:
-            categorie_id = request.form.get(f'categorie_{point.id_point_de_collecte}')
+        
+        selected_point_ids = request.form.getlist('selected_points')
+        
+        for point_id in selected_point_ids:
+            categorie_id = request.form.get(f'categorie_{point_id}')
             if categorie_id:
-                qte_collecte = get_qte_by_pts_and_type(point.id_point_de_collecte, categorie_id)
-                print(f"Point de collecte: {point.nom_pt_collecte}, Catégorie: {categorie_id}")        
-                insert_collecter(point.id_point_de_collecte, id_tournee,categorie_id, qte_collecte,) 
+                qte_collecte = get_qte_by_pts_and_type(point_id, categorie_id)
+                insert_collecter(point_id, id_tournee, categorie_id, qte_collecte)
+        
         return redirect(url_for('home'))
 
     return render_template(
         'planification_tournee.html',
         form=form,
-        points_de_collecte=pts_de_collecte,
-        categories_dechet=categories_dechet
+        all_points_de_collecte=all_pts_de_collecte,  # Passer tous les points de collecte
+        categories_dechet=categories_dechet,
+        selected_points=selected_points  # Initialement vide
     )
+
   
 @app.route("/not_admin")
 def not_admin():

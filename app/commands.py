@@ -19,6 +19,26 @@ def toadmin(username):
         print(f"Une erreur est survenue : {e}")
 
 @app.cli.command()
+def loaddb():
+    '''Creates the tables and populates them with data.'''
+    try:
+        path = '../model/'
+        files = ['creation.sql', 'insert.sql']
+        cursor = mysql.connection.cursor()
+        for file in files:
+            with open(path + file, 'r', encoding="utf-8") as f:
+                sql = f.read()
+                for statement in sql.split(';'): 
+                    if statement.strip():
+                        if statement[0:2] != '--':
+                            cursor.execute(statement)
+        mysql.connection.commit()
+        cursor.close()
+        print("Les tables ont été créées et les données ont été insérées. \nLes triggers sont a ajouter manuellement.")
+    except Exception as e:
+        print(f"Une erreur est survenue : {e}")
+
+@app.cli.command()
 def dropdb():
     '''Drops the tables.'''
     try:

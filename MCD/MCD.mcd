@@ -1,6 +1,6 @@
 :
 ENTREPRISE : id_Entreprise, nom_Entreprise
-TRAVAILLER, 0N UTILISATEUR, 0N ENTREPRISE
+TRAVAILLER, 01 UTILISATEUR, 11 ENTREPRISE
 AVIS : id_Avis, avis, note, date_Avis
 :
 :

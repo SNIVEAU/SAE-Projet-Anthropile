@@ -55,6 +55,7 @@ CREATE TABLE DECHET (
   nom_Dechet VARCHAR(42),
   id_Type INT NOT NULL,
   qte DECIMAL(10,4),
+  dateinsertion DATE DEFAULT CURRENT_DATE,
   FOREIGN KEY (id_Type) REFERENCES CATEGORIEDECHET (id_Type)
 );
 

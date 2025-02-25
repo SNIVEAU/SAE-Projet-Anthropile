@@ -907,3 +907,40 @@ def get_all_alertes():
     for alerte in alertes:
         alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
     return alertes_list
+
+def get_categories_by_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE Id_Type = %s", (id,))
+    categorie = cursor.fetchone()
+    cursor.close()
+    if categorie:
+        return CategorieDechet(categorie[0], categorie[1], categorie[2])
+    return None
+
+def get_pts_de_collecte_by_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    point = cursor.fetchone()
+    cursor.close()
+    if point:
+        return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
+    return None
+
+def get_dechets_by_date(date):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s", (date,))
+    dates = cursor.fetchall()
+    if dates:
+        res=[]
+        for date in dates:
+            print(date)
+            res.append(Dechet(date[1],date[2],date[3]))
+        return res
+    return None
+
+
+def get_dechets_by_date_lastweek(date):
+    cursor = mysql.connection.cursor()
+    cursor.execute("""SELECT * 
+FROM DECHET 
+WHERE dateinsertion BETWEEN DATE_SUB('%s', INTERVAL 7 DAY) AND '%s';""", (date,date))

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} Détails de l'utilisateur {% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='details_utilisateur.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    {% if utilisateur %}
+    <div id="details_utilisateur">
+        <h1>Détails de l'utilisateur</h1>
+        <p><strong>Nom :</strong> {{ utilisateur.nom_utilisateur }}</p>
+        <p><strong>Email :</strong> {{ utilisateur.mail }}</p>
+        <p><strong>Numéro de téléphone :</strong> {{ utilisateur.numtel }}</p>
+        <p><strong>Rôle :</strong> {{ utilisateur.nom_role }}</p>
+        <p><strong>Société représentée :</strong> {{ utilisateur.nom_entreprise }}</p>
+        <p><a href="{{ url_for('pts_collecte_associes', id_utilisateur=utilisateur.id_utilisateur)}}">Afficher les points de collecte associés</a></p>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+proposez-moi un css assez simple et attirant

@@ -17,18 +17,14 @@
             <thead>
                 <tr>
                     <th>Nom</th>
-                    <th>Mail</th>
-                    <th>Num tel</th>
-                    <th>Nom rôle</th>
+                    <th>Société représentée</th>
                 </tr>
             </thead>
             <tbody>
-                {% for users in utilisateurs %}
+                {% for user in utilisateurs %}
                 <tr>
-                    <td>{{ users.nom_Utilisateur }}</td>
-                    <td>{{ users.mail }}</td>
-                    <td>{{ users.numtel }}</td>
-                    <td>{{ users.nom_role }}</td>
+                    <td><a href="{{ url_for('details_utilisateur', id_utilisateur=user.id_utilisateur) }}">{{ user.nom_utilisateur }}</a></td>
+                    <td>{{ user.nom_entreprise }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

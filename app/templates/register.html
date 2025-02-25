@@ -56,6 +56,24 @@
             </div>
 
             <div class="form-group">
+                <!-- <label for="">Appartenez vous à une entreprise ?</label>
+                <div class="choices">
+                    <div class="choice">
+                        <input type="radio" name="entreprise" value="oui" id="oui">
+                        <label for="oui">Oui</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="entreprise" value="non" id="non" checked>
+                        <label for="non">Non</label>
+                    </div>
+                </div> -->
+                <div class="choice">
+                    {{ form.isEntreprise(class_="form-control") }}
+                    <label for="isEntreprise">{{ form.isEntreprise.label }}</label>
+                </div>
+                {% for error in form.isEntreprise.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
                 <label for="entreprise">{{ form.entreprise.label }}</label>
                 {{ form.entreprise(class_="form-control") }}
                 {% for error in form.entreprise.errors %}

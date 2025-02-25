@@ -25,7 +25,9 @@ class UtilisateurForm(FlaskForm):
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
     adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    # entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    isEntreprise = BooleanField("Je suis une entreprise")
+    entreprise = StringField("Nom de l'entreprise")
 
     next = HiddenField()
     submit = SubmitField("Ajouter")
@@ -93,7 +95,7 @@ def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
-        existing_point = get_nom_pts_collecte(form.nom_utilisateur.data)
+        existing_point = get_nom_pts_collecte(form.adresse.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
@@ -110,20 +112,23 @@ def register():
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
-        # Hacher le mot de passe avant de l'insérer dans la base de données
+        if form.isEntreprise.data:
+            if form.entreprise.data == "":
+                return render_template('register.html', error="Le nom de l'entreprise est requis", form=form)
+            if entreprise_existante_bd(form.entreprise.data):
+                return render_template('register.html', error="Une entreprise avec ce nom existe déjà", form=form)
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
         print(form.entreprise.data)
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "Utilisateur")
-        if not form.entreprise.data == 'Aucune':
+        if form.isEntreprise.data:
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
-            insert_travailler(idUtilisateur, form.entreprise.data)
-        # or ('Geocoder' in str(pos) or 'Max retries' in str(pos) or '443' in str(pos) or 'timeout' in str(pos))
+            insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur)
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
-                    insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data, 50, pos[0],pos[1])
+                    insert_pts_de_collecte(form.adresse.data, form.adresse.data, 50, pos[0],pos[1])
                     ajoute_pts_de_collecte_specifique(get_max_id_pts_de_collecte(),get_max_id_user())
             else:
                 flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
@@ -143,7 +148,6 @@ def register():
 @login_required
 def logout():
     logout_user()  # Déconnexion avec Flask-Login
-    # Optionnellement, supprimer le cookie "remember_me" ici
     resp = redirect(url_for('home'))
     #resp.delete_cookie('remember_me')
     return resp
@@ -205,14 +209,7 @@ def insert_dechets():
 def collecte_dechets():
     return render_template("collecte_dechets.html", points_de_collecte=get_points_de_collecte())
 
-# @app.route("/statistique-dechets")
-# @login_required
-# def statistique_dechet():
-#     # get_graph_dechet()
-#     # get_graph_qte_dechets_categorie()
-#     # data_graph_qte_dechets_categorie()
-#     # return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
-#     return render_template("statistique_dechet.html", points_de_collecte=get_points_de_collecte())
+
 
 @app.route("/data/dechets")
 # @login_required
@@ -221,6 +218,7 @@ def statistique_dechets():
 
 @app.route("/statistique-pts-collecte")
 @login_required
+@admin_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 
@@ -228,6 +226,11 @@ def statistique_pts_collecte():
 # @login_required
 def data_graph_pts_collecte():
     return data_graph_qte_dechets_cat_pts_collecte()
+
+@app.route("/data/graph-pts-collecte/<int:id>")
+# @login_required
+def data_graph_pts_collecte_id(id):
+    return data_graph_qte_dechets_cat_pts_collecte_id(id)
 
 @app.route("/rapport")
 @login_required
@@ -252,10 +255,8 @@ def download_pdf(date_collecte):
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
 
-    # Titre du PDF
     pdf.cell(200, 10, f"Rapport de collecte pour le {date_collecte}", ln=True, align='C')
-    
-    # Ajouter les en-têtes du tableau des collectes
+
     pdf.ln(10)
     pdf.set_font('Arial', 'B', 10)
     pdf.cell(50, 10, 'Point de Collecte', 1)
@@ -305,11 +306,17 @@ def download_pdf(date_collecte):
     pdf.cell(table_width, 0, '', 1, 1)
 
     # Sauvegarde du PDF en mémoire
+        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  
+        pdf.cell(40, 10, str(collecter.id_Type), 1)  
+        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  
+        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  
+        pdf.ln()
+
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
-    # Envoi du fichier au client
+
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
 
 
@@ -474,7 +481,6 @@ def inserer_entreprise():
 
         nom_entreprise = request.form.get("nom_entreprise")
         
-        # Call insert_entreprise only once and store the result
         success = insert_entreprise(id_ent, nom_entreprise)
         
         if success:
@@ -601,7 +607,6 @@ def inserer_categorie_dechet():
         nom_type = request.form.get("nom_type")
         priorite = request.form.get("priorite")
         
-        # Call insert_entreprise only once and store the result
         success = insert_categorie(id_type, nom_type, priorite)
         
         if success:
@@ -687,3 +692,10 @@ def inject_notifications_non_lues():
     return dict(notifications_non_lues=alertes_non_lues)
 
 
+@app.route('/utilisateurs')
+@login_required
+def tous_utilisateurs():
+    return render_template(
+        "utilisateurs.html",
+        utilisateurs = get_utilisateurs()
+    )

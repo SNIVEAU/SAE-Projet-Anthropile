@@ -906,9 +906,10 @@ def get_qte_by_pts_and_type(id_point_collecte, id_type):
 
 
 class Alerte:
-    def __init__(self, id_alerte, lu, message, date_alerte):
+    def __init__(self, id_alerte, id_TypeDechet, lu, message, date_alerte):
         self.id_alerte = id_alerte
         self.message = message
+        self.id_TypeDechet = id_TypeDechet
         self.date_alerte = date_alerte
         self.lu = lu
     
@@ -944,21 +945,51 @@ def get_alertes_non_lues():
     cursor.close()
     alertes_list = []
     for alerte in alertes:
-        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
+        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3], alerte[4]))
     
+    return alertes_list
+
+def get_alertes_triees_par_priorite():
+    cursor = mysql.connection.cursor()
+    query = """
+        SELECT a.id_Alerte, c.priorite, a.lu, a.message, DATE_FORMAT(a.date_alerte, '%d/%m/%Y')
+        FROM ALERTE a
+        JOIN CATEGORIEDECHET c ON a.id_TypeDechet = c.id_Type
+        ORDER BY c.priorite ASC, a.date_alerte DESC
+    """
+    cursor.execute(query)
+    alertes = cursor.fetchall()
+    cursor.close()
+    
+    alertes_list = [Alerte(alerte[0], alerte[1], alerte[2], alerte[3], alerte[4]) for alerte in alertes]
     return alertes_list
 
 def get_all_alertes():
     cursor = mysql.connection.cursor()
-    query = "SELECT id_Alerte, lu, message, DATE_FORMAT(date_alerte, '%d/%m/%Y') FROM ALERTE ORDER BY lu"
+    query = """
+            SELECT a.id_Alerte, c.priorite, a.lu, a.message, DATE_FORMAT(a.date_alerte, '%d/%m/%Y')
+            FROM ALERTE a
+            JOIN CATEGORIEDECHET c ON a.id_TypeDechet = c.id_Type
+            ORDER BY a.lu, a.date_alerte DESC
+            """
     cursor.execute(query)
     alertes = cursor.fetchall()
     cursor.close()
     
     alertes_list = []
     for alerte in alertes:
-        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3]))
+        print(alerte)
+        alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3], alerte[4]))
     return alertes_list
+
+
+def delete_all_read_alertes():
+    cursor = mysql.connection.cursor()
+    query = "DELETE FROM ALERTE WHERE lu = 1"
+    cursor.execute(query)
+    mysql.connection.commit()
+    cursor.close()
+    print("Toutes les alertes lues ont été supprimées.")
 
 def get_categories_by_id(id):
     cursor = mysql.connection.cursor()

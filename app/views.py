@@ -676,24 +676,33 @@ def tous_dechets_selon_utilisateur(id):
         dechets_collectes = get_tous_dechets_collectes_selon_utilisateur(id)
     )
 
-@app.route("/notifications")
+@app.route("/notifications/<int:estTrie>")
 @login_required
 @admin_required
-def notifications():
-    return render_template('notifications.html', notifications=get_all_alertes())
+def notifications(estTrie):
+    if estTrie == 0:
+        return render_template('notifications.html', notifications=get_all_alertes())
+    return render_template('notifications.html', notifications=get_alertes_triees_par_priorite())
 
 
-
-@app.route('/marquer_lu/<int:notification_id>', methods=['POST'])
-def marquer_lu(notification_id):
+@app.route('/marquer_lu/<int:notification_id>/<int:estTrie>', methods=['POST'])
+def marquer_lu(notification_id, estTrie):
     try:
         mark_as_read(notification_id)
-        flash("Notification marquée comme lue avec succès.", "success")
-
-        return redirect(url_for('notifications'))
+        return jsonify({"success": True})
     except Exception as e:
-        flash(f"Erreur lors de la mise à jour de la notification: {str(e)}", "danger")
-        return redirect(url_for('notificatons'))
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/delete_all_read_alertes', methods=['POST', 'GET'])
+@admin_required
+def delete_all_read_alertes_route():
+    try:
+        delete_all_read_alertes()
+        flash("Toutes les alertes lues ont été supprimées avec succès.", "success")
+    except Exception as e:
+        flash(f"Erreur lors de la suppression des alertes lues : {str(e)}", "danger")
+    
+    return redirect(url_for('notifications', estTrie=0))
 
 
 @app.context_processor

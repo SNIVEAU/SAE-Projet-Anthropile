@@ -69,7 +69,7 @@
         </nav>
         {% if current_user.is_authenticated and current_user.is_admin() %}
 
-        <a class="cloche" href="{{ url_for('notifications') }}">
+        <a class="cloche" href="{{ url_for('notifications', estTrie=0) }}">
             <img src="{{ url_for('static', filename='img/cloche.png') }}" alt="">
             {% if notifications|selectattr('lu', 'equalto', False)|list|length > 0 %}
                 <div class="badge">

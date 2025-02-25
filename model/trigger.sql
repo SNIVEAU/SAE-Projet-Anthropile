@@ -168,6 +168,47 @@ DELIMITER ;
 
 -- trigger : verifie le seuil d'un point de collecte pour afficher une alerte 
 
+-- DELIMITER |
+
+-- CREATE OR REPLACE TRIGGER check_capacity_50_percent
+-- AFTER INSERT ON DEPOSER
+-- FOR EACH ROW
+-- BEGIN
+--     DECLARE total_qte DECIMAL(10,4);
+--     DECLARE max_qte DECIMAL(10,4);
+--     DECLARE percentage DECIMAL(10,4);
+    
+--     SELECT IFNULL(SUM(d.qte), 0)
+--     INTO total_qte
+--     FROM DEPOSER dp
+--     JOIN DECHET d ON dp.id_Dechet = d.id_Dechet
+--     WHERE dp.id_point_collecte = NEW.id_point_collecte
+--     GROUP BY id_point_collecte;
+
+--     SELECT qte_max INTO max_qte
+--     FROM POINT_DE_COLLECTE
+--     WHERE id_point_collecte = NEW.id_point_collecte;
+
+--     IF max_qte > 0 THEN
+--         SET percentage = (total_qte / max_qte) * 100;
+--     ELSE
+--         SET percentage = 0;
+--     END IF;
+
+--     IF percentage > 50 THEN
+--         INSERT INTO ALERTE (message, lu, date_alerte)
+--         VALUES (CONCAT('Le point de collecte "', 
+--                        (SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE id_point_collecte = NEW.id_point_collecte), 
+--                        '" a dépassé 50% de sa capacité maximale (', FORMAT(percentage, 2), '%).'),
+--                 FALSE, NOW());
+--     END IF;
+-- END |
+
+-- DELIMITER ;
+
+
+-- trigger : verifie le seuil d'un point de collecte avec le niveau de priorité
+
 DELIMITER |
 
 CREATE OR REPLACE TRIGGER check_capacity_50_percent
@@ -177,13 +218,26 @@ BEGIN
     DECLARE total_qte DECIMAL(10,4);
     DECLARE max_qte DECIMAL(10,4);
     DECLARE percentage DECIMAL(10,4);
-    
+    DECLARE dechet_type INT;
+    DECLARE priorite_dechet INT;
+
+    -- Récupérer la catégorie du déchet déposé
+    SELECT id_Type INTO dechet_type
+    FROM DECHET
+    WHERE id_Dechet = NEW.id_Dechet;
+
+    -- Récupérer la priorité associée à la catégorie du déchet
+    SELECT priorite INTO priorite_dechet
+    FROM CATEGORIEDECHET
+    WHERE id_Type = dechet_type;
+
+    -- Calcul du taux d'occupation du point de collecte
     SELECT IFNULL(SUM(d.qte), 0)
     INTO total_qte
     FROM DEPOSER dp
     JOIN DECHET d ON dp.id_Dechet = d.id_Dechet
     WHERE dp.id_point_collecte = NEW.id_point_collecte
-    GROUP BY id_point_collecte;
+    GROUP BY dp.id_point_collecte;
 
     SELECT qte_max INTO max_qte
     FROM POINT_DE_COLLECTE
@@ -195,13 +249,16 @@ BEGIN
         SET percentage = 0;
     END IF;
 
+    -- Vérifier si le seuil de 50% est dépassé et insérer une alerte
     IF percentage > 50 THEN
-        INSERT INTO ALERTE (message, lu, date_alerte)
-        VALUES (CONCAT('Le point de collecte "', 
+        INSERT INTO ALERTE (message, lu, date_alerte, id_TypeDechet)
+        VALUES (CONCAT('Alerte : Le point de collecte "', 
                        (SELECT nom_pt_collecte FROM POINT_DE_COLLECTE WHERE id_point_collecte = NEW.id_point_collecte), 
-                       '" a dépassé 50% de sa capacité maximale (', FORMAT(percentage, 2), '%).'),
-                FALSE, NOW());
+                       '" a dépassé 50% de sa capacité maximale (', FORMAT(percentage, 2), '%). ',
+                       'Déchet concerné : ',
+                       (SELECT nom_Dechet FROM DECHET WHERE id_Dechet = NEW.id_Dechet)),
+                FALSE, NOW(), dechet_type);
     END IF;
-END |
+  END |
 
 DELIMITER ;

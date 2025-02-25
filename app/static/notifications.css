@@ -1,5 +1,6 @@
-/* Conteneur principal */
+/* Conteneur des notifications */
 .notifications-container {
+    position: relative; 
     max-width: 900px;
     background-color: #fff;
     padding: 20px;
@@ -7,7 +8,6 @@
     margin: auto;
     margin-top: 25px;
     border-radius: 5px;
-    list-style: none;
 }
 
 .notifications-container li {
@@ -66,3 +66,57 @@ h1 {
 .button:hover {
     background-color: #054b03;
 }
+
+/* Style du bouton Trier par priorité */
+#sort-by-priority {
+    width: fit-content;
+    background-color: #464646; 
+    padding: 7px;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#sort-by-priority:hover {
+    background-color: #202020;
+}
+
+/* Corbeille en haut à droite */
+.trash-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.trash-icon:hover {
+    opacity: 0.7;
+    animation: shake-rotate 0.3s ease-in-out;
+}
+
+/* Animation de secousse en rotation */
+@keyframes shake-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+

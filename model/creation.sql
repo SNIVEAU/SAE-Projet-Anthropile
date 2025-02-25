@@ -38,7 +38,6 @@ id_Entreprise INT,
 PRIMARY KEY (id_utilisateur, id_Entreprise),
 FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
 FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
-
 );
 
 CREATE TABLE POINT_DE_COLLECTE (
@@ -96,11 +95,12 @@ CREATE TABLE AVIS (
 
 CREATE TABLE ALERTE (
   id_Alerte INT AUTO_INCREMENT PRIMARY KEY,
+  id_TypeDechet INT,
   lu BOOLEAN DEFAULT FALSE,
   message TEXT,
-  date_alerte TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  date_alerte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_TypeDechet) REFERENCES CATEGORIEDECHET (id_Type)
 );
-
 
 CREATE TABLE HISTORIQUE_DECHET (
   id_dechet int,

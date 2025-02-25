@@ -93,7 +93,7 @@ def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
-        existing_point = get_nom_pts_collecte(form.nom_utilisateur.data)
+        existing_point = get_nom_pts_collecte(form.adresse.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
@@ -121,7 +121,7 @@ def register():
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
-                    insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data, 50, pos[0],pos[1])
+                    insert_pts_de_collecte(form.adresse.data, form.adresse.data, 50, pos[0],pos[1])
                     ajoute_pts_de_collecte_specifique(get_max_id_pts_de_collecte(),get_max_id_user())
             else:
                 flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
@@ -211,6 +211,7 @@ def statistique_dechets():
 
 @app.route("/statistique-pts-collecte")
 @login_required
+@admin_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 

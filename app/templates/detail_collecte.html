@@ -16,7 +16,7 @@
             <p><strong>Quantité Max:</strong> {{ point.quantite_max }} kg</p> 
             <p><strong>Quantité Courante:</strong> {{ quantite_courant }} kg</p> 
             <div class="buttonContainer">
-                {% if current_user.is_authenticated and current_user.is_admin() %}
+                {% if current_user.is_authenticated and (current_user.is_admin() or current_user.is_my_pts_collecte(point.id_point_de_collecte )) %}
                     <button id="graphButton">Afficher le détail</button>
                 {% endif %}
             </div>

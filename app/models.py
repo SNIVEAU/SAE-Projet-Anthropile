@@ -166,15 +166,27 @@ class PointDeCollecte:
     def __repr__(self):
         return self.nom_pt_collecte
 
-def get_points_de_collecte():
+def get_points_de_collecte(id_Utilisateur=None):
+    print(id_Utilisateur)
+    if id_Utilisateur is None:
+        requete = "SELECT * FROM POINT_DE_COLLECTE"
+    else:
+        requete = f"SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte IN (SELECT id_point_de_collecte FROM APPARTENIR WHERE id_Utilisateur = {id_Utilisateur})"
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
+    cursor.execute(requete)
     points = cursor.fetchall()
     cursor.close()
     les_points = []
     for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     return les_points
+
+def get_id_point_de_collecte(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id_point_collecte FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    id_point_de_collecte = cursor.fetchone()
+    cursor.close()
+    return id_point_de_collecte
 
 def get_pts_remplis():
     cursor = mysql.connection.cursor()
@@ -414,6 +426,8 @@ def get_max_id_pts_de_collecte():
     cursor.execute("SELECT MAX(id_point_collecte) FROM POINT_DE_COLLECTE")
     id_max = cursor.fetchone()
     cursor.close()
+    if id_max[0] is None:
+        return 0
     return id_max[0]
 
 def get_max_id_user():
@@ -421,6 +435,8 @@ def get_max_id_user():
     cursor.execute("SELECT MAX(id_Utilisateur) FROM UTILISATEUR")
     id_max = cursor.fetchone()
     cursor.close()
+    if id_max[0] is None:
+        return 0
     return id_max[0]
 
 def insert_pts_de_collecte(adresse, nom_pt_collecte, 

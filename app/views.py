@@ -50,6 +50,14 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def entreprise_or_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_Entreprise() and not current_user.is_admin():
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -301,38 +309,48 @@ class PtsDeCollecteForm(FlaskForm):
 
 @app.route("/gerer-pts-collecte", methods=["GET", "POST"])
 @login_required
-@admin_required
+# @entreprise_required
+# @admin_required
+@entreprise_or_admin_required
 def gerer_pts_collecte():
+    if current_user.is_Entreprise():
+        userId = current_user.id
+    else:
+        userId = None
     form = PtsDeCollecteForm()
+    print(userId)
+    print(current_user.is_Entreprise())
     if form.validate_on_submit():
         try:
             if adresse_existante_bd(form.adresse.data):
                 print("Un point de collecte avec cette adresse existe déjà")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec cette adresse existe déjà")
-            if nom_pt_collecte_existante_bd(form.adresse.data):
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec cette adresse existe déjà")
+            if nom_pt_collecte_existante_bd(form.nom_pt_collecte.data):
                 print("Un point de collecte avec ce nom existe déjà")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec ce nom existe déjà")
             if form.latitude.data == None or form.longitude.data == None:
                 pos = get_pos_irl(form.adresse.data)
             else:
                 pos = (form.latitude.data, form.longitude.data)
             if pos is None:
                 print("Adresse non trouvée")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Adresse non trouvée")
             insert_pts_de_collecte(
                 form.adresse.data,
                 form.nom_pt_collecte.data,
                 form.quantite_max.data, 
                 pos[0], pos[1]
             )
+            idPtsCollecte = get_id_point_de_collecte(form.nom_pt_collecte.data)
+            ajoute_pts_de_collecte_specifique(idPtsCollecte, userId)
         except Exception as e:
             if 'Geocoder' in str(e):
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
             print(e)
-            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
+            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec ce nom existe déjà")
         print("Point de collecte ajouté avec succès")
-        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), success="Point de collecte ajouté avec succès")
-    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte())
+        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), success="Point de collecte ajouté avec succès")
+    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId))
 
 
 @app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])

@@ -25,7 +25,9 @@ class UtilisateurForm(FlaskForm):
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
     adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    # entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    isEntreprise = BooleanField("Je suis une entreprise")
+    entreprise = StringField("Nom de l'entreprise")
 
     next = HiddenField()
     submit = SubmitField("Ajouter")
@@ -45,6 +47,14 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if current_user.nom_role != 'Administrateur':
             return redirect(url_for('not_admin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def entreprise_or_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_Entreprise() and not current_user.is_admin():
+            return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -93,7 +103,7 @@ def register():
     form = UtilisateurForm()
     if form.validate_on_submit():
         existing_user = get_nom_utilisateur(form.nom_utilisateur.data)
-        existing_point = get_nom_pts_collecte(form.nom_utilisateur.data)
+        existing_point = get_nom_pts_collecte(form.adresse.data)
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
@@ -110,18 +120,23 @@ def register():
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
+        if form.isEntreprise.data:
+            if form.entreprise.data == "":
+                return render_template('register.html', error="Le nom de l'entreprise est requis", form=form)
+            if entreprise_existante_bd(form.entreprise.data):
+                return render_template('register.html', error="Une entreprise avec ce nom existe déjà", form=form)
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
         print(form.entreprise.data)
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "Utilisateur")
-        if not form.entreprise.data == 'Aucune':
+        if form.isEntreprise.data:
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
-            insert_travailler(idUtilisateur, form.entreprise.data)
+            insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur)
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
-                    insert_pts_de_collecte(form.adresse.data, form.nom_utilisateur.data, 50, pos[0],pos[1])
+                    insert_pts_de_collecte(form.adresse.data, form.adresse.data, 50, pos[0],pos[1])
                     ajoute_pts_de_collecte_specifique(get_max_id_pts_de_collecte(),get_max_id_user())
             else:
                 flash("Votre adresse n'est pas défini comme un point de collecte", "warning")
@@ -211,6 +226,7 @@ def statistique_dechets():
 
 @app.route("/statistique-pts-collecte")
 @login_required
+@admin_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 
@@ -218,6 +234,11 @@ def statistique_pts_collecte():
 # @login_required
 def data_graph_pts_collecte():
     return data_graph_qte_dechets_cat_pts_collecte()
+
+@app.route("/data/graph-pts-collecte/<int:id>")
+# @login_required
+def data_graph_pts_collecte_id(id):
+    return data_graph_qte_dechets_cat_pts_collecte_id(id)
 
 @app.route("/rapport")
 @login_required
@@ -232,11 +253,12 @@ def rapport():
 def download_pdf(date_collecte):
     # Récupérer les données pour cette date
     collecter_list = get_collecter_by_date(date_collecte)
-
     if not collecter_list:
         return "Aucune collecte trouvée pour cette date."
 
-    # Créer un PDF avec les données récupérées
+    dechets = get_dechets_by_date_lastweek(date_collecte)
+    
+    # Création du PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
@@ -245,26 +267,58 @@ def download_pdf(date_collecte):
 
     pdf.ln(10)
     pdf.set_font('Arial', 'B', 10)
-    pdf.cell(40, 10, 'Point de Collecte', 1)
-    pdf.cell(40, 10, 'Type de Dechet', 1)
-    pdf.cell(40, 10, 'Date Collecte', 1)
+    pdf.cell(50, 10, 'Point de Collecte', 1)
+    pdf.cell(50, 10, 'Type de Dechet', 1)
+    pdf.cell(50, 10, 'Date Collecte', 1)
     pdf.cell(40, 10, 'Quantité Collectée (kg)', 1)
     pdf.ln()
 
-    # Ajouter les données dans le PDF
+    # Ajouter les données des collectes
     pdf.set_font('Arial', '', 10)
     for collecter in collecter_list:
-        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  
-        pdf.cell(40, 10, str(collecter.id_Type), 1)  
-        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  
-        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  
+        categorie = get_categories_by_id(collecter.id_Type)
+        pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
+        pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
+        pdf.cell(50, 10, str(categorie.nom_type), 1)
+        pdf.cell(50, 10, str(collecter.dateCollecte), 1)
+        pdf.cell(40, 10, str(collecter.qtecollecte), 1)
         pdf.ln()
+
+    # Ajouter un espace avant le tableau des déchets
+    pdf.ln(10)
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(200, 10, "Déchets Insérés durant les 7 derniers jours", ln=True, align='C')
+
+    # Configuration des colonnes du tableau des déchets
+    col1_width = 60
+    col2_width = 60
+    col3_width = 60
+    left_margin = 10
+
+    # Ajouter les en-têtes du tableau des déchets insérés
+    pdf.ln(10)
+    pdf.set_font('Arial', 'B', 10)
+    pdf.cell(left_margin)
+    pdf.cell(col1_width, 10, 'Nom du Déchet', 1, 0, 'C')
+    pdf.cell(col2_width, 10, 'Quantité (kg)', 1, 0, 'C')
+    pdf.cell(col3_width, 10, 'Date d\'insertion', 1, 1, 'C')
+
+    # Ajouter les données des déchets insérés
+    pdf.set_font('Arial', '', 10)
+    for dechet in dechets:
+        pdf.cell(left_margin)
+        pdf.cell(col1_width, 10, str(dechet.nom_dechet), 1, 0, 'C')
+        pdf.cell(col2_width, 10, str(dechet.quantite), 1, 0, 'C')
+        pdf.cell(col3_width, 10, str(dechet.dateinsertion), 1, 1, 'C')
+
+    pdf.ln()
 
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
     return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
+
 
 @app.route("/details/<id>")
 #@login_required
@@ -288,38 +342,48 @@ class PtsDeCollecteForm(FlaskForm):
 
 @app.route("/gerer-pts-collecte", methods=["GET", "POST"])
 @login_required
-@admin_required
+# @entreprise_required
+# @admin_required
+@entreprise_or_admin_required
 def gerer_pts_collecte():
+    if current_user.is_Entreprise():
+        userId = current_user.id
+    else:
+        userId = None
     form = PtsDeCollecteForm()
+    print(userId)
+    print(current_user.is_Entreprise())
     if form.validate_on_submit():
         try:
             if adresse_existante_bd(form.adresse.data):
                 print("Un point de collecte avec cette adresse existe déjà")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec cette adresse existe déjà")
-            if nom_pt_collecte_existante_bd(form.adresse.data):
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec cette adresse existe déjà")
+            if nom_pt_collecte_existante_bd(form.nom_pt_collecte.data):
                 print("Un point de collecte avec ce nom existe déjà")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec ce nom existe déjà")
             if form.latitude.data == None or form.longitude.data == None:
                 pos = get_pos_irl(form.adresse.data)
             else:
                 pos = (form.latitude.data, form.longitude.data)
             if pos is None:
                 print("Adresse non trouvée")
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Adresse non trouvée")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Adresse non trouvée")
             insert_pts_de_collecte(
                 form.adresse.data,
                 form.nom_pt_collecte.data,
                 form.quantite_max.data, 
                 pos[0], pos[1]
             )
+            idPtsCollecte = get_id_point_de_collecte(form.nom_pt_collecte.data)
+            ajoute_pts_de_collecte_specifique(idPtsCollecte, userId)
         except Exception as e:
             if 'Geocoder' in str(e):
-                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
+                return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")
             print(e)
-            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), error="Un point de collecte avec ce nom existe déjà")
+            return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Un point de collecte avec ce nom existe déjà")
         print("Point de collecte ajouté avec succès")
-        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(), success="Point de collecte ajouté avec succès")
-    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte())
+        return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), success="Point de collecte ajouté avec succès")
+    return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId))
 
 
 @app.route("/modifier-pt-collecte/<int:id>", methods=["GET", "POST"])
@@ -501,27 +565,35 @@ class PlanificationTournéeForm(FlaskForm):
 @login_required
 @admin_required
 def planification_tournee():
-    pts_de_collecte = get_points_de_collecte()
+    all_pts_de_collecte = get_points_de_collecte()  # Tous les points de collecte disponibles
     categories_dechet = get_categories()
     form = PlanificationTournéeForm()
+    
+    selected_points = []
+    
     if request.method == 'POST':
         date_collecte = datetime.combine(form.date_collecte.data, form.heure_collecte.data)
         insert_tournee(date_collecte, form.duree.data)
         id_tournee = get_last_tournee()
-        for point in pts_de_collecte:
-            categorie_id = request.form.get(f'categorie_{point.id_point_de_collecte}')
+        
+        selected_point_ids = request.form.getlist('selected_points')
+        
+        for point_id in selected_point_ids:
+            categorie_id = request.form.get(f'categorie_{point_id}')
             if categorie_id:
-                qte_collecte = get_qte_by_pts_and_type(point.id_point_de_collecte, categorie_id)
-                print(f"Point de collecte: {point.nom_pt_collecte}, Catégorie: {categorie_id}")        
-                insert_collecter(point.id_point_de_collecte, id_tournee,categorie_id, qte_collecte,) 
+                qte_collecte = get_qte_by_pts_and_type(point_id, categorie_id)
+                insert_collecter(point_id, id_tournee, categorie_id, qte_collecte)
+        
         return redirect(url_for('home'))
 
     return render_template(
         'planification_tournee.html',
         form=form,
-        points_de_collecte=pts_de_collecte,
-        categories_dechet=categories_dechet
+        all_points_de_collecte=all_pts_de_collecte,  # Passer tous les points de collecte
+        categories_dechet=categories_dechet,
+        selected_points=selected_points  # Initialement vide
     )
+
   
 @app.route("/not_admin")
 def not_admin():
@@ -639,3 +711,10 @@ def inject_notifications_non_lues():
     return dict(notifications_non_lues=alertes_non_lues)
 
 
+@app.route('/utilisateurs')
+@login_required
+def tous_utilisateurs():
+    return render_template(
+        "utilisateurs.html",
+        utilisateurs = get_utilisateurs()
+    )

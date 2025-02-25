@@ -68,13 +68,14 @@ def delete_category(id_type):
     
 
 class Dechet:
-    def __init__(self, nom_dechet, id_type, quantite):
+    def __init__(self, nom_dechet, id_type, quantite,dateinsertion=None):
         self.nom_dechet = nom_dechet
         if type(id_type) == str:
             self.id_type = get_id_type_dechet(id_type)
         else:
             self.id_type = id_type
         self.quantite = quantite
+        self.dateinsertion =dateinsertion
 
     def __repr__(self):
         return self.nom_dechet
@@ -166,15 +167,27 @@ class PointDeCollecte:
     def __repr__(self):
         return self.nom_pt_collecte
 
-def get_points_de_collecte():
+def get_points_de_collecte(id_Utilisateur=None):
+    print(id_Utilisateur)
+    if id_Utilisateur is None:
+        requete = "SELECT * FROM POINT_DE_COLLECTE"
+    else:
+        requete = f"SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte IN (SELECT id_point_de_collecte FROM APPARTENIR WHERE id_Utilisateur = {id_Utilisateur})"
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM POINT_DE_COLLECTE")
+    cursor.execute(requete)
     points = cursor.fetchall()
     cursor.close()
     les_points = []
     for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
         les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
     return les_points
+
+def get_id_point_de_collecte(nom_pt_collecte):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id_point_collecte FROM POINT_DE_COLLECTE WHERE nom_pt_collecte = %s", (nom_pt_collecte,))
+    id_point_de_collecte = cursor.fetchone()
+    cursor.close()
+    return id_point_de_collecte
 
 def get_pts_remplis():
     cursor = mysql.connection.cursor()
@@ -414,6 +427,8 @@ def get_max_id_pts_de_collecte():
     cursor.execute("SELECT MAX(id_point_collecte) FROM POINT_DE_COLLECTE")
     id_max = cursor.fetchone()
     cursor.close()
+    if id_max[0] is None:
+        return 0
     return id_max[0]
 
 def get_max_id_user():
@@ -421,6 +436,8 @@ def get_max_id_user():
     cursor.execute("SELECT MAX(id_Utilisateur) FROM UTILISATEUR")
     id_max = cursor.fetchone()
     cursor.close()
+    if id_max[0] is None:
+        return 0
     return id_max[0]
 
 def insert_pts_de_collecte(adresse, nom_pt_collecte, 
@@ -544,9 +561,10 @@ WHERE
     return les_points
 
 class Entreprise:
-    def __init__(self, id_entreprise, nom_entreprise):
+    def __init__(self, id_entreprise, nom_entreprise, id_Utilisateur):
         self.id_entreprise = id_entreprise
         self.nom_entreprise = nom_entreprise
+        self.id_Utilisateur = id_Utilisateur
     def __str__(self):
         return self.nom_entreprise
 
@@ -555,7 +573,7 @@ def get_entreprise_register():
     cursor.execute("SELECT * FROM ENTREPRISE")
     entreprises = cursor.fetchall()
     cursor.close()
-    return [(e[0],e[1]) for e in entreprises]+[('Aucune', 'Aucune')] 
+    return [(e[0],e[1], e[2]) for e in entreprises]+[('Aucune', 'Aucune', ('Aucune'))] 
 
 
 def get_entreprise(): #choix de l'entreprise
@@ -571,8 +589,8 @@ def get_entreprise_sous_forme_classe():
     entreprises = cursor.fetchall()
     cursor.close()
     ents =[]
-    for id_entreprise, nom_entreprise in entreprises:
-        ents.append(Entreprise(id_entreprise, nom_entreprise))
+    for id_entreprise, nom_entreprise, idUtilisateur in entreprises:
+        ents.append(Entreprise(id_entreprise, nom_entreprise, idUtilisateur))
     return ents
 
 def get_entreprise_par_id(id):
@@ -586,6 +604,8 @@ def get_id_max_entreprise():
     cursor.execute("SELECT max(id_entreprise) FROM ENTREPRISE")
     id_max = cursor.fetchone()[0]
     cursor.close()
+    if id_max is None:
+        return 0
     return id_max
         
 def update_entreprise(id, nom):
@@ -603,7 +623,7 @@ def update_entreprise(id, nom):
 
 def delete_company(id):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM ENTREPRISE NATURAL JOIN TRAVAILLER NATURAL JOIN UTILISATEUR WHERE id_entreprise=%s", (id,))
+    cursor.execute("SELECT * FROM ENTREPRISE NATURAL JOIN UTILISATEUR WHERE id_entreprise=%s", (id,))
     utilisateur_avec_entreprise = cursor.fetchone()
 
     if utilisateur_avec_entreprise:
@@ -615,19 +635,28 @@ def delete_company(id):
         cursor.close()
         return True
     
-def insert_entreprise(id, nom):
+def insert_entreprise(id, nom, id_utilisateur):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM ENTREPRISE WHERE id_entreprise=%s OR nom_entreprise=%s", (id, nom))
-    ent = cursor.fetchone()
+    # cursor.execute("SELECT * FROM ENTREPRISE WHERE id_entreprise=%s OR nom_entreprise=%s", (id, nom))
+    # ent = cursor.fetchone()
 
-    if ent:
-        cursor.close()
-        return False
-    else:
-        cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise) VALUES (%s, %s)", (id, nom))
-        mysql.connection.commit()
-        cursor.close()
-        return True
+    # if ent:
+    #     cursor.close()
+    #     return False
+    # else:
+    # print(id, nom, id_utilisateur)
+    # print(type(id), type(nom), type(id_utilisateur))
+    cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise, id_Utilisateur) VALUES (%s, %s, %s)", (id, nom, id_utilisateur))
+    mysql.connection.commit()
+    cursor.close()
+    return True
+
+def entreprise_existante_bd(nom_entreprise):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM ENTREPRISE WHERE nom_entreprise = %s", (nom_entreprise,))
+    entreprise = cursor.fetchone()
+    cursor.close()
+    return Entreprise(entreprise[0], entreprise[1], entreprise[2]) if entreprise else None
     
     
 def get_all_user_info(user_name):
@@ -670,11 +699,11 @@ def insert_user(nom_utilisateur,mail,numtel,motdepasse,nom_role):
     mysql.connection.commit()
     cursor.close()
      
-def insert_travailler(id_Utilisateur,id_entreprise):
-    cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO TRAVAILLER(id_utilisateur,id_Entreprise) VALUES (%s, %s)", (id_Utilisateur,id_entreprise))
-    mysql.connection.commit()
-    cursor.close()
+# def insert_travailler(id_Utilisateur,id_entreprise):
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("INSERT INTO TRAVAILLER(id_utilisateur,id_Entreprise) VALUES (%s, %s)", (id_Utilisateur,id_entreprise))
+#     mysql.connection.commit()
+#     cursor.close()
 
 def get_motdepasse(nom_utilisateur):
     cursor = mysql.connection.cursor()
@@ -694,6 +723,29 @@ def data_graph_qte_dechets_cat_pts_collecte():
         GROUP BY nom_pt_collecte, nom_Type 
         ORDER BY nom_pt_collecte;
     """)
+    results = cursor.fetchall()
+    cursor.close()
+
+    data = {}
+    for nom_pt_collecte, nom_type, quantite in results:
+        if nom_pt_collecte not in data:
+            data[nom_pt_collecte] = []
+        data[nom_pt_collecte].append({'categorie': nom_type, 'quantite': quantite})
+
+    return jsonify(data)
+
+def data_graph_qte_dechets_cat_pts_collecte_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT nom_pt_collecte, nom_Type, SUM(qte) as quantite
+        FROM POINT_DE_COLLECTE
+        NATURAL JOIN CATEGORIEDECHET
+        NATURAL JOIN DECHET
+        NATURAL JOIN DEPOSER
+        WHERE id_point_collecte = %s
+        GROUP BY nom_pt_collecte, nom_Type
+        ORDER BY nom_pt_collecte;
+    """, (id,))
     results = cursor.fetchall()
     cursor.close()
 
@@ -930,6 +982,7 @@ def get_all_alertes():
         alertes_list.append(Alerte(alerte[0], alerte[1], alerte[2], alerte[3], alerte[4]))
     return alertes_list
 
+
 def delete_all_read_alertes():
     cursor = mysql.connection.cursor()
     query = "DELETE FROM ALERTE WHERE lu = 1"
@@ -937,3 +990,63 @@ def delete_all_read_alertes():
     mysql.connection.commit()
     cursor.close()
     print("Toutes les alertes lues ont été supprimées.")
+
+def get_categories_by_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM CATEGORIEDECHET WHERE Id_Type = %s", (id,))
+    categorie = cursor.fetchone()
+    cursor.close()
+    if categorie:
+        return CategorieDechet(categorie[0], categorie[1], categorie[2])
+    return None
+
+def get_pts_de_collecte_by_id(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte = %s", (id,))
+    point = cursor.fetchone()
+    cursor.close()
+    if point:
+        return PointDeCollecte(point[0], point[1], point[2], point[3], point[4], point[5])
+    return None
+
+def get_dechets_by_date(date):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s", (date,))
+    dates = cursor.fetchall()
+    if dates:
+        res=[]
+        for date in dates:
+            print(date)
+            res.append(Dechet(date[1],date[2],date[3]))
+        return res
+    return None
+
+
+def get_dechets_by_date_lastweek(date):
+    cursor = mysql.connection.cursor()
+    query = """SELECT * 
+               FROM DECHET 
+               WHERE dateinsertion BETWEEN DATE_SUB(%s, INTERVAL 7 DAY) AND %s;"""
+    cursor.execute(query, (date, date))
+    result = cursor.fetchall()
+    if result:
+        res=[]
+        for date in result:
+            print(date)
+            res.append(Dechet(date[1],date[2],date[3],date[4]))
+        return res
+    return None
+
+
+
+def get_utilisateurs():
+    cursor = mysql.connection.cursor()
+    query = "SELECT nom_Utilisateur, mail, numtel, nom_role FROM UTILISATEUR"
+    cursor.execute(query)
+    utilisateurs = cursor.fetchall()
+    cursor.close()
+
+    utilisateurs_list = []
+    for nom_Utilisateur, mail, numtel, nom_role in utilisateurs:
+        utilisateurs_list.append({'nom_Utilisateur': nom_Utilisateur, 'mail' : mail, 'numtel' : numtel, 'nom_role' : nom_role})
+    return utilisateurs_list

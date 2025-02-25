@@ -2,11 +2,12 @@
 {% block title %}Détails du Point de Collecte{% endblock %}
 {%block styles%}
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='details.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='details.css') }}">
+<script src="{{ url_for('static', filename='js/graphCat_PtsCollecte.js') }}"></script>
 {%endblock%}
 {% block content %}
-<div class = details>
+<div class="details">
     {% if point %}
         <h1>Détails du Point de Collecte</h1>
         <div>
@@ -14,7 +15,11 @@
             <p><strong>Adresse:</strong> {{ point.adresse }}</p> 
             <p><strong>Quantité Max:</strong> {{ point.quantite_max }} kg</p> 
             <p><strong>Quantité Courante:</strong> {{ quantite_courant }} kg</p> 
-
+            <div class="buttonContainer">
+                {% if current_user.is_authenticated and (current_user.is_admin() or current_user.is_my_pts_collecte(point.id_point_de_collecte )) %}
+                    <button id="graphButton">Afficher le détail</button>
+                {% endif %}
+            </div>
         </div>
     {% else %}
         <p>Aucun point de collecte trouvé.</p>
@@ -45,5 +50,13 @@
     </table>
     {% endif %}
 </div>
+
+<div class="details" id="graphContainer" style="display: none;">
+    <div class="graph">
+        <h2>Quantité de Déchets par Catégorie pour le Point de Collecte</h2>
+        <canvas id="ptCollecteChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

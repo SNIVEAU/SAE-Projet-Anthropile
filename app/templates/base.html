@@ -32,21 +32,26 @@
                 </button>
                 <li><a href="{{ url_for('home') }}">Accueil</a></li>
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
                 <li><a href="{{ url_for('insert_dechets') }}">Inserer un déchet</a></li> 
                 {% endif %}
                 <li><a href="{{ url_for('collecte_dechets') }}">Carte</a></li>
-                {% if current_user.is_authenticated and current_user.is_admin() %}
-                <li>
-                    <a href="#" class="dropdown-toggle">Gestion ▾</a>                    
-                    <ul class="dropdown">
-                        <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
-                        <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li>
-                        <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
-                        <li><a href="{{ url_for('planification_tournee') }}">Tournées</a></li>
-                    </ul>
-                </li>
-                <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_Entreprise() %}
+                    <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
+                    {% elif current_user.is_admin() %}
+                    <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
+                    <li>
+                        <a href="#" class="dropdown-toggle">Gestion ▾</a>                    
+                        <ul class="dropdown">
+                            <li><a href="{{ url_for('toutes_entreprises') }}">Entreprises</a></li> 
+                            <li><a href="{{ url_for('toutes_categories') }}">Catégories de déchets</a></li>
+                            <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
+                            <li><a href="{{ url_for('planification_tournee') }}">Tournées</a></li>
+                            <li><a href="{{ url_for('tous_utilisateurs') }}">Utilisateurs</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('rapport') }}">Rapport</a></li> 
+                    {% endif %}
                 {% endif %}
                 <li style="padding: 0;" class="connecte-deconnecte">
                     <div style="padding: 0;" class="connecte-deconnecte">

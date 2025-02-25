@@ -21,9 +21,9 @@ INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet organique', 1)
 INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet recyclable', 3);
 INSERT INTO CATEGORIEDECHET (nom_Type, priorite) VALUES ('Déchet non recyclable', 4);
 
-INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise A');
-INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise B');
-INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise C');
+-- INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise A');
+-- INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise B');
+-- INSERT INTO ENTREPRISE (nom_Entreprise) VALUES ('Entreprise C');
 
 INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 1', 'utilisateur1@example.com', 1234567890, 'password1','Administrateur');
 INSERT INTO UTILISATEUR (nom_Utilisateur, mail, numtel, motdepasse, nom_role) VALUES ('Utilisateur 2', 'utilisateur2@example.com', 1234567891, 'password2','Visiteur');

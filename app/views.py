@@ -25,7 +25,9 @@ class UtilisateurForm(FlaskForm):
     numtel = StringField("Numéro de téléphone", validators=[DataRequired(), Length(min = 10,max = 10), Regexp(r'^\d+$', message="Le numéro de téléphone doit contenir uniquement des chiffres.")])
     adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
-    entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    # entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
+    isEntreprise = BooleanField("Je suis une entreprise")
+    entreprise = StringField("Nom de l'entreprise")
 
     next = HiddenField()
     submit = SubmitField("Ajouter")
@@ -110,14 +112,19 @@ def register():
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
+        if form.isEntreprise.data:
+            if form.entreprise.data == "":
+                return render_template('register.html', error="Le nom de l'entreprise est requis", form=form)
+            if entreprise_existante_bd(form.entreprise.data):
+                return render_template('register.html', error="Une entreprise avec ce nom existe déjà", form=form)
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
         print(form.entreprise.data)
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "Utilisateur")
-        if not form.entreprise.data == 'Aucune':
+        if form.isEntreprise.data:
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
-            insert_travailler(idUtilisateur, form.entreprise.data)
+            insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur)
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):

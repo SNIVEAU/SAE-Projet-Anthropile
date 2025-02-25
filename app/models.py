@@ -976,9 +976,19 @@ def get_dechets_by_date(date):
 
 def get_dechets_by_date_lastweek(date):
     cursor = mysql.connection.cursor()
-    cursor.execute("""SELECT * 
-FROM DECHET 
-WHERE dateinsertion BETWEEN DATE_SUB('%s', INTERVAL 7 DAY) AND '%s';""", (date,date))
+    query = """SELECT * 
+               FROM DECHET 
+               WHERE dateinsertion BETWEEN DATE_SUB(%s, INTERVAL 7 DAY) AND %s;"""
+    cursor.execute(query, (date, date))
+    result = cursor.fetchall()
+    if result:
+        res=[]
+        for date in result:
+            print(date)
+            res.append(Dechet(date[1],date[2],date[3]))
+        return res
+    return None
+
 
 
 def get_utilisateurs():

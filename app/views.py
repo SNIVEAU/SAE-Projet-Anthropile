@@ -279,12 +279,11 @@ def download_pdf(date_collecte):
     # Ajouter un espace avant le tableau des déchets
     pdf.ln(10)
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(200, 10, "Déchets Insérés", ln=True, align='C')
+    pdf.cell(200, 10, "Déchets Insérés durant les 7 derniers jours", ln=True, align='C')
 
     # Configuration des colonnes du tableau des déchets
     col1_width = 90  # Réduit pour laisser un espace blanc à droite
     col2_width = 90
-    table_width = col1_width + col2_width  # Largeur totale de 180 au lieu de 200
     left_margin = 10  # Ajout d'une marge pour équilibrer le tableau
 
     # Ajouter les en-têtes du tableau des déchets insérés
@@ -301,16 +300,8 @@ def download_pdf(date_collecte):
         pdf.cell(col1_width, 10, str(dechet.nom_dechet), 1, 0, 'C')
         pdf.cell(col2_width, 10, str(dechet.quantite), 1, 1, 'C')
 
-    # Ajouter une bordure inférieure pour bien fermer le tableau
-    pdf.cell(left_margin)  # Alignement
-    pdf.cell(table_width, 0, '', 1, 1)
 
-    # Sauvegarde du PDF en mémoire
-        pdf.cell(40, 10, str(collecter.id_point_collecte), 1)  
-        pdf.cell(40, 10, str(collecter.id_Type), 1)  
-        pdf.cell(40, 10, str(collecter.dateCollecte), 1)  
-        pdf.cell(40, 10, str(collecter.qtecollecte), 1)  
-        pdf.ln()
+    pdf.ln()
 
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1'))

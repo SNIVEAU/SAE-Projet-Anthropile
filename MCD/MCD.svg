@@ -5,106 +5,106 @@
 
 <!-- Association TRAVAILLER -->
 <g>
-	<line x1="387" y1="221" x2="387" y2="77" stroke="#e08214" stroke-width="2"/>
-	<line x1="237" y1="77" x2="387" y2="77" stroke="#e08214" stroke-width="2"/>
+	<line x1="387" y1="221" x2="387" y2="77" stroke="#4393c3" stroke-width="2"/>
+	<line x1="237" y1="77" x2="387" y2="77" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M418 52 a14 14 90 0 1 14 14 V77 h-90 V66 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M432 77 v11 a14 14 90 0 1 -14 14 H356 a14 14 90 0 1 -14 -14 V77 H90" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="342" y="52" width="90" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="342" y1="77" x2="432" y2="77" stroke="#e08214" stroke-width="1"/>
+		<path d="M418 52 a14 14 90 0 1 14 14 V77 h-90 V66 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M432 77 v11 a14 14 90 0 1 -14 14 H356 a14 14 90 0 1 -14 -14 V77 H90" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="342" y="52" width="90" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="342" y1="77" x2="432" y2="77" stroke="#4393c3" stroke-width="1"/>
 		<text x="349" y="69.75" fill="#000000" font-family="Verdana" font-size="12">TRAVAILLER</text>
 	</g>
-	<text x="392" y="145" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="296" y="94" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<text x="392" y="145" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+	<text x="296" y="94" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
 </g>
 
 <!-- Association DEPOSER -->
 <g>
-	<line x1="75" y1="221" x2="237" y2="221" stroke="#e08214" stroke-width="2"/>
-	<line x1="387" y1="221" x2="237" y2="221" stroke="#e08214" stroke-width="2"/>
-	<line x1="237" y1="382" x2="237" y2="221" stroke="#e08214" stroke-width="2"/>
+	<line x1="75" y1="221" x2="237" y2="221" stroke="#4393c3" stroke-width="2"/>
+	<line x1="387" y1="221" x2="237" y2="221" stroke="#4393c3" stroke-width="2"/>
+	<line x1="237" y1="382" x2="237" y2="221" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M260 196 a14 14 90 0 1 14 14 V221 h-74 V210 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M274 221 v11 a14 14 90 0 1 -14 14 H214 a14 14 90 0 1 -14 -14 V221 H74" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="200" y="196" width="74" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="200" y1="221" x2="274" y2="221" stroke="#e08214" stroke-width="1"/>
+		<path d="M260 196 a14 14 90 0 1 14 14 V221 h-74 V210 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M274 221 v11 a14 14 90 0 1 -14 14 H214 a14 14 90 0 1 -14 -14 V221 H74" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="200" y="196" width="74" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="200" y1="221" x2="274" y2="221" stroke="#4393c3" stroke-width="1"/>
 		<text x="208" y="213.75" fill="#000000" font-family="Verdana" font-size="12">DEPOSER</text>
 	</g>
-	<text x="124" y="238" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="306" y="238" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="242" y="306" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<text x="124" y="238" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="306" y="238" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="242" y="306" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 </g>
 
 <!-- Association DONNER -->
 <g>
-	<line x1="387" y1="221" x2="507" y2="221" stroke="#e08214" stroke-width="2"/>
-	<line x1="507" y1="77" x2="507" y2="221" stroke="#e08214" stroke-width="2"/>
+	<line x1="387" y1="221" x2="507" y2="221" stroke="#4393c3" stroke-width="2"/>
+	<line x1="507" y1="77" x2="507" y2="221" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M527 196 a14 14 90 0 1 14 14 V221 h-68 V210 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M541 221 v11 a14 14 90 0 1 -14 14 H487 a14 14 90 0 1 -14 -14 V221 H68" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="473" y="196" width="68" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="473" y1="221" x2="541" y2="221" stroke="#e08214" stroke-width="1"/>
+		<path d="M527 196 a14 14 90 0 1 14 14 V221 h-68 V210 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M541 221 v11 a14 14 90 0 1 -14 14 H487 a14 14 90 0 1 -14 -14 V221 H68" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="473" y="196" width="68" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="473" y1="221" x2="541" y2="221" stroke="#4393c3" stroke-width="1"/>
 		<text x="480" y="213.75" fill="#000000" font-family="Verdana" font-size="12">DONNER</text>
 	</g>
-	<text x="446" y="238" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="512" y="145" fill="#542788" font-family="Verdana" font-size="12">1,N</text>
+	<text x="446" y="238" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="512" y="145" fill="#b2182b" font-family="Verdana" font-size="12">1,N</text>
 </g>
 
 <!-- Association CORRESPONDRE -->
 <g>
-	<line x1="75" y1="221" x2="75" y2="382" stroke="#e08214" stroke-width="2"/>
-	<line x1="75" y1="509" x2="75" y2="382" stroke="#e08214" stroke-width="2"/>
+	<line x1="75" y1="221" x2="75" y2="382" stroke="#4393c3" stroke-width="2"/>
+	<line x1="75" y1="509" x2="75" y2="382" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M119 357 a14 14 90 0 1 14 14 V382 h-116 V371 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M133 382 v11 a14 14 90 0 1 -14 14 H31 a14 14 90 0 1 -14 -14 V382 H116" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="17" y="357" width="116" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="17" y1="382" x2="133" y2="382" stroke="#e08214" stroke-width="1"/>
+		<path d="M119 357 a14 14 90 0 1 14 14 V382 h-116 V371 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M133 382 v11 a14 14 90 0 1 -14 14 H31 a14 14 90 0 1 -14 -14 V382 H116" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="17" y="357" width="116" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="17" y1="382" x2="133" y2="382" stroke="#4393c3" stroke-width="1"/>
 		<text x="24" y="374.75" fill="#000000" font-family="Verdana" font-size="12">CORRESPONDRE</text>
 	</g>
-	<text x="80" y="289" fill="#542788" font-family="Verdana" font-size="12">1,N</text>
-	<text x="80" y="467" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<text x="80" y="289" fill="#b2182b" font-family="Verdana" font-size="12">1,N</text>
+	<text x="80" y="467" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 </g>
 
 <!-- Association APPARTENIR -->
 <g>
-	<line x1="387" y1="221" x2="387" y2="382" stroke="#e08214" stroke-width="2"/>
-	<line x1="237" y1="382" x2="387" y2="382" stroke="#e08214" stroke-width="2"/>
+	<line x1="387" y1="221" x2="387" y2="382" stroke="#4393c3" stroke-width="2"/>
+	<line x1="237" y1="382" x2="387" y2="382" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M419 357 a14 14 90 0 1 14 14 V382 h-92 V371 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M433 382 v11 a14 14 90 0 1 -14 14 H355 a14 14 90 0 1 -14 -14 V382 H92" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="341" y="357" width="92" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="341" y1="382" x2="433" y2="382" stroke="#e08214" stroke-width="1"/>
+		<path d="M419 357 a14 14 90 0 1 14 14 V382 h-92 V371 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M433 382 v11 a14 14 90 0 1 -14 14 H355 a14 14 90 0 1 -14 -14 V382 H92" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="341" y="357" width="92" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="341" y1="382" x2="433" y2="382" stroke="#4393c3" stroke-width="1"/>
 		<text x="348" y="374.75" fill="#000000" font-family="Verdana" font-size="12">APPARTENIR</text>
 	</g>
-	<text x="392" y="306" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="314" y="399" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<text x="392" y="306" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="314" y="399" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 </g>
 
 <!-- Association COLLECTER -->
 <g>
-	<line x1="237" y1="382" x2="237" y2="509" stroke="#e08214" stroke-width="2"/>
-	<line x1="387" y1="509" x2="237" y2="509" stroke="#e08214" stroke-width="2"/>
-	<line x1="75" y1="509" x2="237" y2="509" stroke="#e08214" stroke-width="2"/>
+	<line x1="237" y1="382" x2="237" y2="509" stroke="#4393c3" stroke-width="2"/>
+	<line x1="387" y1="509" x2="237" y2="509" stroke="#4393c3" stroke-width="2"/>
+	<line x1="75" y1="509" x2="237" y2="509" stroke="#4393c3" stroke-width="2"/>
 	<g>
-		<path d="M266 484 a14 14 90 0 1 14 14 V509 h-86 V498 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
-		<path d="M280 509 v11 a14 14 90 0 1 -14 14 H208 a14 14 90 0 1 -14 -14 V509 H86" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
-		<rect x="194" y="484" width="86" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
-		<line x1="194" y1="509" x2="280" y2="509" stroke="#e08214" stroke-width="1"/>
+		<path d="M266 484 a14 14 90 0 1 14 14 V509 h-86 V498 a14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+		<path d="M280 509 v11 a14 14 90 0 1 -14 14 H208 a14 14 90 0 1 -14 -14 V509 H86" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+		<rect x="194" y="484" width="86" height="50" fill="none" rx="14" stroke="#4393c3" stroke-width="2"/>
+		<line x1="194" y1="509" x2="280" y2="509" stroke="#4393c3" stroke-width="1"/>
 		<text x="201" y="501.75" fill="#000000" font-family="Verdana" font-size="12">COLLECTER</text>
 		<text x="201" y="526.8" fill="#000000" font-family="Verdana" font-size="12">qtecollecte</text>
 	</g>
-	<text x="242" y="467" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="314" y="526" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
-	<text x="146" y="526" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<text x="242" y="467" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="314" y="526" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+	<text x="146" y="526" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 </g>
 
 <!-- Entity ENTREPRISE -->
 <g>
 	<g>
-		<rect x="183" y="43" width="108" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="183" y="68" width="108" height="43" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="183" y="43" width="108" height="68" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="183" y1="68" x2="291" y2="68" stroke="#8073ac" stroke-width="1"/>
+		<rect x="183" y="43" width="108" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="183" y="68" width="108" height="43" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="183" y="43" width="108" height="68" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="183" y1="68" x2="291" y2="68" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="199" y="60.75" fill="#000000" font-family="Verdana" font-size="12">ENTREPRISE</text>
 	<text x="188" y="85.8" fill="#000000" font-family="Verdana" font-size="12">id_Entreprise</text>
@@ -115,10 +115,10 @@
 <!-- Entity AVIS -->
 <g>
 	<g>
-		<rect x="472" y="26" width="70" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="472" y="51" width="70" height="77" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="472" y="26" width="70" height="102" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="472" y1="51" x2="542" y2="51" stroke="#8073ac" stroke-width="1"/>
+		<rect x="472" y="26" width="70" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="472" y="51" width="70" height="77" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="472" y="26" width="70" height="102" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="472" y1="51" x2="542" y2="51" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="492" y="43.75" fill="#000000" font-family="Verdana" font-size="12">AVIS</text>
 	<text x="477" y="68.8" fill="#000000" font-family="Verdana" font-size="12">id_Avis</text>
@@ -131,10 +131,10 @@
 <!-- Entity HISTORIQUE_DECHET -->
 <g>
 	<g>
-		<rect x="670" y="9" width="146" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="670" y="34" width="146" height="111" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="670" y="9" width="146" height="136" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="670" y1="34" x2="816" y2="34" stroke="#8073ac" stroke-width="1"/>
+		<rect x="670" y="9" width="146" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="670" y="34" width="146" height="111" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="670" y="9" width="146" height="136" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="670" y1="34" x2="816" y2="34" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="675" y="26.75" fill="#000000" font-family="Verdana" font-size="12">HISTORIQUE_DECHET</text>
 	<text x="675" y="51.8" fill="#000000" font-family="Verdana" font-size="12">id_dechet</text>
@@ -149,10 +149,10 @@
 <!-- Entity DECHET -->
 <g>
 	<g>
-		<rect x="31" y="170" width="88" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="31" y="195" width="88" height="77" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="31" y="170" width="88" height="102" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="31" y1="195" x2="119" y2="195" stroke="#8073ac" stroke-width="1"/>
+		<rect x="31" y="170" width="88" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="31" y="195" width="88" height="77" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="31" y="170" width="88" height="102" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="31" y1="195" x2="119" y2="195" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="50" y="187.75" fill="#000000" font-family="Verdana" font-size="12">DECHET</text>
 	<text x="36" y="212.8" fill="#000000" font-family="Verdana" font-size="12">id_Dechet</text>
@@ -165,10 +165,10 @@
 <!-- Entity UTILISATEUR -->
 <g>
 	<g>
-		<rect x="333" y="153" width="108" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="333" y="178" width="108" height="111" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="333" y="153" width="108" height="136" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="333" y1="178" x2="441" y2="178" stroke="#8073ac" stroke-width="1"/>
+		<rect x="333" y="153" width="108" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="333" y="178" width="108" height="111" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="333" y="153" width="108" height="136" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="333" y1="178" x2="441" y2="178" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="346" y="170.75" fill="#000000" font-family="Verdana" font-size="12">UTILISATEUR</text>
 	<text x="338" y="195.8" fill="#000000" font-family="Verdana" font-size="12">id_Utilisateur</text>
@@ -183,10 +183,10 @@
 <!-- Entity POINT_DE_COLLECTE -->
 <g>
 	<g>
-		<rect x="165" y="314" width="144" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="165" y="339" width="144" height="111" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="165" y="314" width="144" height="136" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="165" y1="339" x2="309" y2="339" stroke="#8073ac" stroke-width="1"/>
+		<rect x="165" y="314" width="144" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="165" y="339" width="144" height="111" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="165" y="314" width="144" height="136" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="165" y1="339" x2="309" y2="339" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="170" y="331.75" fill="#000000" font-family="Verdana" font-size="12">POINT_DE_COLLECTE</text>
 	<text x="170" y="356.8" fill="#000000" font-family="Verdana" font-size="12">id_point_collecte</text>
@@ -201,10 +201,10 @@
 <!-- Entity CATEGORIEDECHET -->
 <g>
 	<g>
-		<rect x="9" y="475" width="132" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="9" y="500" width="132" height="43" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="9" y="475" width="132" height="68" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="9" y1="500" x2="141" y2="500" stroke="#8073ac" stroke-width="1"/>
+		<rect x="9" y="475" width="132" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="9" y="500" width="132" height="43" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="9" y="475" width="132" height="68" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="9" y1="500" x2="141" y2="500" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="14" y="492.75" fill="#000000" font-family="Verdana" font-size="12">CATEGORIEDECHET</text>
 	<text x="14" y="517.8" fill="#000000" font-family="Verdana" font-size="12">id_Type</text>
@@ -215,10 +215,10 @@
 <!-- Entity TOURNEE -->
 <g>
 	<g>
-		<rect x="341" y="467" width="92" height="25" fill="#b2abd2" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="341" y="492" width="92" height="59" fill="#d8daeb" stroke="none" stroke-width="0" opacity="1"/>
-		<rect x="341" y="467" width="92" height="84" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
-		<line x1="341" y1="492" x2="433" y2="492" stroke="#8073ac" stroke-width="1"/>
+		<rect x="341" y="467" width="92" height="25" fill="#f4a582" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="341" y="492" width="92" height="59" fill="#fddbc7" stroke="none" stroke-width="0" opacity="1"/>
+		<rect x="341" y="467" width="92" height="84" fill="none" stroke="#d6604d" stroke-width="2" opacity="1"/>
+		<line x1="341" y1="492" x2="433" y2="492" stroke="#d6604d" stroke-width="1"/>
 	</g>
 	<text x="358" y="484.75" fill="#000000" font-family="Verdana" font-size="12">TOURNEE</text>
 	<text x="346" y="509.8" fill="#000000" font-family="Verdana" font-size="12">id_Tournee</text>

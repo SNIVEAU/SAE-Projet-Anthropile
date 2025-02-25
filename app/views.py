@@ -99,9 +99,9 @@ def register():
         if existing_user:
             # Si l'utilisateur existe déjà, retourner un message d'erreur
             return render_template('register.html', error="Le nom d'utilisateur est déjà pris", form=form)
-        if existing_point:
-            # Si le point de collecte existe déjà, retourner un message d'erreur
-            return render_template('register.html', error="Un point de collecte existe déjà à cet endroit", form=form)
+        # if existing_point:
+        #     # Si le point de collecte existe déjà, retourner un message d'erreur
+        #     return render_template('register.html', error="Un point de collecte existe déjà à cet endroit", form=form)
         try:
             pos = get_pos_irl(form.adresse.data)
             print(pos)
@@ -649,4 +649,12 @@ def tous_utilisateurs():
     return render_template(
         "utilisateurs.html",
         utilisateurs = get_utilisateurs()
+    )
+
+
+@app.route('/utilisateurs/<int:id_utilisateur>')
+def details_utilisateur(id_utilisateur):
+    return render_template(
+        'details_utilisateur.html',
+        utilisateur = get_details_utilisateur(id_utilisateur)
     )

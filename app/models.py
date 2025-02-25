@@ -946,12 +946,32 @@ def get_all_alertes():
 
 def get_utilisateurs():
     cursor = mysql.connection.cursor()
-    query = "SELECT nom_Utilisateur, mail, numtel, nom_role FROM UTILISATEUR"
+    query = "SELECT id_Utilisateur, nom_Utilisateur, nom_Entreprise FROM UTILISATEUR natural left join ENTREPRISE"
     cursor.execute(query)
     utilisateurs = cursor.fetchall()
     cursor.close()
 
     utilisateurs_list = []
-    for nom_Utilisateur, mail, numtel, nom_role in utilisateurs:
-        utilisateurs_list.append({'nom_Utilisateur': nom_Utilisateur, 'mail' : mail, 'numtel' : numtel, 'nom_role' : nom_role})
+    for id_utilisateur, nom_utilisateur, nom_entreprise in utilisateurs:
+        utilisateurs_list.append({'id_utilisateur':id_utilisateur, 'nom_utilisateur': nom_utilisateur, 'nom_entreprise' : nom_entreprise})
     return utilisateurs_list
+
+def get_details_utilisateur(id):
+    cursor = mysql.connection.cursor()
+    query = 'SELECT nom_Utilisateur, mail, numtel, nom_role, nom_Entreprise from UTILISATEUR natural left join ENTREPRISE where id_Utilisateur=%s'
+    cursor.execute(query, (id,))
+    utilisateur = cursor.fetchone()
+
+    return {'nom_utilisateur':utilisateur[0], 'mail':utilisateur[1], 'numtel':utilisateur[2], 'nom_role':utilisateur[3], 'nom_entreprise': utilisateur[4]}
+
+
+
+def get_points_de_collecte():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id_point_collecte, adresse, nom_pt_collecte, pos_x,pos_y, qte_max FROM POINT_DE_COLLECTE NATURAL JOIN UTILISATEUR NATURAL JOIN DEPOSER")
+    points = cursor.fetchall()
+    cursor.close()
+    les_points = []
+    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
+        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
+    return les_points

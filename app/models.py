@@ -68,13 +68,14 @@ def delete_category(id_type):
     
 
 class Dechet:
-    def __init__(self, nom_dechet, id_type, quantite):
+    def __init__(self, nom_dechet, id_type, quantite,dateinsertion=None):
         self.nom_dechet = nom_dechet
         if type(id_type) == str:
             self.id_type = get_id_type_dechet(id_type)
         else:
             self.id_type = id_type
         self.quantite = quantite
+        self.dateinsertion =dateinsertion
 
     def __repr__(self):
         return self.nom_dechet
@@ -976,9 +977,19 @@ def get_dechets_by_date(date):
 
 def get_dechets_by_date_lastweek(date):
     cursor = mysql.connection.cursor()
-    cursor.execute("""SELECT * 
-FROM DECHET 
-WHERE dateinsertion BETWEEN DATE_SUB('%s', INTERVAL 7 DAY) AND '%s';""", (date,date))
+    query = """SELECT * 
+               FROM DECHET 
+               WHERE dateinsertion BETWEEN DATE_SUB(%s, INTERVAL 7 DAY) AND %s;"""
+    cursor.execute(query, (date, date))
+    result = cursor.fetchall()
+    if result:
+        res=[]
+        for date in result:
+            print(date)
+            res.append(Dechet(date[1],date[2],date[3],date[4]))
+        return res
+    return None
+
 
 
 def get_utilisateurs():

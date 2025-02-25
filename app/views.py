@@ -455,6 +455,20 @@ class EditProfileForm(FlaskForm):
 def profil():
     return render_template("profil.html", user=current_user)
 
+@app.route('/utilisateur/<string:user_name>')
+def admin_utilisateur(user_name):
+    # Utilise la fonction pour récupérer les infos de l'utilisateur
+    utilisateur = get_all_user_info(user_name)
+    
+   
+    
+    # Envoie les données de l'utilisateur au template pour l'affichage
+    return render_template('utilisateurs_details.html', utilisateur=utilisateur)
+
+
+
+
+
 @app.route("/edit_profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():

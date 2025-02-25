@@ -943,3 +943,4 @@ def get_utilisateurs():
     for nom_Utilisateur, mail, numtel, nom_role in utilisateurs:
         utilisateurs_list.append({'nom_Utilisateur': nom_Utilisateur, 'mail' : mail, 'numtel' : numtel, 'nom_role' : nom_role})
     return utilisateurs_list
+

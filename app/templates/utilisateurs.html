@@ -25,7 +25,8 @@
             <tbody>
                 {% for users in utilisateurs %}
                 <tr>
-                    <td>{{ users.nom_Utilisateur }}</td>
+                    <!-- Lien pour afficher les informations de l'utilisateur -->
+                    <td><a href="{{ url_for('admin_utilisateur', user_name=users.nom_Utilisateur) }}">{{ users.nom_Utilisateur }}</a></td>
                     <td>{{ users.mail }}</td>
                     <td>{{ users.numtel }}</td>
                     <td>{{ users.nom_role }}</td>

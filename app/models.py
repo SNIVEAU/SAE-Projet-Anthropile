@@ -1060,13 +1060,3 @@ def get_details_utilisateur(id):
     return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5]}
 
 
-
-def get_points_de_collecte():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT id_point_collecte, adresse, nom_pt_collecte, pos_x,pos_y, qte_max FROM POINT_DE_COLLECTE NATURAL JOIN UTILISATEUR NATURAL JOIN DEPOSER")
-    points = cursor.fetchall()
-    cursor.close()
-    les_points = []
-    for id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max in points:
-        les_points.append(PointDeCollecte(id_point_de_collecte, adresse, nom_pt_collecte, latitude, longitude, quantite_max))
-    return les_points

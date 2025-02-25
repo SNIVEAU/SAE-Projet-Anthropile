@@ -46,6 +46,7 @@
                 {% for error in form.adresse.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor %}
+            </div>
 
             <div class="form-group">
                 <label for="motdepasse">{{ form.motdepasse.label }}</label>
@@ -56,29 +57,20 @@
             </div>
 
             <div class="form-group">
-                <!-- <label for="">Appartenez vous à une entreprise ?</label>
-                <div class="choices">
-                    <div class="choice">
-                        <input type="radio" name="entreprise" value="oui" id="oui">
-                        <label for="oui">Oui</label>
-                    </div>
-                    <div class="choice">
-                        <input type="radio" name="entreprise" value="non" id="non" checked>
-                        <label for="non">Non</label>
-                    </div>
-                </div> -->
-                <div class="choice">
-                    {{ form.isEntreprise(class_="form-control") }}
+                <div class="form-group choice">
+                    {{ form.isEntreprise(class_="form-control", id="isEntreprise") }}
                     <label for="isEntreprise">{{ form.isEntreprise.label }}</label>
                 </div>
                 {% for error in form.isEntreprise.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor %}
-                <label for="entreprise">{{ form.entreprise.label }}</label>
-                {{ form.entreprise(class_="form-control") }}
-                {% for error in form.entreprise.errors %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                {% endfor %}
+                <div id="entrepriseField" style="display: none;">
+                    <label for="entreprise">{{ form.entreprise.label }}</label>
+                    {{ form.entreprise(class_="form-control") }}
+                    {% for error in form.entreprise.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary">S'inscrire</button>
@@ -86,6 +78,21 @@
 
         <p class="mt-3">Vous avez déjà un compte ? <a href="{{ url_for('login') }}">Connectez-vous ici</a></p>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let checkbox = document.getElementById("isEntreprise");
+            let entrepriseField = document.getElementById("entrepriseField");
+    
+            function toggleEntrepriseField() {
+                entrepriseField.style.display = checkbox.checked ? "block" : "none";
+            }
+
+            toggleEntrepriseField();
+
+            checkbox.addEventListener("change", toggleEntrepriseField);
+        });
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

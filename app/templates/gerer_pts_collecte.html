@@ -10,7 +10,11 @@
 {% block title %}Gestion des Points de Collecte{% endblock %}
 
 {% block content %}
-<h1>Gestion des Points de Collecte</h1>
+{% if current_user.is_Entreprise() %}
+    <h1>Gestion de mes Points de Collecte</h1>
+{% else %}
+    <h1>Gestion des Points de Collecte</h1>
+{% endif %}
 {% if error %}
 <div class="alert alert-danger" role="alert">
     {{ error }}
@@ -76,7 +80,14 @@
     </div>
 
     <div class="pts">
-        <h2>Liste des Points de Collecte</h2>
+        <h2>
+            {% if current_user.is_Entreprise() %}
+                Mes
+            {% else %}
+                Liste des 
+            {% endif %}
+            Points de Collecte
+        </h2>
         <ul>
             {% for pt in points_de_collecte %}
             <li>

@@ -11,6 +11,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 #Mysql configuration
+
+app.config['MYSQL_HOST'] = 'servinfo-maria'
+app.config['MYSQL_USER'] = 'niveau'
+app.config['MYSQL_PASSWORD'] = 'niveau'
+app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
+
+mysql=MySQL(app)
+
 class Utilisateur(UserMixin):
     def __init__(self, id_Utilisateur, nom_Utilisateur, mail, numtel, motdepasse, nom_role):
         self.id = id_Utilisateur
@@ -22,6 +30,24 @@ class Utilisateur(UserMixin):
     
     def is_admin(self):
         return self.nom_role == "Administrateur"
+    
+    def is_Entreprise(self):
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM ENTREPRISE WHERE id_Utilisateur = %s", (self.id,))
+        entreprise_data = cursor.fetchone()
+        cursor.close()
+        if entreprise_data:
+            return True
+        return False
+    
+    def is_my_pts_collecte(self, id_point_collecte):
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM POINT_DE_COLLECTE WHERE id_point_collecte IN (SELECT id_point_de_collecte FROM APPARTENIR WHERE id_Utilisateur = %s AND id_point_de_collecte = %s)", (self.id, id_point_collecte,))
+        pts_collecte_data = cursor.fetchone()
+        cursor.close()
+        if pts_collecte_data:
+            return True
+        return False
 
 @login_manager.user_loader
 def load_user(user_name):
@@ -35,15 +61,10 @@ def load_user(user_name):
         return Utilisateur(*user_data)
     return None
 
-# app.config['MYSQL_HOST'] = 'servinfo-maria'
-# app.config['MYSQL_USER'] = 'niveau'
-# app.config['MYSQL_PASSWORD'] = 'niveau'
-# app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
-
 app.config['MYSQL_HOST'] = 'servinfo-maria'
-app.config['MYSQL_USER'] = 'nagarajah'
-app.config['MYSQL_PASSWORD'] = 'nagarajah'
-app.config['MYSQL_DB'] = 'DBnagarajah' #mettre sa propre BD
+app.config['MYSQL_USER'] = 'niveau'
+app.config['MYSQL_PASSWORD'] = 'niveau'
+app.config['MYSQL_DB'] = 'DBniveau' #mettre sa propre BD
 
 mysql=MySQL(app)
 

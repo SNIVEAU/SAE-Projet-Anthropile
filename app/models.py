@@ -958,11 +958,11 @@ def get_utilisateurs():
 
 def get_details_utilisateur(id):
     cursor = mysql.connection.cursor()
-    query = 'SELECT nom_Utilisateur, mail, numtel, nom_role, nom_Entreprise from UTILISATEUR natural left join ENTREPRISE where id_Utilisateur=%s'
+    query = 'SELECT id_Utilisateur, nom_Utilisateur, mail, numtel, nom_role, nom_Entreprise from UTILISATEUR natural left join ENTREPRISE where id_Utilisateur=%s'
     cursor.execute(query, (id,))
     utilisateur = cursor.fetchone()
 
-    return {'nom_utilisateur':utilisateur[0], 'mail':utilisateur[1], 'numtel':utilisateur[2], 'nom_role':utilisateur[3], 'nom_entreprise': utilisateur[4]}
+    return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5]}
 
 
 

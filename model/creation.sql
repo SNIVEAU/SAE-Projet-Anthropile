@@ -4,11 +4,6 @@ CREATE TABLE CATEGORIEDECHET (
   priorite INT CHECK (priorite BETWEEN 1 AND 5)
 );
 
-CREATE TABLE ENTREPRISE (
-  id_Entreprise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nom_Entreprise VARCHAR(42) UNIQUE
-);
-
 CREATE TABLE UTILISATEUR (
   id_Utilisateur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Utilisateur VARCHAR(42),
@@ -18,13 +13,11 @@ CREATE TABLE UTILISATEUR (
   nom_role ENUM('Administrateur', 'Utilisateur', 'Visiteur') DEFAULT 'Utilisateur' 
 );
 
-CREATE TABLE TRAVAILLER (
-id_utilisateur INT,
-id_Entreprise INT,
-PRIMARY KEY (id_utilisateur, id_Entreprise),
-FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR (id_Utilisateur),
-FOREIGN KEY (id_Entreprise) REFERENCES ENTREPRISE (id_Entreprise)
-
+CREATE TABLE ENTREPRISE (
+  id_Entreprise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nom_Entreprise VARCHAR(42) UNIQUE,
+  id_Utilisateur INT,
+  FOREIGN KEY (id_Utilisateur) REFERENCES UTILISATEUR (id_Utilisateur)
 );
 
 CREATE TABLE POINT_DE_COLLECTE (

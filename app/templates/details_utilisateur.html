@@ -3,11 +3,11 @@
 
 {% block styles %}
 {{ super() }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="{{ url_for('static', filename='details_utilisateur.css') }}">
 {% endblock %}
 
 {% block content %}
-
     {% if utilisateur %}
     <div id="details_utilisateur">
         <h1>Détails de l'utilisateur</h1>
@@ -16,10 +16,32 @@
         <p><strong>Numéro de téléphone :</strong> {{ utilisateur.numtel }}</p>
         <p><strong>Rôle :</strong> {{ utilisateur.nom_role }}</p>
         <p><strong>Société représentée :</strong> {{ utilisateur.nom_entreprise }}</p>
-        <p><a href="{{ url_for('pts_collecte_associes', id_utilisateur=utilisateur.id_utilisateur)}}">Afficher les points de collecte associés</a></p>
+        <div>
+        <p><strong>Points de collecte associées :</strong> {% if not points_de_collecte %} Aucun point de collecte n'est associé à cet utilisateur.{% endif %}</p>
+        {% if points_de_collecte %}
+            <div class="map-container">
+                <div id="mapid" style="height: 500px;"></div>
+            </div>
+        
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+            <script>
+                // Passer les données addresses au fichier details_utilisateur.js
+                var addresses = [
+                    {% for point in points_de_collecte %}
+                    { 
+                        address: "{{ point.adresse }}", 
+                        name: "{{ point.nom_pt_collecte }}", 
+                        id: "{{ point.id_point_de_collecte }}", 
+                        lat: {{ point.latitude }},   // Latitude
+                        lng: {{ point.longitude }}   // Longitude
+                    }{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                ];
+            </script>
+            <script src="{{ url_for('static', filename='js/pts_utilisateur.js') }}"></script>
+        {% else %}
+        {% endif %}
+        </div>
     </div>
     {% endif %}
-
 {% endblock %}
-
-proposez-moi un css assez simple et attirant

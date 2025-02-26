@@ -167,7 +167,7 @@ class PointDeCollecte:
     def __repr__(self):
         return self.nom_pt_collecte
 
-def get_points_de_collecte(id_Utilisateur=None):
+def get_pts_de_collecte(id_Utilisateur=None):
     print(id_Utilisateur)
     if id_Utilisateur is None:
         requete = "SELECT * FROM POINT_DE_COLLECTE"
@@ -1048,6 +1048,8 @@ def get_utilisateurs():
 
     utilisateurs_list = []
     for id_utilisateur, nom_utilisateur, nom_entreprise in utilisateurs:
+        if nom_entreprise == None:
+            nom_entreprise = 'Aucune'
         utilisateurs_list.append({'id_utilisateur':id_utilisateur, 'nom_utilisateur': nom_utilisateur, 'nom_entreprise' : nom_entreprise})
     return utilisateurs_list
 
@@ -1057,7 +1059,7 @@ def get_details_utilisateur(id):
     cursor.execute(query, (id,))
     utilisateur = cursor.fetchone()
 
-    return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5]}
+    return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5] if utilisateur[5] is not None else 'Aucun'}
 
 
 

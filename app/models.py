@@ -268,8 +268,8 @@ def get_dechets():
     dechets = cursor.fetchall()
     cursor.close()
     les_dechets = []
-    for _, nom_dechet, id_type, quantite in dechets:
-        les_dechets.append(Dechet(nom_dechet, id_type, quantite))
+    for _, nom_dechet, id_type, quantite, date in dechets:
+        les_dechets.append(Dechet(nom_dechet, id_type, quantite, date))
     return les_dechets
 
 def get_graph_dechet():
@@ -1017,7 +1017,7 @@ def get_dechets_by_date(date):
         res=[]
         for date in dates:
             print(date)
-            res.append(Dechet(date[1],date[2],date[3]))
+            res.append(Dechet(date[1],date[2],date[3], date[4]))
         return res
     return None
 

@@ -224,9 +224,15 @@ def collecte_dechets():
 def statistique_dechets():
     return data_graph_qte_dechets_categorie()
 
+@app.route("/data/dechets/user/<int:id>")
+# @login_required
+def statistique_dechets_user(id):
+    return data_graph_qte_dechets_categorie_user(id)
+
+
 @app.route("/statistique-pts-collecte")
 @login_required
-@admin_required
+# @admin_required
 def statistique_pts_collecte():
     return render_template("statistique_pts_collecte.html", points_de_collecte=get_points_de_collecte(),pts_remplis=get_pts_remplis())
 

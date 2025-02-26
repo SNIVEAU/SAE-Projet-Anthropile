@@ -117,3 +117,37 @@ a {
 a:hover {
     color: #0056b3;
 }
+
+#rapportdate {
+    margin: 0 auto;
+    width: 80%;
+    text-align: center;
+}
+
+
+#rapportdate label {
+    font-size: 16px;
+    margin-right: 10px;
+
+}
+#rapportdate input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+#rapportdate button {
+    padding: 10px;
+    margin: 10px auto; /* Centrage horizontal */
+
+    border: none;
+    background-color: #45a049;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+}

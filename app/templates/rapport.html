@@ -44,9 +44,12 @@
             {% endfor %}
         </tbody>
     </table>
-    <div>
-        <h2> Générer un rapport pour une date</h2>
-            
+    <div id="rapportdate">
+        <h2>Générer un rapport pour une date</h2>
+        <label for="report-date"></label>
+        <input type="date" id="report-date" title="Sélectionner une date" placeholder="JJ/MM/AAAA">
+        <button id="generate-report">Générer le rapport</button>
     </div>
     <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/crea_rapport.js') }}"></script>
 {% endblock %}

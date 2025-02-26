@@ -253,8 +253,8 @@ def rapport():
 def download_pdf(date_collecte):
     # Récupérer les données pour cette date
     collecter_list = get_collecter_by_date(date_collecte)
-    if not collecter_list:
-        return "Aucune collecte trouvée pour cette date."
+    # if not collecter_list:
+    #     return "Aucune collecte trouvée pour cette date."
 
     dechets = get_dechets_by_date_lastweek(date_collecte)
     
@@ -272,17 +272,18 @@ def download_pdf(date_collecte):
     pdf.cell(50, 10, 'Date Collecte', 1)
     pdf.cell(40, 10, 'Quantité Collectée (kg)', 1)
     pdf.ln()
-
     # Ajouter les données des collectes
     pdf.set_font('Arial', '', 10)
-    for collecter in collecter_list:
-        categorie = get_categories_by_id(collecter.id_Type)
-        pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
-        pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
-        pdf.cell(50, 10, str(categorie.nom_type), 1)
-        pdf.cell(50, 10, str(collecter.dateCollecte), 1)
-        pdf.cell(40, 10, str(collecter.qtecollecte), 1)
-        pdf.ln()
+    if collecter_list:
+
+        for collecter in collecter_list:
+            categorie = get_categories_by_id(collecter.id_Type)
+            pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
+            pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
+            pdf.cell(50, 10, str(categorie.nom_type), 1)
+            pdf.cell(50, 10, str(collecter.dateCollecte), 1)
+            pdf.cell(40, 10, str(collecter.qtecollecte), 1)
+            pdf.ln()
 
     # Ajouter un espace avant le tableau des déchets
     pdf.ln(10)
@@ -305,11 +306,12 @@ def download_pdf(date_collecte):
 
     # Ajouter les données des déchets insérés
     pdf.set_font('Arial', '', 10)
-    for dechet in dechets:
-        pdf.cell(left_margin)
-        pdf.cell(col1_width, 10, str(dechet.nom_dechet), 1, 0, 'C')
-        pdf.cell(col2_width, 10, str(dechet.quantite), 1, 0, 'C')
-        pdf.cell(col3_width, 10, str(dechet.dateinsertion), 1, 1, 'C')
+    if dechets:
+        for dechet in dechets:
+            pdf.cell(left_margin)
+            pdf.cell(col1_width, 10, str(dechet.nom_dechet), 1, 0, 'C')
+            pdf.cell(col2_width, 10, str(dechet.quantite), 1, 0, 'C')
+            pdf.cell(col3_width, 10, str(dechet.dateinsertion), 1, 1, 'C')
 
     pdf.ln()
 

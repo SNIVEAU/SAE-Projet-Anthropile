@@ -1,6 +1,12 @@
     // Fonction pour récupérer les données du serveur
     async function fetchData() {
-        const response = await fetch('/data/graph-pts-collecte');
+        let link;
+        if (userId == null) {
+            link = '/data/graph-pts-collecte';
+        } else {
+            link = `/data/graph-pts-collecte/user/${userId}`;
+        }
+        const response = await fetch(link);
         const data = await response.json();
         return data;
     }
@@ -62,7 +68,13 @@
     }
 
     // Fetch data from Flask API and render chart
-    fetch('data/dechets')
+    let link;
+    if (userId == null) {
+        link = '/data/dechets';
+    } else {
+        link = `/data/dechets/user/${userId}`;
+    }
+    fetch(link)
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById('dechetChart').getContext('2d');

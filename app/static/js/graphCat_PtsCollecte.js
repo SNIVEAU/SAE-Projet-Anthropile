@@ -1,37 +1,43 @@
 function getPointCollecteIdFromUrl() {
     const path = window.location.pathname; 
     const parts = path.split('/');  
-    // console.log(parts[parts.length - 1]);
     return parts[parts.length - 1];
 }
 
 async function fetchData(pointCollecteId) {
-    const response = await fetch(`/data/graph-pts-collecte/${pointCollecteId}`);
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch(`/data/graph-pts-collecte/${pointCollecteId}`);
+        if (!response.ok) throw new Error("Erreur lors de la récupération des données.");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Erreur:", error);
+        return {}; // Retourne un objet vide en cas d'erreur
+    }
 }
 
 async function generateChart() {
     const ptCollecteId = getPointCollecteIdFromUrl(); 
     const data = await fetchData(ptCollecteId); 
 
-    const pointCollecteName = Object.keys(data)[0]; 
-    const collecteData = data[pointCollecteName]; 
-
-    if (!collecteData || collecteData.length === 0) {
-        console.log("Aucune donnée trouvée pour l'ID du point de collecte:", ptCollecteId);
-        return;
-    }
+    const pointCollecteName = Object.keys(data)[0] || "Aucune donnée";  
+    const collecteData = data[pointCollecteName] || [];  
 
     function getRandomColor() {
         return '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
 
-    const datasets = collecteData.map(item => ({
-        label: item.categorie, 
-        data: [parseFloat(item.quantite)], 
-        backgroundColor: getRandomColor(), 
-    }));
+    const datasets = collecteData.length > 0 
+        ? collecteData.map(item => ({
+            label: item.categorie, 
+            data: [parseFloat(item.quantite)], 
+            backgroundColor: getRandomColor(), 
+        }))
+        : [{
+            label: "Aucune donnée disponible",
+            data: [0], 
+            backgroundColor: "#ccc",
+        }];
 
     const ctx = document.getElementById('ptCollecteChart').getContext('2d');
     new Chart(ctx, {

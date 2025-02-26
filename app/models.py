@@ -332,6 +332,38 @@ def data_graph_qte_dechets_categorie():
 
     return jsonify(data)
 
+def data_graph_qte_dechets_categorie_user(id):
+    categories = get_categories()
+    dechets = get_tous_dechets_pts_collecte_appartenant_user(id)
+
+    # Initialize data structure for categories
+    category_data = {cat.id_type: {'nom_type': cat.nom_type, 'quantite': 0, 'dechets': []} for cat in categories}
+
+    # Populate quantities and details
+    for dechet in dechets:
+        print(category_data)
+        print(dechet['quantite'])
+        category_data[dechet['id_type']]['quantite'] += dechet['quantite']
+        category_data[dechet['id_type']]['dechets'].append({'nom_dechet': dechet['nom_dechet'], 'quantite': dechet['quantite']})
+
+    data = {
+        'categories': [cat['nom_type'] for cat in category_data.values()],
+        'quantities': [cat['quantite'] for cat in category_data.values()],
+        'details': [[{'nom': item['nom_dechet'], 'quantite': item['quantite']} for item in cat['dechets']]
+                    for cat in category_data.values()]
+    }
+
+    return jsonify(data)
+
+def get_tous_dechets_pts_collecte_appartenant_user(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("select id_Type, nom_dechet, nom_type, qte from DEPOSER natural join DECHET natural join CATEGORIEDECHET where id_point_collecte IN (SELECT id_point_de_collecte FROM APPARTENIR WHERE id_Utilisateur = %s)", (id,))
+    liste_dechets = cursor.fetchall()
+    les_dechets = []
+    for id_type, nom_dechet, nom_type, quantite in liste_dechets:
+        les_dechets.append({'id_type' : id_type, 'nom_dechet': nom_dechet, 'nom_type': nom_type, 'quantite': quantite})
+    return les_dechets
+
 class Collecter:
     def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte):
         self.id_point_collecte = id_point_collecte
@@ -743,6 +775,29 @@ def data_graph_qte_dechets_cat_pts_collecte_id(id):
         NATURAL JOIN DECHET
         NATURAL JOIN DEPOSER
         WHERE id_point_collecte = %s
+        GROUP BY nom_pt_collecte, nom_Type
+        ORDER BY nom_pt_collecte;
+    """, (id,))
+    results = cursor.fetchall()
+    cursor.close()
+
+    data = {}
+    for nom_pt_collecte, nom_type, quantite in results:
+        if nom_pt_collecte not in data:
+            data[nom_pt_collecte] = []
+        data[nom_pt_collecte].append({'categorie': nom_type, 'quantite': quantite})
+
+    return jsonify(data)
+
+def data_graph_qte_dechets_cat_pts_collecte_user(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("""
+        SELECT nom_pt_collecte, nom_Type, SUM(qte) as quantite
+        FROM POINT_DE_COLLECTE
+        NATURAL JOIN CATEGORIEDECHET
+        NATURAL JOIN DECHET
+        NATURAL JOIN DEPOSER
+        WHERE id_point_collecte IN (SELECT id_point_de_collecte FROM APPARTENIR WHERE id_Utilisateur = %s)
         GROUP BY nom_pt_collecte, nom_Type
         ORDER BY nom_pt_collecte;
     """, (id,))

@@ -36,10 +36,10 @@
                 {% endif %}
                 <li><a href="{{ url_for('collecte_dechets') }}">Carte</a></li>
                 {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
                     {% if current_user.is_Entreprise() %}
                     <li><a href="{{ url_for('gerer_pts_collecte') }}">Points de collecte</a></li>
                     {% elif current_user.is_admin() %}
-                    <li><a href="{{ url_for('statistique_pts_collecte') }}">Tableau de bord</a></li>
                     <li>
                         <a href="#" class="dropdown-toggle">Gestion ▾</a>                    
                         <ul class="dropdown">

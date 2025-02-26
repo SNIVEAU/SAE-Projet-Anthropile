@@ -1010,7 +1010,7 @@ def get_alertes_triees_par_priorite():
         SELECT a.id_Alerte, c.priorite, a.lu, a.message, DATE_FORMAT(a.date_alerte, '%d/%m/%Y')
         FROM ALERTE a
         JOIN CATEGORIEDECHET c ON a.id_TypeDechet = c.id_Type
-        ORDER BY c.priorite ASC, a.date_alerte DESC
+        ORDER BY a.lu ASC, c.priorite ASC, a.date_alerte DESC
     """
     cursor.execute(query)
     alertes = cursor.fetchall()

@@ -30,7 +30,7 @@
 
         <!-- Bouton pour insérer une nouvelle entreprise -->
         <div class="insert">
-            <a href="/inserer_ent" class="btn btn-insert">Insérer une entreprise</a>
+            <a href="{{ url_for('inserer_entreprise') }}" class="btn btn-insert">Insérer une entreprise</a>
         </div>
 
         <!-- Affichage des entreprises ou message si aucune n'est disponible -->
@@ -45,7 +45,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Nom</th>
-                        <th colspan="2">Actions</th>
+                        <th colspan="3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +54,10 @@
                         <td>{{ ent.id_entreprise }}</td>
                         <td>{{ ent.nom_entreprise }}</td>
                         <td>
-                            <a href="/supprimer_entreprise/{{ ent.id_entreprise }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</a>
+                            <a href="{{ url_for('details_utilisateur', id_utilisateur=ent.id_Utilisateur) }}">Détail</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('supprimer_entreprise', id=ent.id_entreprise) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</a>
                         </td>
                         <td>
                             <a href="/modifier_entreprise/{{ ent.id_entreprise }}">Modifier</a>

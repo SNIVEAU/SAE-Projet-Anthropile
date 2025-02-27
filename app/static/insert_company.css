@@ -43,6 +43,28 @@ input[type="text"]:disabled {
     background-color: #f1f1f1;
 }
 
+select {
+    font-size: 1em;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* option {
+    font-size: 1em;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+} */
+
 /* Style du bouton de soumission */
 button[type="submit"] {
     font-size: 1.2em;

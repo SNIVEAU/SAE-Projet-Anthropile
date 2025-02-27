@@ -22,14 +22,8 @@ function initializeMap(addresses) {
         }
     });
 
-    // Calculer les bornes de la carte pour inclure tous les marqueurs
-    if (markers.length > 0) {
-        let bounds = L.latLngBounds(markers); // Créer une zone qui inclut tous les marqueurs
-        map.fitBounds(bounds); // Ajuster la carte pour afficher cette zone
-    } else {
-        console.warn("Aucun marqueur valide trouvé.");
-        map.setView([46.603354, 1.888334], 6); // Centre par défaut sur la France si aucun marqueur n'est valide
-    }
+    console.warn("Aucun marqueur valide trouvé.");
+    map.setView([16.2250, -61.5510], 10); 
 }
 
 // Exécuter la fonction initializeMap lorsque le DOM est chargé

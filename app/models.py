@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from .app import mysql
+from .app import mysql, Utilisateur
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
@@ -697,6 +697,16 @@ def get_all_user_info(user_name):
     user_data = cursor.fetchone()
     cursor.close()
     return user_data
+
+def get_not_company_user():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM UTILISATEUR WHERE id_Utilisateur NOT IN (SELECT id_Utilisateur FROM ENTREPRISE)")
+    users = cursor.fetchall()
+    cursor.close()
+    utilisateurs = []
+    for id_utilisateur, nom_utilisateur, mail, numtel, motdepasse, nom_role in users:
+        utilisateurs.append(Utilisateur(id_utilisateur, nom_utilisateur, mail, numtel, motdepasse, nom_role))
+    return utilisateurs
 
 def update_user(user_id, nom_utilisateur, mail, numtel):
     cursor = mysql.connection.cursor()

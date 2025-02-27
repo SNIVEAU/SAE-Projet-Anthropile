@@ -17,6 +17,14 @@
     <label class="insert_ent" for="nom_entreprise">Nom :</label>
     <input type="text" id="nom_entreprise" name="nom_entreprise" value="" placeholder="Entrez le nom de l'entreprise" required>
 
+    <label class="insert_ent" for="id">Représentant de l'entreprise : </label>
+    <select name="id" id="id" required>
+        <option value="" disabled selected>Choisissez un représentant</option>
+        {% for utilisateur in utilisateurs %}
+            <option value="{{ utilisateur.id }}">{{ utilisateur.nom_utilisateur }}</option>
+        {% endfor %}
+    </select>
+
     <button type="submit">Insérer</button>
 </form>
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>

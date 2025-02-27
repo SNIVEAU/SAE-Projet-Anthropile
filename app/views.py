@@ -503,15 +503,17 @@ def inserer_entreprise():
         id_ent = get_id_max_entreprise() + 1
 
         nom_entreprise = request.form.get("nom_entreprise")
+
+        userId = request.form.get("id")
         
-        success = insert_entreprise(id_ent, nom_entreprise)
+        success = insert_entreprise(id_ent, nom_entreprise, userId)
         
         if success:
             return redirect(url_for('toutes_entreprises', status='insert_success'))
         else:
             return redirect(url_for('inserer_entreprise', status='insert_error'))
     
-    return render_template("insert_company.html", id_entreprise = get_id_max_entreprise() + 1)
+    return render_template("insert_company.html", id_entreprise = get_id_max_entreprise() + 1, utilisateurs=get_not_company_user())
 
 class EditProfileForm(FlaskForm):
     user_id = HiddenField("User ID")  # Champ caché pour l'ID de l'utilisateur

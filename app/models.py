@@ -365,11 +365,12 @@ def get_tous_dechets_pts_collecte_appartenant_user(id):
     return les_dechets
 
 class Collecter:
-    def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte):
+    def __init__(self, id_point_collecte,id_Type,dateCollecte,qtecollecte,ordre_collecte=None):
         self.id_point_collecte = id_point_collecte
         self.id_Type = id_Type
         self.dateCollecte = dateCollecte
         self.qtecollecte = qtecollecte
+        self.ordre_collecte = ordre_collecte
     
     def insert_collecter(self):
         cursor = mysql.connection.cursor()
@@ -389,9 +390,10 @@ def get_collecter():
 def get_collecter_by_date(date_collecte):
     cursor = mysql.connection.cursor()
     query = """
-    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte,ordre_collecte
     FROM COLLECTER natural join TOURNEE
     WHERE DATE(date_collecte) = %s
+    order by ordre_collecte
     """
     cursor.execute(query, (date_collecte,))
     collecter = cursor.fetchall()
@@ -401,16 +403,16 @@ def get_collecter_by_date(date_collecte):
     for i in collecter:
         print(i)
         print(i[0], i[1], i[2], i[3])
-        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3],i[4]))
     return listecollecter
 
 def get_collecter_sort_by_date():
     cursor = mysql.connection.cursor()
     
     query = """
-
-    SELECT id_point_collecte, id_Type,  DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only,qtecollecte
-    FROM COLLECTER natural join TOURNEE
+    SELECT id_point_collecte,  id_Type, DATE_FORMAT(date_collecte, '%Y-%m-%d') AS date_only, qtecollecte,ordre_collecte
+    FROM COLLECTER
+    NATURAL JOIN TOURNEE
     GROUP BY DATE(date_collecte), id_point_collecte, id_Type
     ORDER BY date_collecte DESC
     """
@@ -420,8 +422,8 @@ def get_collecter_sort_by_date():
     
     listecollecter = []
     for i in collecter:
-
-        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
+        print(i)
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3],i[4]))
     
     cursor.close()
     return listecollecter

@@ -1,15 +1,129 @@
-/* Centrage du h1 */
+/* Centrage du titre */
 h1 {
     text-align: center;
-    /* margin: 2% 0 0 10%; */
+    margin-bottom: 20px;
 }
 
-/* Style de la barre de recherche */
+/* Conteneur principal pour aligner la table et le formulaire */
+#rapport-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 90%;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+/* Table des rapports */
+#report-table {
+    flex: 1;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+/* En-tête du tableau */
+thead th {
+    background-color: #000;
+    color: #fff;
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+/* Corps du tableau */
+tbody td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #e9e9e9;
+}
+
+tbody tr:hover {
+    background-color: #d3d3d3;
+}
+
+/* Liens */
+a {
+    text-decoration: underline;
+    color: black;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+/* Section génération de rapport */
+#rapportdate {
+    flex: 0.8;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Effet au survol */
+/* #rapportdate:hover {
+    transform: scale(1.02);
+} */
+
+/* Boutons de choix */
+#choix-periode {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* Inputs et labels bien stylés */
+#rapportdate label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#rapportdate input[type="date"] {
+    width: 90%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Bouton générer un rapport */
+#rapportdate button {
+    width: 100%;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    margin-top: 15px;
+}
+
+#rapportdate button:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+}
+
+/* Barre de recherche */
 #search-container {
     display: flex;
-    justify-content: flex-start;
-    margin: 1.5% 0;
-    padding-left: 10%;
+    justify-content: center;
+    margin: 20px 0;
 }
 
 #search-input {
@@ -36,16 +150,15 @@ h1 {
     background-color: #000;
 }
 
+/* Options de filtre */
 #filter-options {
     display: flex;
-    justify-content: flex-start;
-    margin-left: 10%;
-    margin-top: 1%;
-    margin-bottom: 1.5%;
+    justify-content: center;
+    margin: 10px 0;
 }
 
 #filter-options label {
-    margin-right: 15px;
+    margin: 0 15px;
     font-size: 16px;
     cursor: pointer;
 }
@@ -63,91 +176,37 @@ h1 {
     transition: background-color 0.1s, border 0.3s;
 }
 
-/* Lorsque le bouton est coché, il devient noir */
 #filter-options input[type="radio"]:checked {
     background-color: #000;
-    border: 2px solid #000;
 }
 
 #filter-options input[type="radio"]:hover {
     background-color: #dbdbdb;
 }
 
-
-
-/* Styles pour la table */
-table {
-    margin: 0 auto;
-    margin-bottom: 50px;
-    border-collapse: separate;
-    border-spacing: 0px;
-    width: 80%;
-    text-align: center;
+#choix-rapport {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
 }
 
-thead th {
-    background-color: #000;
-    color: #fff;
-    padding: 10px;
-    border: 1px solid #ddd;
+#date-seule {
+    display: flex;
 }
 
-tbody td {
-    border: none;
-    padding: 10px;
+#date-seule input[type="date"],
+#date-periode input[type="date"] {
+    width: 150px; 
+    padding: 6px; 
+    font-size: 14px; 
 }
-
-tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #e9e9e9;
-}
-
-tbody tr:hover {
-    background-color: #d3d3d3;
-}
-
-a {
-    text-decoration: underline;
-    color: black;
-}
-
-a:hover {
-    color: #0056b3;
-}
-
-#rapportdate {
-    margin: 0 auto;
-    width: 80%;
-    text-align: center;
-}
-
 
 #rapportdate label {
-    font-size: 16px;
     margin-right: 10px;
-
-}
-#rapportdate input[type="date"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
-    outline: none;
 }
 
-#rapportdate button {
-    padding: 10px;
-    margin: 10px auto; /* Centrage horizontal */
-
-    border: none;
-    background-color: #45a049;
-    color: #fff;
-    font-size: 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: block;
+#rapportdate:first-of-type {
+    display: flex;
+    flex-direction: column;
 }

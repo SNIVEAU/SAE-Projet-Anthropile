@@ -426,6 +426,97 @@ def get_collecter_sort_by_date():
     cursor.close()
     return listecollecter
 
+def get_collecter_between_dates(start_date, end_date):
+    cursor = mysql.connection.cursor()
+    query = """
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM COLLECTER
+    WHERE DATE(date_collecte) BETWEEN %s AND %s
+    """
+    cursor.execute(query, (start_date, end_date))
+    collecter = cursor.fetchall()
+    cursor.close()
+
+    listecollecter = []
+    for i in collecter:
+        listecollecter.append(Collecter(i[0], i[1], i[2], i[3]))
+
+    return listecollecter
+
+
+def get_tournees_by_date(date_tournee):
+    cursor = mysql.connection.cursor()
+    query = """
+    SELECT * FROM TOURNEE
+    WHERE DATE(date_collecte) = %s
+    """
+    cursor.execute(query, (date_tournee,))
+    tournees = cursor.fetchall()
+    cursor.close()
+    return tournees
+
+
+def get_dechets_by_date(date_collecte):
+    cursor = mysql.connection.cursor()
+    query = """
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM COLLECTER
+    WHERE DATE(date_collecte) = %s
+    """
+    cursor.execute(query, (date_collecte,))
+    dechets = cursor.fetchall()
+    cursor.close()
+    return dechets
+
+
+def get_tournees_and_dechets_by_date(date):
+    tournees = get_tournees_by_date(date)
+    dechets = get_dechets_by_date(date)
+    return tournees, dechets
+
+
+def get_tournees_between_dates(start_date, end_date):
+    cursor = mysql.connection.cursor()
+    query = """
+    SELECT  id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM TOURNEE NATURAL JOIN COLLECTER
+    WHERE DATE(date_collecte) BETWEEN %s AND %s
+    ORDER BY date_collecte
+    """
+    cursor.execute(query, (start_date, end_date))
+    tournees = cursor.fetchall()
+    cursor.close()
+    return [Collecter(tournee[0], tournee[1], tournee[2], tournee[3]) for tournee in tournees]
+
+
+def get_dechets_between_dates(start_date, end_date):
+    cursor = mysql.connection.cursor()
+    query = """
+    SELECT id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM COLLECTER
+    WHERE DATE(date_collecte) BETWEEN %s AND %s
+    """
+    cursor.execute(query, (start_date, end_date))
+    dechets = cursor.fetchall()
+    cursor.close()
+    return dechets
+
+
+def get_tournees_and_dechets_between_dates(start_date, end_date):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM DECHET WHERE DATE(dateinsertion) BETWEEN %s AND %s ORDER BY dateinsertion", (start_date, end_date,))
+    dates = cursor.fetchall()
+    if dates:
+        res=[]
+        for date in dates:
+            res.append(Dechet(date[1],date[2],date[3], date[4]))
+        return res
+    return None
+    # tournees = get_tournees_between_dates(start_date, end_date)
+    # dechets = get_dechets_between_dates(start_date, end_date)
+    # return tournees, dechets
+
+
 def remove_doublon_date_collecter(listecollecte):
     res = []
     hashdate = set()
@@ -1106,12 +1197,11 @@ def get_pts_de_collecte_by_id(id):
 
 def get_dechets_by_date(date):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s", (date,))
+    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s ORDER BY dateinsertion", (date,))
     dates = cursor.fetchall()
     if dates:
         res=[]
         for date in dates:
-            print(date)
             res.append(Dechet(date[1],date[2],date[3], date[4]))
         return res
     return None

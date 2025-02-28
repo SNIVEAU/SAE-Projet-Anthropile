@@ -421,7 +421,7 @@ def gerer_pts_collecte():
                 pos[0], pos[1]
             )
             idPtsCollecte = get_id_point_de_collecte(form.nom_pt_collecte.data)
-            ajoute_pts_de_collecte_specifique(idPtsCollecte, userId)
+            ajoute_pts_de_collecte_specifique(idPtsCollecte, current_user.id)
         except Exception as e:
             if 'Geocoder' in str(e):
                 return render_template("gerer_pts_collecte.html", form=form, points_de_collecte=get_points_de_collecte(userId), error="Une erreur s'est produite lors de la recherche de l'adresse, veuillez réessayer plus tard")

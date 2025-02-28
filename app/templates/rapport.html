@@ -21,60 +21,69 @@
     <label><input type="radio" name="filter" value="year"> Par Année</label>
 </div>
 
-<!-- Table des rapports -->
-<table id="report-table">
-    <thead>
-        <tr>
-            <th>Rapport</th>
-            <th>Date de Collecte</th>
-            <th>Téléchargement</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for traitement in collecter %}
-        <tr>
-            <td>Rapport Journalier</td>
-            <td>{{ traitement.dateCollecte }}</td>
-            <td>
-                <a href="/download_pdf/{{ traitement.dateCollecte }}">Télécharger PDF</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Choix du type de rapport -->
-<div id="choix-periode">
-    <button id="btn-jour">Choisir un jour</button>
-    <button id="btn-periode">Choisir une période</button>
-</div>
-
-<!-- Formulaire de génération de rapport -->
-<div id="rapportdate">
-    <h2>Générer un rapport</h2>
-
-    <div id="date-seule">
-        <label for="report-date">Sélectionner une date :</label>
-        <input type="date" id="report-date">
+<!-- Conteneur principal -->
+<div id="rapport-container">
+    <!-- Table des rapports -->
+    <div id="rapportdate">
+        <h2>Rapports des tournées réalisé</h2>
+        <table id="report-table">
+            <thead>
+                <tr>
+                    <th>Rapport</th>
+                    <th>Date de Collecte</th>
+                    <th>Téléchargement</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for traitement in collecter %}
+                <tr>
+                    <td>Rapport Journalier</td>
+                    <td>{{ traitement.dateCollecte }}</td>
+                    <td>
+                        <a href="/download_pdf/{{ traitement.dateCollecte }}">Télécharger PDF</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <div id="date-periode" style="display: none;">
-        <label for="start-date">De :</label>
-        <input type="date" id="start-date">
-        <label for="end-date">À :</label>
-        <input type="date" id="end-date">
-    </div>
+    <!-- Formulaire de génération de rapport -->
+    <div id="rapportdate">
+        <h2>Générer un rapport</h2>
 
-    <div id="choix-rapport">
-        <label><input type="radio" name="type-rapport" value="collectes" checked> Collectes</label>
-        <label><input type="radio" name="type-rapport" value="dechets"> Déchets</label>
-        <label><input type="radio" name="type-rapport" value="les_deux"> Les deux</label>
-    </div>
-    
+        <div id="choix-periode">
+            <button id="btn-jour">Choisir un jour</button>
+            <button id="btn-periode">Choisir une période</button>
+        </div>
 
-    <button id="generate-report">Générer le rapport</button>
+        <div id="date-seule">
+            <label for="report-date">Sélectionner une date :</label>
+            <input type="date" id="report-date">
+        </div>
+
+        <div id="date-periode" style="display: none;">
+            <div id="date-seule">
+                <label for="start-date">De :</label>
+                <input type="date" id="start-date">
+            </div>
+            <div id="date-seule">
+                <label for="end-date">À :</label>
+                <input type="date" id="end-date">
+            </div>
+        </div>
+
+        <div id="choix-rapport">
+            <label><input type="radio" name="type-rapport" value="collectes" checked> Collectes</label>
+            <label><input type="radio" name="type-rapport" value="dechets"> Déchets</label>
+            <label><input type="radio" name="type-rapport" value="les_deux"> Les deux</label>
+        </div>
+
+        <button id="generate-report">Générer le rapport</button>
+    </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/crea_rapport.js') }}"></script>
 <script src="{{ url_for('static', filename='js/rapport.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search_bar.js') }}"></script>
 {% endblock %}

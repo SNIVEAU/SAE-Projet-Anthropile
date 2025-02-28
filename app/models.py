@@ -1143,3 +1143,4 @@ def is_collectivite(id):
     # return result[0] if result else False
 
 
+

@@ -43,7 +43,7 @@ h2 {
 }
 
 .form-control {
-    width: 100%;
+    width: 60%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -106,4 +106,21 @@ h2 {
 label.tournee{
     justify-content: center;
     width: 20%;
+}
+.draggable {
+    border: 2px solid #fff;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: drag;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+.draggable:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+
+}
+.sortable-ghost {
+    opacity: 0.5;
 }

@@ -927,14 +927,14 @@ def delete_avis_id(ids):
         return 0
 
 
-def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte):
+def insert_collecter(id_point_collecte, id_tournee, id_type, qte_collecte,ordre_collecte):
     cursor = mysql.connection.cursor()
     cursor.execute(
         """
-        INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO COLLECTER (id_point_collecte, id_Tournee, id_Type, qtecollecte,ordre_collecte)
+        VALUES (%s, %s, %s, %s,%s)
         """, 
-        (id_point_collecte, id_tournee, id_type, qte_collecte)
+        (id_point_collecte, id_tournee, id_type, qte_collecte,ordre_collecte)
     )
     mysql.connection.commit()
     cursor.close()
@@ -954,6 +954,15 @@ def insert_tournee(date_collecte, duree=0):
     mysql.connection.commit()
     cursor.close()
 
+class Tournee():
+    def __init__(self,id_tournee,date_collecte,duree):
+        self.id_tournee = id_tournee
+        self.date_collecte = date_collecte
+        self.duree = duree
+    
+    def __str__(self):
+        return str(self.id_tournee) + "  " + self.date_collecte + "  " + str(self.duree)
+    
 
 def get_last_tournee():
     cursor = mysql.connection.cursor()
@@ -961,6 +970,19 @@ def get_last_tournee():
     id_tournee = cursor.fetchone()
     cursor.close()
     return id_tournee[0]
+
+def get_last_tournees():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM TOURNEE ORDER BY date_collecte DESC LIMIT 6")
+    tournees = cursor.fetchall()
+    cursor.close()
+    
+    res = []
+    for id_tournee, date_collecte, duree in tournees:
+        res.append(Tournee(id_tournee, date_collecte, duree))
+    
+    return res
+    
 
 def get_qte_by_pts_and_type(id_point_collecte, id_type):
     cursor = mysql.connection.cursor()

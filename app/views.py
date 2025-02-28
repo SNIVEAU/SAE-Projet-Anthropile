@@ -582,6 +582,7 @@ class PlanificationTournéeForm(FlaskForm):
 def planification_tournee():
     all_pts_de_collecte = get_points_de_collecte()  # Tous les points de collecte disponibles
     categories_dechet = get_categories()
+    historique_tournee = get_last_tournees()
     form = PlanificationTournéeForm()
     
     selected_points = []
@@ -593,11 +594,11 @@ def planification_tournee():
         
         selected_point_ids = request.form.getlist('selected_points')
         
-        for point_id in selected_point_ids:
+        for ordre, point_id in enumerate(selected_point_ids, start=1):  # Assigner un ordre de collecte
             categorie_id = request.form.get(f'categorie_{point_id}')
             if categorie_id:
                 qte_collecte = get_qte_by_pts_and_type(point_id, categorie_id)
-                insert_collecter(point_id, id_tournee, categorie_id, qte_collecte)
+                insert_collecter(point_id, id_tournee, categorie_id, qte_collecte, ordre)
         
         return redirect(url_for('home'))
 
@@ -606,8 +607,10 @@ def planification_tournee():
         form=form,
         all_points_de_collecte=all_pts_de_collecte,  # Passer tous les points de collecte
         categories_dechet=categories_dechet,
-        selected_points=selected_points  # Initialement vide
+        selected_points=selected_points,
+        historique_tournee=historique_tournee
     )
+
 
   
 @app.route("/not_admin")

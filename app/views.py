@@ -274,6 +274,11 @@ def generate_pdf():
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
 
+    # Logo du site
+    pdf.image('static/img/logo.png', x=10, y=8, w=30)
+
+    pdf.ln(10)
+
     # Titre du rapport
     if start_date and end_date:
         pdf.cell(200, 10, f"Rapport du {start_date} au {end_date}", ln=True, align='C')
@@ -288,6 +293,9 @@ def generate_pdf():
             collecter_list = get_collecter_by_date(date_collecte)
         elif start_date and end_date:
             collecter_list = get_tournees_between_dates(start_date, end_date)
+
+        # pdf.set_font('Arial', 'B', 10)
+        pdf.cell(200, 10, "Tournées réalisées", ln=True, align='C')
 
         if collecter_list:
             pdf.set_font('Arial', 'B', 10)
@@ -305,7 +313,15 @@ def generate_pdf():
                 pdf.cell(50, 10, str(collecter.dateCollecte), 1)
                 pdf.cell(40, 10, str(collecter.qtecollecte), 1)
                 pdf.ln()
+        else:
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, "Aucune collecte réalisé", ln=True, align='C')
+        
+        pdf.ln(5)
 
+    # pdf.ln(10)
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(200, 10, "Déchets jetés", ln=True, align='C')
     if rapport_type == "dechets" or rapport_type == "les_deux":
         if date_collecte:
             dechets = get_dechets_by_date(date_collecte)
@@ -315,7 +331,6 @@ def generate_pdf():
         if dechets:
             pdf.set_font('Arial', 'B', 12)
             pdf.cell(200, 10, "Déchets Insérés", ln=True, align='C')
-            pdf.ln(10)
             pdf.set_font('Arial', 'B', 10)
             pdf.cell(60, 10, 'Nom du Déchet', 1, 0, 'C')
             pdf.cell(60, 10, 'Quantité (kg)', 1, 0, 'C')
@@ -325,6 +340,9 @@ def generate_pdf():
                 pdf.cell(60, 10, str(dechet.nom_dechet), 1, 0, 'C')
                 pdf.cell(60, 10, str(dechet.quantite), 1, 0, 'C')
                 pdf.cell(60, 10, str(dechet.dateinsertion), 1, 1, 'C')
+        else:
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, "Aucun déchet inséré", ln=True, align='C')
 
     # Envoi du PDF généré
     pdf_output = BytesIO()

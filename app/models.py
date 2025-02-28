@@ -448,7 +448,7 @@ def get_tournees_by_date(date_tournee):
     cursor = mysql.connection.cursor()
     query = """
     SELECT * FROM TOURNEE
-    WHERE DATE(dateTournee) = %s
+    WHERE DATE(date_collecte) = %s
     """
     cursor.execute(query, (date_tournee,))
     tournees = cursor.fetchall()
@@ -479,7 +479,7 @@ def get_tournees_between_dates(start_date, end_date):
     cursor = mysql.connection.cursor()
     query = """
     SELECT * FROM TOURNEE
-    WHERE DATE(dateTournee) BETWEEN %s AND %s
+    WHERE DATE(date_collecte) BETWEEN %s AND %s
     """
     cursor.execute(query, (start_date, end_date))
     tournees = cursor.fetchall()

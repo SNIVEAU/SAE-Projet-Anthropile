@@ -17,7 +17,18 @@
     <label class="insert_ent" for="nom_entreprise">Nom :</label>
     <input type="text" id="nom_entreprise" name="nom_entreprise" value="" placeholder="Entrez le nom de l'entreprise" required>
 
-    <label class="insert_ent" for="id">Représentant de l'entreprise : </label>
+    <label class="insert_ent" for="adresse_entreprise">Type :</label>
+    <div class="choices">
+        <div class="choice">
+            <input type="radio" id="collectivite" name="type_entreprise" value="Collectivité" required checked>
+            <label for="collectivite">Collectivité</label>
+        </div>
+        <div class="choice">
+            <input type="radio" id="entreprise" name="type_entreprise" value="Entreprise" required>
+            <label for="entreprise">Entreprise</label>
+        </div>
+    </div>
+    <label class="insert_ent" for="id" id="representantLabel">Représentant de l'entreprise : </label>
     <select name="id" id="id" required>
         <option value="" disabled selected>Choisissez un représentant</option>
         {% for utilisateur in utilisateurs %}
@@ -27,5 +38,29 @@
 
     <button type="submit">Insérer</button>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let typePersonneRadios = document.getElementsByName("type_entreprise");
+        let representantLabel = document.getElementById("representantLabel");
+
+        function updateLabel() {
+            let selectedValue = document.querySelector('input[name="type_entreprise"]:checked').value;
+
+            if (selectedValue === "Collectivité") {
+                representantLabel.textContent = "Représentant de la collectivité :";
+            } else {
+                representantLabel.textContent = "Représentant de l'entreprise :";
+            }
+        }
+
+        typePersonneRadios.forEach(radio => {
+            radio.addEventListener("change", updateLabel);
+        });
+
+        updateLabel();
+    });
+</script>
+
 <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
 {% endblock %}

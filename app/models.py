@@ -593,10 +593,11 @@ WHERE
     return les_points
 
 class Entreprise:
-    def __init__(self, id_entreprise, nom_entreprise, id_Utilisateur):
+    def __init__(self, id_entreprise, nom_entreprise, id_Utilisateur, est_Collectivite):
         self.id_entreprise = id_entreprise
         self.nom_entreprise = nom_entreprise
         self.id_Utilisateur = id_Utilisateur
+        self.est_Collectivite = est_Collectivite
     def __str__(self):
         return self.nom_entreprise
 
@@ -605,7 +606,7 @@ def get_entreprise_register():
     cursor.execute("SELECT * FROM ENTREPRISE")
     entreprises = cursor.fetchall()
     cursor.close()
-    return [(e[0],e[1], e[2]) for e in entreprises]+[('Aucune', 'Aucune', ('Aucune'))] 
+    return [(e[0],e[1], e[2], e[3]) for e in entreprises]+[('Aucune', 'Aucune', 'Aucune', 'Aucune')] 
 
 
 def get_entreprise(): #choix de l'entreprise
@@ -621,8 +622,8 @@ def get_entreprise_sous_forme_classe():
     entreprises = cursor.fetchall()
     cursor.close()
     ents =[]
-    for id_entreprise, nom_entreprise, idUtilisateur in entreprises:
-        ents.append(Entreprise(id_entreprise, nom_entreprise, idUtilisateur))
+    for id_entreprise, nom_entreprise, idUtilisateur, collectivite in entreprises:
+        ents.append(Entreprise(id_entreprise, nom_entreprise, idUtilisateur, collectivite))
     return ents
 
 def get_entreprise_par_id(id):
@@ -667,7 +668,7 @@ def delete_company(id):
         cursor.close()
         return True
     
-def insert_entreprise(id, nom, id_utilisateur):
+def insert_entreprise(id, nom, id_utilisateur, collectivite=False):
     cursor = mysql.connection.cursor()
     # cursor.execute("SELECT * FROM ENTREPRISE WHERE id_entreprise=%s OR nom_entreprise=%s", (id, nom))
     # ent = cursor.fetchone()
@@ -678,7 +679,10 @@ def insert_entreprise(id, nom, id_utilisateur):
     # else:
     # print(id, nom, id_utilisateur)
     # print(type(id), type(nom), type(id_utilisateur))
-    cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise, id_Utilisateur) VALUES (%s, %s, %s)", (id, nom, id_utilisateur))
+    if collectivite:
+        cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise, id_Utilisateur, est_Collectivite) VALUES (%s, %s, %s, %s)", (id, nom, id_utilisateur, collectivite))
+    else:
+        cursor.execute("INSERT INTO ENTREPRISE (id_entreprise, nom_entreprise, id_Utilisateur) VALUES (%s, %s, %s)", (id, nom, id_utilisateur))
     mysql.connection.commit()
     cursor.close()
     return True
@@ -688,7 +692,7 @@ def entreprise_existante_bd(nom_entreprise):
     cursor.execute("SELECT * FROM ENTREPRISE WHERE nom_entreprise = %s", (nom_entreprise,))
     entreprise = cursor.fetchone()
     cursor.close()
-    return Entreprise(entreprise[0], entreprise[1], entreprise[2]) if entreprise else None
+    return Entreprise(entreprise[0], entreprise[1], entreprise[2], entreprise[3]) if entreprise else None
     
     
 def get_all_user_info(user_name):

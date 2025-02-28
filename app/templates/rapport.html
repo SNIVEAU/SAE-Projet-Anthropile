@@ -1,55 +1,80 @@
 {% extends 'base.html' %}
 {% block title %}Rapport{% endblock %}
-{%block styles%}
-{{super()}}
+
+{% block styles %}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='rapport.css') }}">
-{%endblock%}
+{% endblock %}
+
 {% block content %}
-    <h1>Rapports</h1>
-    
-    <!-- Barre de recherche -->
-    <div id="search-container">
-        <input type="text" id="search-input" placeholder="Rechercher un rapport">
-        <button id="search-button">Rechercher</button>
-    </div>
-    <script src="{{ url_for('static', filename='js/search_bar.js') }}"></script>
+<h1>Rapports</h1>
 
-    
-    <div id="filter-options">
-        <label><input type="radio" name="filter" value="day" checked> Par Jour</label>
-        <label><input type="radio" name="filter" value="month"> Par Mois</label>
-        <label><input type="radio" name="filter" value="year"> Par Année</label>
+<!-- Barre de recherche -->
+<div id="search-container">
+    <input type="text" id="search-input" placeholder="Rechercher un rapport">
+    <button id="search-button">Rechercher</button>
+</div>
+
+<div id="filter-options">
+    <label><input type="radio" name="filter" value="day" checked> Par Jour</label>
+    <label><input type="radio" name="filter" value="month"> Par Mois</label>
+    <label><input type="radio" name="filter" value="year"> Par Année</label>
+</div>
+
+<!-- Table des rapports -->
+<table id="report-table">
+    <thead>
+        <tr>
+            <th>Rapport</th>
+            <th>Date de Collecte</th>
+            <th>Téléchargement</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for traitement in collecter %}
+        <tr>
+            <td>Rapport Journalier</td>
+            <td>{{ traitement.dateCollecte }}</td>
+            <td>
+                <a href="/download_pdf/{{ traitement.dateCollecte }}">Télécharger PDF</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Choix du type de rapport -->
+<div id="choix-periode">
+    <button id="btn-periode">Choisir une période</button>
+    <button id="btn-jour">Choisir un jour</button>
+</div>
+
+<!-- Formulaire de génération de rapport -->
+<div id="rapportdate">
+    <h2>Générer un rapport</h2>
+
+    <div id="date-seule">
+        <label for="report-date">Sélectionner une date :</label>
+        <input type="date" id="report-date">
     </div>
 
+    <div id="date-periode" style="display: none;">
+        <label for="start-date">De :</label>
+        <input type="date" id="start-date">
+        <label for="end-date">À :</label>
+        <input type="date" id="end-date">
+    </div>
+
+    <div id="choix-rapport">
+        <label><input type="radio" name="type-rapport" value="collectes" checked> Collectes</label>
+        <label><input type="radio" name="type-rapport" value="dechets"> Déchets</label>
+        <label><input type="radio" name="type-rapport" value="les_deux"> Les deux</label>
+    </div>
     
 
-    <!-- Table des rapports -->
-    <table id="report-table">
-        <thead>
-            <tr>
-                <th>Rapport</th>
-                <th>Date de Collecte</th>
-                <th>Téléchargement</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for traitement in collecter %}
-            <tr>
-                <td>Rapport Journalier</td>
-                <td>{{ traitement.dateCollecte }}</td>
-                <td>
-                    <a href="/download_pdf/{{traitement.dateCollecte}}">Télécharger PDF</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div id="rapportdate">
-        <h2>Générer un rapport pour une date</h2>
-        <label for="report-date"></label>
-        <input type="date" id="report-date" title="Sélectionner une date" placeholder="JJ/MM/AAAA">
-        <button id="generate-report">Générer le rapport</button>
-    </div>
-    <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/crea_rapport.js') }}"></script>
+    <button id="generate-report">Générer le rapport</button>
+</div>
+
+<script src="{{ url_for('static', filename='js/crea_rapport.js') }}"></script>
+<script src="{{ url_for('static', filename='js/rapport.js') }}"></script>
 {% endblock %}

@@ -21,14 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let date = document.getElementById("report-date").value;
         let startDate = document.getElementById("start-date").value;
         let endDate = document.getElementById("end-date").value;
-        let rapportType = document.querySelector('input[name="type-rapport"]:checked').value;
 
         if (dateSeule.style.display !== "none" && date) {
-            // Si l'utilisateur a choisi une date unique
-            window.location.href = `/generate_pdf?date_collecte=${date}&type=${rapportType}`;
+            alert("Génération du rapport pour la date : " + date);
         } else if (datePeriode.style.display !== "none" && startDate && endDate) {
-            // Si l'utilisateur a choisi une période
-            window.location.href = `/generate_pdf?start_date=${startDate}&end_date=${endDate}&type=${rapportType}`;
+            alert("Génération du rapport du " + startDate + " au " + endDate);
         } else {
             alert("Veuillez sélectionner une date ou une période valide.");
         }

@@ -259,79 +259,81 @@ def rapport():
     return render_template("rapport.html", collecter=collecter[:10])
 
 
-@app.route('/download_pdf/<date_collecte>')
-@login_required
-def download_pdf(date_collecte):
-    # Récupérer les données pour cette date
-    collecter_list = get_collecter_by_date(date_collecte)
-    # if not collecter_list:
-    #     return "Aucune collecte trouvée pour cette date."
+###
 
-    dechets = get_dechets_by_date_lastweek(date_collecte)
-    
-    # Création du PDF
+@app.route('/generate_pdf', methods=['GET'])
+def generate_pdf():
+    # Récupération des paramètres de la requête
+    date_collecte = request.args.get('date_collecte')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    rapport_type = request.args.get('type')
+
+    # Initialisation du PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
 
-    pdf.cell(200, 10, f"Rapport de collecte pour le {date_collecte}", ln=True, align='C')
+    # Titre du rapport
+    if start_date and end_date:
+        pdf.cell(200, 10, f"Rapport du {start_date} au {end_date}", ln=True, align='C')
+    elif date_collecte:
+        pdf.cell(200, 10, f"Rapport pour le {date_collecte}", ln=True, align='C')
 
     pdf.ln(10)
-    pdf.set_font('Arial', 'B', 10)
-    pdf.cell(50, 10, 'Point de Collecte', 1)
-    pdf.cell(50, 10, 'Type de Dechet', 1)
-    pdf.cell(50, 10, 'Date Collecte', 1)
-    pdf.cell(40, 10, 'Quantité Collectée (kg)', 1)
-    pdf.ln()
-    # Ajouter les données des collectes
-    pdf.set_font('Arial', '', 10)
-    if collecter_list:
 
-        for collecter in collecter_list:
-            categorie = get_categories_by_id(collecter.id_Type)
-            pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
-            pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
-            pdf.cell(50, 10, str(categorie.nom_type), 1)
-            pdf.cell(50, 10, str(collecter.dateCollecte), 1)
-            pdf.cell(40, 10, str(collecter.qtecollecte), 1)
+    # Générer le rapport en fonction du type
+    if rapport_type == "collectes" or rapport_type == "les_deux":
+        if date_collecte:
+            collecter_list = get_collecter_by_date(date_collecte)
+        elif start_date and end_date:
+            collecter_list = get_tournees_between_dates(start_date, end_date)
+
+        if collecter_list:
+            pdf.set_font('Arial', 'B', 10)
+            pdf.cell(50, 10, 'Point de Collecte', 1)
+            pdf.cell(50, 10, 'Type de Déchet', 1)
+            pdf.cell(50, 10, 'Date Collecte', 1)
+            pdf.cell(40, 10, 'Quantité Collectée (kg)', 1)
             pdf.ln()
+            pdf.set_font('Arial', '', 10)
+            for collecter in collecter_list:
+                categorie = get_categories_by_id(collecter.id_Type)
+                pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
+                pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
+                pdf.cell(50, 10, str(categorie.nom_type), 1)
+                pdf.cell(50, 10, str(collecter.dateCollecte), 1)
+                pdf.cell(40, 10, str(collecter.qtecollecte), 1)
+                pdf.ln()
 
-    # Ajouter un espace avant le tableau des déchets
-    pdf.ln(10)
-    pdf.set_font('Arial', 'B', 12)
-    pdf.cell(200, 10, "Déchets Insérés durant les 7 derniers jours", ln=True, align='C')
+    if rapport_type == "dechets" or rapport_type == "les_deux":
+        if date_collecte:
+            dechets = get_dechets_by_date(date_collecte)
+        elif start_date and end_date:
+            dechets = get_tournees_and_dechets_between_dates(start_date, end_date)
 
-    # Configuration des colonnes du tableau des déchets
-    col1_width = 60
-    col2_width = 60
-    col3_width = 60
-    left_margin = 10
+        if dechets:
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(200, 10, "Déchets Insérés", ln=True, align='C')
+            pdf.ln(10)
+            pdf.set_font('Arial', 'B', 10)
+            pdf.cell(60, 10, 'Nom du Déchet', 1, 0, 'C')
+            pdf.cell(60, 10, 'Quantité (kg)', 1, 0, 'C')
+            pdf.cell(60, 10, 'Date d\'insertion', 1, 1, 'C')
+            pdf.set_font('Arial', '', 10)
+            for dechet in dechets:
+                pdf.cell(60, 10, str(dechet.nom_dechet), 1, 0, 'C')
+                pdf.cell(60, 10, str(dechet.quantite), 1, 0, 'C')
+                pdf.cell(60, 10, str(dechet.dateinsertion), 1, 1, 'C')
 
-    # Ajouter les en-têtes du tableau des déchets insérés
-    pdf.ln(10)
-    pdf.set_font('Arial', 'B', 10)
-    pdf.cell(left_margin)
-    pdf.cell(col1_width, 10, 'Nom du Déchet', 1, 0, 'C')
-    pdf.cell(col2_width, 10, 'Quantité (kg)', 1, 0, 'C')
-    pdf.cell(col3_width, 10, 'Date d\'insertion', 1, 1, 'C')
-
-    # Ajouter les données des déchets insérés
-    pdf.set_font('Arial', '', 10)
-    if dechets:
-        for dechet in dechets:
-            pdf.cell(left_margin)
-            pdf.cell(col1_width, 10, str(dechet.nom_dechet), 1, 0, 'C')
-            pdf.cell(col2_width, 10, str(dechet.quantite), 1, 0, 'C')
-            pdf.cell(col3_width, 10, str(dechet.dateinsertion), 1, 1, 'C')
-
-    pdf.ln()
-
+    # Envoi du PDF généré
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
-    return send_file(pdf_output, download_name=f"rapport_{date_collecte}.pdf", as_attachment=True)
+    return send_file(pdf_output, download_name=f"rapport_{date_collecte or start_date}_{end_date}.pdf", as_attachment=True)
 
+###
 
 @app.route("/details/<id>")
 #@login_required

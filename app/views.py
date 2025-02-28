@@ -746,5 +746,6 @@ def details_utilisateur(id_utilisateur):
     return render_template(
         'details_utilisateur.html',
         utilisateur = get_details_utilisateur(id_utilisateur),
-        points_de_collecte = get_points_de_collecte(id_utilisateur)
+        points_de_collecte = get_points_de_collecte(id_utilisateur), 
+        is_collectivite = is_collectivite(id_utilisateur)
     )

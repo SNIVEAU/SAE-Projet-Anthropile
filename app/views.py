@@ -261,14 +261,7 @@ def rapport():
 
 ###
 
-@app.route('/generate_pdf', methods=['GET'])
-def generate_pdf():
-    # Récupération des paramètres de la requête
-    date_collecte = request.args.get('date_collecte')
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
-    rapport_type = request.args.get('type')
-
+def rapport(date_collecte, start_date=None, end_date=None, rapport_type="les_deux"):
     # Initialisation du PDF
     pdf = FPDF()
     pdf.add_page()
@@ -348,7 +341,25 @@ def generate_pdf():
     pdf_output.write(pdf.output(dest='S').encode('latin1'))
     pdf_output.seek(0)
 
-    return send_file(pdf_output, download_name=f"rapport_{date_collecte or start_date}_{end_date}.pdf", as_attachment=True)
+    if date_collecte:
+        titre = f"Rapport du {date_collecte}.pdf"
+    elif start_date and end_date:
+        titre = f"Rapport du {start_date} au {end_date}.pdf"
+    return send_file(pdf_output, download_name=titre, as_attachment=True)
+
+@app.route('/generate_pdf', methods=['GET'])
+def generate_pdf():
+    # Récupération des paramètres de la requête
+    date_collecte = request.args.get('date_collecte')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    rapport_type = request.args.get('type')
+    return rapport(date_collecte, start_date, end_date, rapport_type)
+
+@app.route('/download_pdf/<string:date_collecte>', methods=['GET'])
+def generate_pdf_by_date(date_collecte):
+    print(date_collecte)
+    return rapport(date_collecte)
 
 ###
 

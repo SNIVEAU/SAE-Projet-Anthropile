@@ -1124,6 +1124,6 @@ def get_details_utilisateur(id):
     cursor.execute(query, (id,))
     utilisateur = cursor.fetchone()
 
-    return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5] if utilisateur[5] is not None else 'Aucun'}
+    return {'id_utilisateur':utilisateur[0],'nom_utilisateur':utilisateur[1], 'mail':utilisateur[2], 'numtel':utilisateur[3], 'nom_role':utilisateur[4], 'nom_entreprise': utilisateur[5] if utilisateur[5] is not None else 'Aucune'}
 
 

@@ -22,8 +22,17 @@ function initializeMap(addresses) {
         }
     });
 
-    console.warn("Aucun marqueur valide trouvé.");
-    map.setView([16.2250, -61.5510], 10); 
+    // Vérifier s'il y a des marqueurs valides
+    if (markers.length > 0) {
+        // Créer un objet LatLngBounds pour contenir tous les marqueurs
+        let bounds = L.latLngBounds(markers);
+        // Ajuster la vue de la carte pour afficher tous les marqueurs
+        map.fitBounds(bounds);
+    } else {
+        console.warn("Aucun marqueur valide trouvé.");
+        // Définir une vue par défaut si aucun marqueur n'est trouvé
+        map.setView([16.2250, -61.5510], 10);
+    }
 }
 
 // Exécuter la fonction initializeMap lorsque le DOM est chargé

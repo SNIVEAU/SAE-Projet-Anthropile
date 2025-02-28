@@ -58,19 +58,20 @@
 
             <div class="form-group">
                 <div class="form-group choice">
-                    {{ form.isEntreprise(class_="form-control", id="isEntreprise") }}
-                    <label for="isEntreprise">{{ form.isEntreprise.label }}</label>
+                    {% for subfield in form.typePersonne %}
+                        <div class="choice">
+                            {{ subfield(id=subfield.id) }}
+                            <label for="{{ subfield.id }}">{{ subfield.label }}</label>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% for error in form.isEntreprise.errors %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                {% endfor %}
                 <div id="entrepriseField" style="display: none;">
-                    <label for="entreprise">{{ form.entreprise.label }}</label>
+                    <label for="entreprise" id="entrepriseLabel">{{ form.entreprise.label }}</label>
                     {{ form.entreprise(class_="form-control") }}
                     {% for error in form.entreprise.errors %}
                         <div class="alert alert-danger">{{ error }}</div>
                     {% endfor %}
-                </div>
+                </div>                
             </div>
 
             <button type="submit" class="btn btn-primary">S'inscrire</button>
@@ -81,18 +82,29 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let checkbox = document.getElementById("isEntreprise");
+            let typePersonneRadios = document.getElementsByName("typePersonne");
             let entrepriseField = document.getElementById("entrepriseField");
+            let entrepriseLabel = document.getElementById("entrepriseLabel");
     
             function toggleEntrepriseField() {
-                entrepriseField.style.display = checkbox.checked ? "block" : "none";
+                let selectedValue = document.querySelector('input[name="typePersonne"]:checked').value;
+                entrepriseField.style.display = (selectedValue !== "Particulier") ? "block" : "none";
+    
+                if (selectedValue === "Collectivité") {
+                    entrepriseLabel.textContent = "Nom de la collectivité";
+                } else {
+                    entrepriseLabel.textContent = "Nom de l'entreprise";
+                }
             }
-
+    
+            typePersonneRadios.forEach(radio => {
+                radio.addEventListener("change", toggleEntrepriseField);
+            });
+    
             toggleEntrepriseField();
-
-            checkbox.addEventListener("change", toggleEntrepriseField);
         });
     </script>
+    
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

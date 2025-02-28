@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Entreprises{% endblock %}
+{% block title %}Entreprises/Collectivités{% endblock %}
 
 {% block styles %}
 {{ super() }}
@@ -24,20 +24,20 @@
 
         <!-- Titre principal de la page -->
         <div>
-            <h1>Gestion des entreprises</h1>
-            <p class="page-header">Bienvenue sur la page de gestion des entreprises. Ici, vous pouvez ajouter, rechercher, modifier et supprimer les entreprises associées à Biotrack'in.</p>
+            <h1>Gestion des entreprises et des collectivités</h1>
+            <p class="page-header">Bienvenue sur la page de gestion des entreprises et des collectivités. </br> Ici, vous pouvez ajouter, rechercher, modifier et supprimer les entreprises ou les collectivités associées à Biotrack'in.</p>
         </div>
 
         <!-- Bouton pour insérer une nouvelle entreprise -->
         <div class="insert">
-            <a href="{{ url_for('inserer_entreprise') }}" class="btn btn-insert">Insérer une entreprise</a>
+            <a href="{{ url_for('inserer_entreprise') }}" class="btn btn-insert">Insérer une entreprise/collectivité</a>
         </div>
 
         <!-- Affichage des entreprises ou message si aucune n'est disponible -->
         {% if entreprises %}
-            <h2>Liste des entreprises</h2>
+            <h2>Liste des entreprises et collectivités</h2>
             <div id="search-container">
-                <input type="text" id="search-input" placeholder="Rechercher une entreprise">
+                <input type="text" id="search-input" placeholder="Rechercher une entreprise ou une collectivité">
                 <button id="search-button" class="btn-search">Rechercher</button>
             </div>
             <table id="company-table">
@@ -45,6 +45,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Nom</th>
+                        <th>Type</th>
                         <th colspan="3">Actions</th>
                     </tr>
                 </thead>
@@ -53,6 +54,13 @@
                     <tr>
                         <td>{{ ent.id_entreprise }}</td>
                         <td>{{ ent.nom_entreprise }}</td>
+                        <td>
+                            {% if ent.est_Collectivite %}
+                                Collectivité
+                            {% else %}
+                                Entreprise
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{{ url_for('details_utilisateur', id_utilisateur=ent.id_Utilisateur) }}">Détail</a>
                         </td>

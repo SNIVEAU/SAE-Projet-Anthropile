@@ -15,7 +15,15 @@
         <p><strong>Email :</strong> {{ utilisateur.mail }}</p>
         <p><strong>Numéro de téléphone :</strong> {{ utilisateur.numtel }}</p>
         <p><strong>Rôle :</strong> {{ utilisateur.nom_role }}</p>
-        <p><strong>Société représentée :</strong> {{ utilisateur.nom_entreprise }}</p>
+        <p><strong>Société représentée :</strong> {{ utilisateur.nom_entreprise }} 
+            {% if not utilisateur.nom_entreprise == 'Aucune' %}
+                {% if is_collectivite %}
+                    (Collectivité)
+                {% else %}
+                    (Entreprise)
+                {% endif %}
+            {% endif %}
+        </p>
         <div>
         <p><strong>Points de collecte associées :</strong> {% if not points_de_collecte %} Aucun point de collecte n'est associé à cet utilisateur.{% endif %}</p>
         {% if points_de_collecte %}

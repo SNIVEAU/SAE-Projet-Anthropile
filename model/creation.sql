@@ -18,6 +18,7 @@ CREATE TABLE ENTREPRISE (
   id_Entreprise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom_Entreprise VARCHAR(42) UNIQUE,
   id_Utilisateur INT,
+  est_Collectivite BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (id_Utilisateur) REFERENCES UTILISATEUR (id_Utilisateur)
 );
 

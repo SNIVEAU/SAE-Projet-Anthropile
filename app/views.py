@@ -26,7 +26,7 @@ class UtilisateurForm(FlaskForm):
     adresse = StringField("Adresse")
     motdepasse = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6, max=35)])
     # entreprise = SelectField("Entreprise", choices=get_entreprise_register, validators=[DataRequired()])
-    isEntreprise = BooleanField("Je suis une entreprise")
+    typePersonne = RadioField("Type de personne", choices=[("Particulier", "Particulier"), ("Collectivité", "Collectivité"), ("Entreprise", "Entreprise")], default="Particulier", validators=[DataRequired()])
     entreprise = StringField("Nom de l'entreprise")
 
     next = HiddenField()
@@ -120,19 +120,22 @@ def register():
         except Exception as e:
             print(e, "-------------------")
             return render_template('register.html', error="Adresse non trouvée", form=form)
-        if form.isEntreprise.data:
+        if form.typePersonne.data != "Particulier":
             if form.entreprise.data == "":
-                return render_template('register.html', error="Le nom de l'entreprise est requis", form=form)
+                return render_template('register.html', error="Le nom de l'entreprise/la collectivité est requis", form=form)
             if entreprise_existante_bd(form.entreprise.data):
-                return render_template('register.html', error="Une entreprise avec ce nom existe déjà", form=form)
+                return render_template('register.html', error="Une entreprise/collectivité avec ce nom existe déjà", form=form)
         hashed_password = generate_password_hash(form.motdepasse.data)
         print("c'est le mot de passe hashed, longeur")
         # Insertion dans la base de données avec le mot de passe haché
         print(form.entreprise.data)
         insert_user(form.nom_utilisateur.data, form.email.data, form.numtel.data, hashed_password, "Utilisateur")
-        if form.isEntreprise.data:
+        if form.typePersonne.data != "Particulier":
             idUtilisateur = get_id_utilisateur(form.nom_utilisateur.data)
-            insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur)
+            if form.typePersonne.data == "Entreprise":
+                insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur)
+            else:
+                insert_entreprise(get_id_max_entreprise() + 1, form.entreprise.data, idUtilisateur, True)
         try:
             if not isinstance(pos, GeocoderUnavailable):
                 if not get_pts_de_collecte_by_adresse(form.adresse.data):
@@ -505,8 +508,11 @@ def inserer_entreprise():
         nom_entreprise = request.form.get("nom_entreprise")
 
         userId = request.form.get("id")
-        
-        success = insert_entreprise(id_ent, nom_entreprise, userId)
+
+        if request.form.get('type_entreprise') =='Collectivité':
+            success = insert_entreprise(id_ent, nom_entreprise, userId, True)
+        else:
+            success = insert_entreprise(id_ent, nom_entreprise, userId)
         
         if success:
             return redirect(url_for('toutes_entreprises', status='insert_success'))
@@ -740,5 +746,6 @@ def details_utilisateur(id_utilisateur):
     return render_template(
         'details_utilisateur.html',
         utilisateur = get_details_utilisateur(id_utilisateur),
-        points_de_collecte = get_points_de_collecte(id_utilisateur)
+        points_de_collecte = get_points_de_collecte(id_utilisateur), 
+        is_collectivite = is_collectivite(id_utilisateur)
     )

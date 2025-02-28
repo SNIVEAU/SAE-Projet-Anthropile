@@ -749,3 +749,7 @@ def details_utilisateur(id_utilisateur):
         points_de_collecte = get_points_de_collecte(id_utilisateur), 
         is_collectivite = is_collectivite(id_utilisateur)
     )
+
+@app.route('/api/notifications_non_lues')
+def get_notifications_non_lues():
+    return get_alertes_non_lues_api()

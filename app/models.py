@@ -1018,6 +1018,10 @@ def get_alertes_non_lues():
     
     return alertes_list
 
+def get_alertes_non_lues_api():
+    alertes = get_alertes_non_lues()
+    return jsonify({"alertes_non_lues": len(alertes)})
+
 def get_alertes_triees_par_priorite():
     cursor = mysql.connection.cursor()
     query = """

@@ -219,3 +219,11 @@ a:hover {
     display: flex;
     flex-direction: column;
 }
+
+@media screen and (max-width: 935px) {
+    #rapport-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+}

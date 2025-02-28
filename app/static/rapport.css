@@ -22,6 +22,15 @@ h1 {
     border-collapse: collapse;
 }
 
+table {
+    margin: 0 auto;
+    margin-bottom: 50px;
+    border-collapse: separate;
+    border-spacing: 0px;
+    width: 80%;
+    text-align: center;
+}
+
 /* En-tête du tableau */
 thead th {
     background-color: #000;

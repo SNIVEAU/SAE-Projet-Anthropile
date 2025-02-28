@@ -25,7 +25,7 @@
                 <button type="button" id="ajouter_point" class="btn btn-secondaire">+</button>
             </div>
             
-            <div id="points_selectionnes"></div>
+            <div id="points_selectionnes" class="sortable"></div>
             
             <div class="form-group">
                 <label class="tournee" for="duree">Durée de la tournée</label>
@@ -43,7 +43,33 @@
             <button type="submit" class="btn btn-primary">Valider</button>
         </form>
     </div>
+    <div class="container">
+        <h2>Historique des tournées</h3>
+        <div class="historique">
+            {% if historique_tournee %}
+                <ul>
+                    {% for tournee in historique_tournee %}
+                        <li>
+                            <strong>Date de collecte:</strong> {{ tournee.date_collecte }}<br>
+                            <strong>Heure de collecte:</strong> {{ tournee.heure_collecte }}<br>
+                            <strong>Points de collecte:</strong>
+                            <ul>
+                                {% for point in tournee.points_de_collecte %}
+                                    <li>{{ point.nom_pt_collecte }}</li>
+                                {% endfor %}
+                            </ul>
+                            <strong>Durée de la tournée:</strong> {{ tournee.duree }}<br>
+                            <hr>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucune tournée enregistrée.</p>
+            {% endif %}
+        </div>
+    </div>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
         document.getElementById("ajouter_point").addEventListener("click", function() {
             let select = document.getElementById("point_de_collecte");
@@ -52,9 +78,8 @@
             if (selectedValue && !document.getElementById(`point_${selectedValue}`)) {
                 let container = document.getElementById("points_selectionnes");
                 let div = document.createElement("div");
-                console.log(selectedValue);
-                console.log(selectedText);
                 div.id = `point_${selectedValue}`;
+                div.classList.add("draggable");
                 div.innerHTML = `<div class='form-group tournee'>
                                 <input class = 'tournee' type='hidden' name='selected_points' value='${selectedValue}'>
                                 <label class= 'tournee' for='categorie_${selectedValue}'>${selectedText}</label>
@@ -73,5 +98,14 @@
                 });
             }
         });
+        
+        new Sortable(document.getElementById("points_selectionnes"), {
+            animation: 150,
+            ghostClass: "sortable-ghost",
+            onEnd: function (evt) {
+                console.log("Nouvel ordre: ", evt.newIndex);
+            }
+        });
     </script>
+    
 {% endblock %}

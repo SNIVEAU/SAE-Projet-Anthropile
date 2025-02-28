@@ -61,6 +61,7 @@ CREATE TABLE COLLECTER (
   id_Tournee INT,
   id_Type INT,
   qtecollecte DECIMAL(10,4),
+  ordre_collecte INT,
   PRIMARY KEY (id_point_collecte, id_Tournee, id_Type),
   FOREIGN KEY (id_point_collecte) REFERENCES POINT_DE_COLLECTE (id_point_collecte),
   FOREIGN KEY (id_Tournee) REFERENCES TOURNEE (id_Tournee),

@@ -306,6 +306,7 @@ def generate_pdf():
             pdf.ln()
             pdf.set_font('Arial', '', 10)
             for collecter in collecter_list:
+                print(collecter_list)
                 categorie = get_categories_by_id(collecter.id_Type)
                 pts_de_collecte = get_pts_de_collecte_by_id(collecter.id_point_collecte)
                 pdf.cell(50, 10, str(pts_de_collecte.nom_pt_collecte), 1)
@@ -321,7 +322,7 @@ def generate_pdf():
 
     # pdf.ln(10)
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(200, 10, "Déchets jetés", ln=True, align='C')
+    pdf.cell(200, 10, "Déchets Insérés", ln=True, align='C')
     if rapport_type == "dechets" or rapport_type == "les_deux":
         if date_collecte:
             dechets = get_dechets_by_date(date_collecte)
@@ -329,8 +330,6 @@ def generate_pdf():
             dechets = get_tournees_and_dechets_between_dates(start_date, end_date)
 
         if dechets:
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(200, 10, "Déchets Insérés", ln=True, align='C')
             pdf.set_font('Arial', 'B', 10)
             pdf.cell(60, 10, 'Nom du Déchet', 1, 0, 'C')
             pdf.cell(60, 10, 'Quantité (kg)', 1, 0, 'C')

@@ -478,13 +478,15 @@ def get_tournees_and_dechets_by_date(date):
 def get_tournees_between_dates(start_date, end_date):
     cursor = mysql.connection.cursor()
     query = """
-    SELECT * FROM TOURNEE
+    SELECT  id_point_collecte, id_Type, date_collecte, qtecollecte
+    FROM TOURNEE NATURAL JOIN COLLECTER
     WHERE DATE(date_collecte) BETWEEN %s AND %s
+    ORDER BY date_collecte
     """
     cursor.execute(query, (start_date, end_date))
     tournees = cursor.fetchall()
     cursor.close()
-    return tournees
+    return [Collecter(tournee[0], tournee[1], tournee[2], tournee[3]) for tournee in tournees]
 
 
 def get_dechets_between_dates(start_date, end_date):
@@ -501,9 +503,18 @@ def get_dechets_between_dates(start_date, end_date):
 
 
 def get_tournees_and_dechets_between_dates(start_date, end_date):
-    tournees = get_tournees_between_dates(start_date, end_date)
-    dechets = get_dechets_between_dates(start_date, end_date)
-    return tournees, dechets
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM DECHET WHERE DATE(dateinsertion) BETWEEN %s AND %s ORDER BY dateinsertion", (start_date, end_date,))
+    dates = cursor.fetchall()
+    if dates:
+        res=[]
+        for date in dates:
+            res.append(Dechet(date[1],date[2],date[3], date[4]))
+        return res
+    return None
+    # tournees = get_tournees_between_dates(start_date, end_date)
+    # dechets = get_dechets_between_dates(start_date, end_date)
+    # return tournees, dechets
 
 
 def remove_doublon_date_collecter(listecollecte):
@@ -1156,12 +1167,11 @@ def get_pts_de_collecte_by_id(id):
 
 def get_dechets_by_date(date):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s", (date,))
+    cursor.execute("SELECT * FROM DECHET WHERE dateinsertion = %s ORDER BY dateinsertion", (date,))
     dates = cursor.fetchall()
     if dates:
         res=[]
         for date in dates:
-            print(date)
             res.append(Dechet(date[1],date[2],date[3], date[4]))
         return res
     return None
